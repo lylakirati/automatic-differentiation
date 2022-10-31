@@ -100,6 +100,8 @@ We will need to depend on the libraries mentioned above, namely numpy, scipy, an
 
 
 
+
+
 ## Feedback
 
 ### Milestone 1
@@ -173,6 +175,14 @@ Ad = tad()
 res = tad.forward(f, x)
 ```
 
+
+#### License
+
+We will be using the `MIT` license for open source software development. This way, others can use the Software and also contribute. 
+
+* This license has disclosure that the software is provided "AS IS" with no liabilities, which is exactly what we want given the nature of the project.
+- MIT license is simple and permissive.
+
 #### Software Organization(2/2):
     - Also, use the tree to have a better visual for the directory structure.
     - you should talk about the package distribution, the tests and where they will be located.
@@ -188,4 +198,7 @@ You need to elaborate more on the core data structure, the methods, and how you 
 Please add the license and the reason for using those.
 
 
+We will be using the `MIT` license for open source software development. This way, others can use the Software and also contribute. 
 
+* This license has disclosure that the software is provided "AS IS" with no liabilities, which is exactly what we want given the nature of the project.
+- MIT license is simple and permissive.
