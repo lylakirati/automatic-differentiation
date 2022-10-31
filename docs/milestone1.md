@@ -33,15 +33,15 @@ They would need to import all the dependable packages, namely numpy, scipy, pand
 
 When it’s time to use the package, they will import by:
 
-import TEAM20AD ad tad
+`from TEAM20AD import ad`
 
 User will be able to instantiate the AD objects as follows:
 
 ```python
 f = some_function
 x = some_value
-Ad = tad()
-res = tad.forward(f, x)
+Ad = ad()
+res = ad.forward(f, x)
 ```
 
 ## Software Organization
@@ -56,6 +56,7 @@ milestone1
 LICENSE
 README.md
 untitled.yml
+ad
 	test
 		test.py
 	src
@@ -177,6 +178,31 @@ res = tad.forward(f, x)
     - Also, use the tree to have a better visual for the directory structure.
     - you should talk about the package distribution, the tests and where they will be located.
     - You should mention the modules and what their functionality will be.
+
+##### Package Installation
+
+Eventually, we will upload the package to <https://pypi.org>. Assuming we will name our package `TEAM20AD`, this is how one can install it and test it in a virtual environment (user should have anaconda installed on their machine):
+
+``` python
+# clone repo
+git clone https://code.harvard.edu/CS107/team20.git
+# get into directory
+cd TEAM20AD
+# create virtual environment
+conda create -p ./conda-env python=3.9
+# activate virtual environment
+conda activate ./conda-env
+# install dependencies
+pip install -r requirements.txt
+# test
+pytest tests/
+```
+
+The last command will then run all tests cases located in folder named `ad/tests/` with `pytest`.
+
+##### Modules
+
+There will be two main modules `Forward` and `Reverse` each implementing the corresponding modes in AD.
 
 
 #### Implementation(3/4):
