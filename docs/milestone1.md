@@ -94,13 +94,11 @@ Note that the subsequent node $v_i$ stores the intermediate result of evaluating
 
 ## How to use team20ad
 
-This package is distributed through the Python Package Index (PyPI), and hence
-the user can install it with:
+This package is distributed through the Python Package Index (PyPI), and hence the user can install it with:
 
 `python -m pip install team20ad`
 
-In addition, they need to install and import
-all the dependable packages including `numpy`, `scipy`, `pandas`, and `matplotlib`.
+In addition, they need to install and import all the dependable packages including `numpy`, `scipy`, `pandas`, and `matplotlib`.
 
 To use the `team20ad` package, one can import the module by:
 
@@ -108,8 +106,7 @@ To use the `team20ad` package, one can import the module by:
 from team20ad.forward_ad import ad
 ```
 
-The user will be able to instantiate an AD object and compute the
-differentation as follows:
+The user will be able to instantiate an AD object and compute the differentation as follows:
 
 ```python
 f = some_function_to_be_differentiated
@@ -143,16 +140,16 @@ team20/
 |	   \-- test_overloads.py
 \-- src/
 	\-- team20ad/
-	  |-- __init__.py
+	  |--   __init__.py
  	  |--	__main__.py
  	  |--	example.py
  	  |--	forward_ad/
- 	  |  |-- __init__.py
- 	  |  |-- forward.py
- 	  |  \-- dualNumber.py
+ 	  |    |-- __init__.py
+ 	  |    |-- forward.py
+ 	  |    \-- dualNumber.py
  	  \--	overloads/
- 	  	  |-- __init__.py
- 	  	  \-- function_overloads.py
+ 	  	   |-- __init__.py
+ 	  	   \-- function_overloads.py
 ```
 
 Currently, we plan to have two modules: one for implementing the forward mode of automatic differentiation and the other for defining function overloads (more on this under the Implementation section). The `forward_ad` module will include an implementation of `DualNumber` class, which is necessarily for the forward mode computation.
@@ -249,21 +246,19 @@ Automatic Differentiation is more efficient than two of other methods mentioned 
    * *Elementary functions*: The set of elementary functions has to be given and can, in principle, consist of arbitrary functions as long as these are sufficiently often differentiable. All elementary functions will be implemented in the system together with their gradients.
 
 
-   * Evaluation Trace of a Function: All numeric evaluations are sequences of elementary operations. The evaluation of f at some point x = (x1, ..., xn) can be described by a so-called evaluation trace $v_{k-m}=x_k$, for $k=1,2,...,m$, where each intermediate results v_j are functions that depend on the independent variables x. 
+   * Evaluation Trace of a Function: All numeric evaluations are sequences of elementary operations. The evaluation of f at some point x = (x1, ..., xn) can be described by a so-called evaluation trace $v_{k-m}=x_k$, for $k=1,2,...,m$, where each intermediate results $v_j$ are functions that depend on the independent variables x. 
 
    * *Evaluating (forward) trace of a function*: All numeric evaluations are sequences of elementary operations. The evaluation of a function $f$ at a given point $x = (x_1, \dots, x_n)$
-   can be described by a so-called evaluation trace 
-   $v_0 = v_0 (x), \dots, v_{m} = v_{m} (x)$, 
-   where each intermediate result $v_j$ is the result of an elementary operation
-   and a function that 
-   depends on the independent variables $x$. 
+   can be described by a so-called evaluation trace $v_0 = v_0 (x), \dots, v_{m} = v_{m} (x)$, 
+   where each intermediate result $v_j$ is the result of an elementary operation and a function that depends on the independent variables $x$. 
 
 
 **4. Forward Mode of Automatic Differentiation**
 
    * Forward automatic differentiation divides the expression into a sequence of differentiable elementary operations. The chain rule and well-known differentiation rules are then applied to each elementary operation.
 
-   * Forward automatic differentiation computes a tangent trace of the directional derivative $$D_p v_j = (\nabla y_i)^T p = \sum_{j=1}^{m} \frac{\partial y_i}{x_j} p_j$$ 
+   * Forward automatic differentiation computes a tangent trace of the directional derivative 
+  	$$D_p v_j = (\nabla y_i)^T p = \sum_{j=1}^{m} \frac{\partial y_i}{x_j} p_j$$ 
    for each intermediate variable $v_j$ at the same time as it performs a forward evaluation trace of the elementary pieces of a complicated $f(x)$ from the inside out. 
    Note that the vector $p$ is called the seed vector which gives the direction of the derivative.
 
@@ -297,7 +292,6 @@ res = ad_obj.forward(f, x) # compute derivative of f evaluated at x using forwar
 ```
 
 
-
 #### Software Organization(2/2):
 - Also, use the tree to have a better visual for the directory structure.
 - you should talk about the package distribution, the tests and where they will be located.
@@ -326,19 +320,20 @@ team20/
 |	   \-- test_overloads.py
 \-- src/
 	\-- team20ad/
-	  |-- __init__.py
+	  |--   __init__.py
  	  |--	__main__.py
  	  |--	example.py
  	  |--	forward_ad/
- 	  |  |-- __init__.py
- 	  |  |-- forward.py
- 	  |  \-- dualNumber.py
+ 	  |    |-- __init__.py
+ 	  |    |-- forward.py
+ 	  |    \-- dualNumber.py
  	  \--	overloads/
- 	  	  |-- __init__.py
- 	  	  \-- function_overloads.py
+ 	  	   |-- __init__.py
+ 	  	   \-- function_overloads.py
 ```
 
 Currently, we plan to have two modules: one for implementing the forward mode of automatic differentiation and the other for defining function overloads (more on this under the Implementation section). The `forward_ad` module will include an implementation of `DualNumber` class, which is necessarily for the forward mode computation.
+
 Note that an implementation of computational graph is optional for forward AD.
 
 As such, we will have correponding tests `test_forward.py` and `test_overloads.py`, which are located under the `tests/forward_ad` and `tests/overloads` directories, respectively, and which will be configured to run automatically using GitHub workflows after each push to the `main` branch of development. 
@@ -351,8 +346,7 @@ As such, we will have correponding tests `test_forward.py` and `test_overloads.p
 - You should talk more about the dual numbers and the reverse functions (e.g. radd). 
 You should explain what each class will be doing and how. 
 - Big emphasis on how exactly you will implement it.
-	+ Please see the revised writing of this section above.
-
+	+ Please see the revised writing of this section above. The fundamental concepts of elementary functions and dual numbers were added to the Background section.
 
 
 #### License(0/2):
