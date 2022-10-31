@@ -274,6 +274,17 @@ You should explain what each class will be doing and how.
 
 
 
+##### Dual Numbers
+
+Dual numbers are numbers of the form $a + b \epsilon$ where $\epsilon^2 = 0$. It has the following property which makes it suitable for gradient computation:
+
+We take the Taylor expansion of a function about $a + \epsilon$, we then get
+
+$$f(a + \epsilon) = f(a) + \epsilon f'(a)$$
+
+Essentially, this mean if we evaluate a function at a dual number, we get the function output as well as its derivative simultaneously. We will use this concept in the evaluation of gradients in forward and reverse modes.
+
+
 #### License(0/2):
 - Please add the license and the reason for using those.
 
