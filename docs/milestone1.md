@@ -272,6 +272,40 @@ You should explain what each class will be doing and how.
 
 
 
+##### Elementary Operators / Functions
+
+Elementary operators (addition, subtraction, multiplication, etc.) will need to be implemented (overloaded). These will be the core of all computation.
+
+| Elementary Operators  | Description         |
+|-----------------------|---------------------|
+| \_\_add__(self, other)  | add values from object: other      |
+| \_\_radd__(self, other) | add values from object: other      |
+| \_\_mul__(self, other)  | multiply values from object: other |
+| \_\_rmul__(self, other) | multiply values from object: other |
+| \_\_eq__(self, other) | check equal to object: other |
+| \_\_neg__(self, other) | check not equal to object: other |
+| \_\_sub__(self, other) | subtract values from object: other |
+| \_\_rsub__(self, other) | subtract values from object: other |
+| \_\_div__(self, other) | divide values from object: other |
+| \_\_rdiv__(self, other) | divide values from object: other |
+| \_\_gt__(self, other) | check greater than object: other |
+| \_\_ge__(self, other) | check greater or equal to object: other |
+| \_\_le__(self, other) | check less or equal to object: other |
+| \_\_lt__(self, other) | check less than object: other |
+
+
+An elementary function is a function of a single variable (typically real or complex) that is defined as taking sums, products, roots and compositions of finitely many polynomial, such as trigonometric.
+
+| Elementary Fuctions   | Example         |
+|-----------------------|-----------------|
+| sin  | sin(x)   |
+| cos  | cos(x)   |
+| tan  | tan(x)   |
+| exp  | e^x      |
+| log  | log x    |
+
+
+
 
 #### License(0/2):
 - Please add the license and the reason for using those.
