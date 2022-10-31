@@ -18,70 +18,89 @@ Automatic Differentiation is more efficient than two of other methods mentioned 
 ## Background
 
 
-1. Basic Calculus
+**1. Basic Calculus**
 
    * Product Rule
 
      Product rule is a formula used to find the derivatives of products of two or more functions. The product rule can be expressed as
 
-     <img src="ProductRule.png" alt="Image of Product Rule" width="250"/>
+     <!-- <img src="ProductRule.png" alt="Image of Product Rule" width="250"/> -->
+     $$\frac{\partial}{\partial x} (uv) = u \frac{\partial v}{\partial x} 
+     + v \frac{\partial u}{\partial x}.$$
 
    * Chain Rule
 
-     Chain rule is a formula to compute the derivative of a composite function. The chain rule can be expressed as
+     Chain rule is a formula to compute the derivative of a composite function. 
+     The chain rule can be expressed as
 
-	<img src="ChainRule.png" alt="Image of Chain Rule" width="250"/>
+	<!-- <img src="ChainRule.png" alt="Image of Chain Rule" width="250"/> -->
+	  $$\frac{\partial y}{\partial x} = \frac{\partial y}{\partial u} \frac{\partial u}{\partial x}$$
 
-2. Automatic Differentiation
+**2. Automatic Differentiation**
 
-   * Automatic Differentiation refers to a general way of taking a program which computes a value, and automatically constructing a procedure for computing derivatives of that value. The derivatives sought may be first order (the gradient of a target function, or the Jacobian of a set of constraints), higher order (Hessian times direction vector or a truncated Taylor series), or nested. There are two modes in Automatic Differentiation: the forward mode and reverse mode.
+   * Automatic Differentiation refers to a general way of taking a program which computes a value, and automatically constructing a procedure for computing derivatives of that value. The derivatives sought may be first order (the gradient of a target function, or the Jacobian of a set of constraints), higher order (Hessian times direction vector or a truncated Taylor series), or nested. There are two modes in Automatic Differentiation: the forward mode and the reverse mode.
 
-   * Elementary functions: The set of elementary functions has to be given and can, in principle, consist of arbitrary functions as long as these are sufficiently often differentiable. All elementary functions will be implemented in the system together with their gradients.
+   * *Elementary functions*: The set of elementary functions has to be given and can, in principle, consist of arbitrary functions as long as these are sufficiently often differentiable. All elementary functions will be implemented in the system together with their gradients.
 
-   * Evaluation Trace of a Function: All numeric evaluations are sequences of elementary operations. The evaluation of f at some point x = (x1, ..., xn) can be described by a so-called evaluation trace v[0] = v[0](x), ..., v[μ] = v[μ](x), where each intermediate results v_j are functions that depend on the independent variables x. 
+   * *Evaluating trace of a function*: All numeric evaluations are sequences of elementary operations. The evaluation of a function $f$ at a given point $x = (x_1, \dots, x_n)$ 
+   can be described by a so-called evaluation trace 
+   $v_0 = v_0 (x), \dots, v_{\mu} = v_{\mu} (x)$, 
+   where each intermediate result $v_j$ is a function that 
+   depends on the independent variables $x$. 
 
-3. Forward Mode
+**3. Forward Mode of Automatic Differentiation**
 
    * Forward automatic differentiation divides the expression into a sequence of differentiable elementary operations. The chain rule and well-known differentiation rules are then applied to each elementary operation.
 
-   * Forward automatic differentiation computes a tangent trace of their directional derivatives D_pv_j at the same time as it performs a forward evaluation trace of the elementary pieces of a complicated f(x) from the inside out. 
+   * Forward automatic differentiation computes a tangent trace of their directional derivatives $D_p v_j$ at the same time as it performs a forward evaluation trace of the elementary pieces of a complicated $f(x)$ from the inside out. 
 
 In the most general case, a function can have more than one coordinate. To evaluate this function, we would take the sum of the partial derivatives with respect to each said coordinate. To illustrate, consider function $f(u(t), v(t))$; we first apply the chain rule to for each piece, we get:
-$$\frac{df}{dt} = \frac{\partial f}{\partial u} \frac{du}{dt} + \frac{\partial f}{\partial v} \frac{dv}{dt}$$
+$$\frac{\partial f}{\partial t} = \frac{\partial f}{\partial u} \frac{\partial u}{\partial t} + \frac{\partial f}{\partial v} \frac{\partial v}{\partial t}$$
 
 At a lower level, the implementation of AD requires breaking down the original function into smaller pieces known as elementary functions. For instance, consider function
-$$f(x, y) = exp(sin(3x) + cos(4y))$$
-Then these would be its elementary functions:
-$$g(z) = 3z$$
-$$g(z) = 4y$$
-$$g(z) = sin(z)$$
-$$g(z) = cos(z)$$
-$$g(z) = exp(z)$$
+$$f(x, y) = \exp(\sin(3x) + \cos(4y))$$
+Then, $f$ can be broken down into five elementary functions:
+
+\begin{aligned}
+	g_1(z) &= 3z, \\
+	g_2(z) &= 4z, \\
+	g(z) &= \sin(z), \\
+	g(z) &= \cos(z), \\
+	g(z) &= \exp(z). \\
+\end{aligned}
+<!-- $$g(z) = 3z,$$ -->
+<!-- $$g(z) = 4z,$$ -->
+<!-- $$g(z) = sin(z),$$ -->
+<!-- $$g(z) = cos(z),$$ -->
+<!-- $$g(z) = exp(z),$$ -->
 Furthermore, the order of evaluating these elementary functions can be organized into a computational graph:
 
 ![Example Computational Graph](./computational_graph.png)
 
-Note the subsequent nodes named $v_i$; these store the intermediate results of evaluating each elementary function. After evaluating each $v_i$, we get a sequence from $v_1$ to $v_8$; this is called the primal trace. Similarly, following the computational graph, if we instead evaluate the derivative at each step, the resulting sequence would be called the dual trace. Such is essentially the procedure of automatic differentiation, specifically the forward mode, which we plan to implement. Note that there exists a counterpart named reverse mode; we will not describe it here.
+Note that the subsequent node $v_i$ stores the intermediate result of evaluating each elementary function. After evaluating each $v_i$, we get a sequence from $v_1$ to $v_8$; this is called the primal trace. Similarly, following the computational graph, if we instead evaluate the derivative at each step, the resulting sequence would be called the dual trace. Such is essentially the procedure of automatic differentiation, specifically the forward mode, which we plan to implement. Note that there exists a counterpart named reverse mode which
+we will not describe it here.
 
 
 
 ## How to use TEAM20AD
 
-Given that this package will be distributed  with pyPI, the user will first need to install the package.
+This package is distributed through the Python Package Index (PyPI), and hence
+the user can install it with:
 
 `python -m pip install TEAM20AD`
 
-They would need to import all the dependable packages, namely numpy, scipy, pandas, and matplotlib.
+In addition, they need to install and import
+all the dependable packages including `numpy`, `scipy`, `pandas`, and `matplotlib`.
 
-When it’s time to use the package, they will import by:
+To use the `TEAM20AD` package, one can import the module by:
 
 `from TEAM20AD import ad`
 
-User will be able to instantiate the AD objects as follows:
+The user will be able to instantiate an AD object as follows:
 
 ```python
-f = some_function
-x = some_value
+f = some_function_to_be_differentiated
+x = some_value_to_evaluate
 Ad = ad()
 res = ad.forward(f, x)
 ```
