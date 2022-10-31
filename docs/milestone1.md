@@ -2,7 +2,8 @@
 
 ## Introduction
 
-Automatic Differentiation (AD) is to solve for the derivative of a function at a given point of estimate. It utilizes the concept of dual number to achieve an accuracy better than numeric differentiation. It is also more efficient than symbolic differentiation.
+Automatic Differentiation (AD) is to solve for the derivative of a function at a given point of estimate by evaluating the chain rule step by step.
+It utilizes the concept of dual number to achieve an accuracy better than numeric differentiation. It is also more efficient than symbolic differentiation.
 
 Differentiation, the process of finding a derivative, is one of the most fundamental operations in mathematics. It measures the rate of change of a function with respect to a variable. Computational techniques of calculating differentiations have broad applications in many fileds including science and engineering which used in finding a numerical solution of ordinary differential equations, optimization and solution of linear systems. Besides, they also have many real-life applications, like edge detection in image processing and safety tests of cars.
 
@@ -33,23 +34,40 @@ Automatic Differentiation is more efficient than two of other methods mentioned 
 
 	  $$\frac{\partial y}{\partial x} = \frac{\partial y}{\partial u} \frac{\partial u}{\partial x}.$$
 
-**2. Automatic Differentiation**
+**2. Dual Numbers**
+	
+* A dual number consists of two parts: *real* (denoted as a) and *dual* (b), 
+	usually written as
+	$$z = a + b\epsilon,$$
+	where $\epsilon \neq 0$ is a nilpotent number with the property $\epsilon^2 = 0$.
+
+**3. Automatic Differentiation**
 
    * Automatic Differentiation refers to a general way of taking a program which computes a value, and automatically constructing a procedure for computing derivatives of that value. The derivatives sought may be first order (the gradient of a target function, or the Jacobian of a set of constraints), higher order (Hessian times direction vector or a truncated Taylor series), or nested. There are two modes in Automatic Differentiation: the forward mode and the reverse mode.
 
    * *Elementary functions*: The set of elementary functions has to be given and can, in principle, consist of arbitrary functions as long as these are sufficiently often differentiable. All elementary functions will be implemented in the system together with their gradients.
 
-   * *Evaluating trace of a function*: All numeric evaluations are sequences of elementary operations. The evaluation of a function $f$ at a given point $x = (x_1, \dots, x_n)$ 
+   * *Evaluating (forward) trace of a function*: All numeric evaluations are sequences of elementary operations. The evaluation of a function $f$ at a given point $x = (x_1, \dots, x_n)$
    can be described by a so-called evaluation trace 
-   $v_0 = v_0 (x), \dots, v_{\mu} = v_{\mu} (x)$, 
-   where each intermediate result $v_j$ is a function that 
+   $v_0 = v_0 (x), \dots, v_{m} = v_{m} (x)$, 
+   where each intermediate result $v_j$ is the result of an elementary operation
+   and a function that 
    depends on the independent variables $x$. 
 
-**3. Forward Mode of Automatic Differentiation**
+**4. Forward Mode of Automatic Differentiation**
 
    * Forward automatic differentiation divides the expression into a sequence of differentiable elementary operations. The chain rule and well-known differentiation rules are then applied to each elementary operation.
 
-   * Forward automatic differentiation computes a tangent trace of their directional derivatives $D_p v_j$ at the same time as it performs a forward evaluation trace of the elementary pieces of a complicated $f(x)$ from the inside out. 
+   * Forward automatic differentiation computes a tangent trace of the directional 
+   derivative $$D_p v_j = (\nabla y_i)^T p = \sum_{j=1}^{m} \frac{\partial y_i}{x_j} p_j$$ 
+   for each intermediate variable $v_j$ at the same time as it performs a forward 
+   evaluation trace of the elementary pieces of a complicated $f(x)$ from the inside out. 
+   Note that the vector $p$ is called the seed vector which gives the direction of the derivative.
+
+   * Implementation with dual numbers: by its properties, a dual number can encode
+   the primal trace and the tangent trace in the real and dual parts, respectively.
+   $$z_j = v_j + D_p v_j \epsilon$$
+   
 
 In the most general case, a function can have more than one coordinate. To evaluate this function, we would take the sum of the partial derivatives with respect to each said coordinate. To illustrate, consider a function $f(u(t), v(t))$; we first apply the chain rule to for each piece, we get:
 $$\frac{\partial f}{\partial t} = \frac{\partial f}{\partial u} \frac{\partial u}{\partial t} + \frac{\partial f}{\partial v} \frac{\partial v}{\partial t}$$
@@ -94,13 +112,14 @@ To use the `team20ad` package, one can import the module by:
 from team20ad.forward_ad import ad
 ```
 
-The user will be able to instantiate an AD object as follows:
+The user will be able to instantiate an AD object and compute the
+differentation as follows:
 
 ```python
 f = some_function_to_be_differentiated
 x = some_value_to_evaluate
 ad_obj = ad() # instantiate an automatic differentiation object
-res = ad_obj.forward(f, x)
+res = ad_obj.forward(f, x) # compute derivative of f evaluated at x using forward mode AD
 ```
 
 ## Software Organization
@@ -110,36 +129,42 @@ For now at this phase of the project, our software directory is tentatively stru
 ```
 team20/
 |-- docs/
-|	 |-- milestone1.md
-|	 \-- milestone1.pdf
+|  |-- milestone1.md
+|	\-- milestone1.pdf
 |-- LICENSE
 |-- README.md
 |-- pyproject.toml
 |-- .github/workflows/
-|	 |-- coverage.yml
-|	 |-- test.yml
+|	|-- coverage.yml
+|	\-- test.yml
 |-- tests/
-|	 |-- check_coverage.sh
-|	 |-- run_tests.sh
-|	 |-- forward_ad/
-|	 |	  \-- test_forward.py
-|	 \-- overloads/
-|		  \-- test_overloads.py
+|	|-- check_coverage.sh
+|	|-- run_tests.sh
+|	|-- forward_ad/
+|	|  |-- test_forward.py
+|	|  \-- test_dual.py
+|	\-- overloads/
+|	   \-- test_overloads.py
 \-- src/
-	 \-- team20ad/
-	 	  |-- __init__.py
-	 	  |--	__main__.py
-	 	  |--	example.py
-	 	  |--	forward_ad/
-	 	  |	|-- __init__.py
-	 	  |	\-- forward.py
-	 	  \--	overloads/
-	 	  		|-- __init__.py
-	 	  		\-- function_overloads.py
+	\-- team20ad/
+	  |-- __init__.py
+ 	  |--	__main__.py
+ 	  |--	example.py
+ 	  |--	forward_ad/
+ 	  |  |-- __init__.py
+ 	  |  |-- forward.py
+ 	  |  \-- dualNumber.py
+ 	  \--	overloads/
+ 	  	  |-- __init__.py
+ 	  	  \-- function_overloads.py
 ```
 
 Currently, we plan to have two modules: one for implementing the forward mode of automatic
-differentiation and the other for defining function overloads. 
+differentiation and the other for defining function overloads (more on this under
+the Implementation section). The `forward_ad` module will include an implementation
+of `DualNumber` class, which is necessarily for the forward mode computation.
+Note that an implementation of computational graph is optional for forward AD.
+
 As such,
 we will have correponding tests `test_forward.py` and `test_overloads.py`,
 which are located under the `tests/forward_ad` and `tests/overloads`
@@ -147,11 +172,11 @@ directories, respectively, and which will be configured to
 run automatically using GitHub workflows
 after each push to the `main` branch of development. 
 
-As our team continues with the development, we expect the directory structure 
+As the development progresses, we expect the directory structure 
 to change and the documentation to update accordingly.
 
 Considering that the whole scheme of auto-differentiating will rely heavily on mathematical computations, we will use `numpy`, `scipy`, `pandas`, and `math` modules 
-for implementations and calculations, along with `matplotlib` for graphical
+for implementations and calculations, along with (possibly) `matplotlib` for graphical
 representations.
 
 As of now, we plan to distribute the package using PyPI following PEP517/PEP518.
@@ -159,34 +184,37 @@ As of now, we plan to distribute the package using PyPI following PEP517/PEP518.
 
 ## Implementation
 
+The first class we need and that will implement first - at least at the naive conceptual level - is the `DualNumber` class which will serve as the lower level structure of the forward
+AD class implementation. This class will implement basic function overloaders such
+as `__add__()` and their reverse counterparts such as `__radd__()`.
+Along with the `DualNumber` class, we will implement
+the `ForwardAD` class which will serve as a function decoration for computing the derivatives.
+We will then implement the function overloading module that will handle elementary
+functions such as $\sin$, $\cos$, $\sqrt$, $\log$, and $\exp$. 
 
-The first class we need and that will implement first - at least at the naive conceptual level - is the TAD class that will serve as the first user instantiated object in calculating the auto differentiation. We will then implement the utility class Util that will have overwritten methods for all the primitive arithmetic along with sin/cos computation. Dual numbers will be an object of itself containing the necessary components.
+The tentative name attributes and methods for each class are listed below:
 
-As for the name attributes and methods for classes, we tentatively plan to have the following:
-
-- TAD:
-	- Name Attribute: values, derivatives, shape
-	- Methods: constructor (__init__), __add__, __sub__, __mul__, __div__
-- Util:
-	- For util methods, we will update as necessary.
-- Graph:
-	- We expect to need and implement a graph class to resemble the computational graph in forward mode.
-	- Method: graph
-- Calculate:
-	- Here’s a separate calculate class for basic operator overloading:
-	- Methods: cos(tad), sin(tad), tan(tad), sqrt(tad), exp(tad), log(tad, b)
+- ForwardAD:
+	- Name attribute: Dpf
+	- Methods: `__init__()`, `__call__()`
+- DualNumber:
+	- Name attributes: `real`, `dual`, `_supported_scalars`
+	- Methods: `__init__()`, `__repr__()`, `__add__()`, `__mul__()`, `__radd__()`, `__rmul__()` 
+- function_overloads:
+   - Methods: `sin()`, `cos()`, `tan()`, `exp()`, `log()`, `pow()`
 
 As for the handling of $f: \mathbb{R}^m -> \mathbb{R}$ and $f: \mathbb{R}^m -> \mathbb{R}^n$, we will have a high-level function object in form of vectors to compute the Jacobian.
+These vectors will be represented by `numpy` arrays.
 
-We will need to depend on the libraries mentioned above, namely numpy, scipy, and matplotlib.
+We will need to depend on the libraries mentioned above, namely `numpy`, `scipy`, and `matplotlib`.
 
 
 ## License
 
-We will be using the `MIT` license for open source software development. This way, others can use the Software and also contribute. 
-
-* This license has disclosure that the software is provided "AS IS" with no liabilities, which is exactly what we want given the nature of the project.
-- MIT license is simple and permissive.
+This package will be devloped and released under the `MIT` license which is a copyleft.
+The reasons behind choosing this license is that we want the software to be free and
+encourage others to contribute to open, public communities; while providing
+some degree of flexibility to developers like us. 
 
 
 ## Feedback
