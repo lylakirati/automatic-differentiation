@@ -212,7 +212,12 @@ The last command will then run all tests cases located in folder named `ad/tests
 
 ##### Modules
 
-There will be two main modules `Forward` and `Reverse` each implementing the corresponding modes in AD.
+**ad/ad.py**
+
+This is the module with the main functionalities. Several classes are defined here:
+
+* `Forward`: This is the implementation for forward mode; it will overload basic operations (instance dunder methods) such as addition, subtraction, multiplication, etc. As well as elementary functions such as power, squareroot, log, sin, etc. - these will be implemented as static methods.
+* `Reverse`: This contains similar methods as the forward mode, just that the implementation of the gradient computation will be different.
 
 
 #### Implementation(3/4):
