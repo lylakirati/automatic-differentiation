@@ -260,6 +260,7 @@ This is the module with the main functionalities. Several classes are defined he
 
 * `Forward`: This is the implementation for forward mode; it will overload basic operations (instance dunder methods) such as addition, subtraction, multiplication, etc. As well as elementary functions such as power, squareroot, log, sin, etc. - these will be implemented as static methods.
 * `Reverse`: This contains similar methods as the forward mode, just that the implementation of the gradient computation will be different.
+* `Dual`: This will be the dual number class, which we plan to use in the implementation of gradient computations. The class will overload the dunder methods and support elementary functions - either between two dual numbers or one dual number and a scaler.
 
 
 #### Implementation(3/4):
@@ -305,6 +306,17 @@ An elementary function is a function of a single variable (typically real or com
 | log  | log x    |
 
 
+
+
+##### Dual Numbers
+
+Dual numbers are numbers of the form $a + b \epsilon$ where $\epsilon^2 = 0$. It has the following property which makes it suitable for gradient computation:
+
+We take the Taylor expansion of a function about $a + \epsilon$, we then get
+
+$$f(a + \epsilon) = f(a) + \epsilon f'(a)$$
+
+Essentially, this mean if we evaluate a function at a dual number, we get the function output as well as its derivative simultaneously. We will use this concept in the evaluation of gradients in forward and reverse modes.
 
 
 #### License(0/2):
