@@ -25,8 +25,7 @@ Automatic Differentiation is more efficient than two of other methods mentioned 
      Product rule is a formula used to find the derivatives of products of two or more functions. The product rule can be expressed as
 
      <!-- <img src="ProductRule.png" alt="Image of Product Rule" width="250"/> -->
-     $$\frac{\partial}{\partial x} (uv) = u \frac{\partial v}{\partial x} 
-     + v \frac{\partial u}{\partial x}.$$
+     $$\frac{\partial}{\partial x} (uv) = u \frac{\partial v}{\partial x} + v \frac{\partial u}{\partial x}.$$
 
    * Chain Rule
 
@@ -34,6 +33,7 @@ Automatic Differentiation is more efficient than two of other methods mentioned 
      The chain rule can be expressed as
 
 	<!-- <img src="ChainRule.png" alt="Image of Chain Rule" width="250"/> -->
+	  
 	  $$\frac{\partial y}{\partial x} = \frac{\partial y}{\partial u} \frac{\partial u}{\partial x}$$
 
 **2. Automatic Differentiation**
@@ -61,13 +61,16 @@ At a lower level, the implementation of AD requires breaking down the original f
 $$f(x, y) = \exp(\sin(3x) + \cos(4y))$$
 Then, $f$ can be broken down into five elementary functions:
 
-\begin{aligned}
+$$
+\begin{align}
 	g_1(z) &= 3z, \\
 	g_2(z) &= 4z, \\
 	g(z) &= \sin(z), \\
 	g(z) &= \cos(z), \\
 	g(z) &= \exp(z). \\
-\end{aligned}
+\end{align}
+$$
+
 <!-- $$g(z) = 3z,$$ -->
 <!-- $$g(z) = 4z,$$ -->
 <!-- $$g(z) = sin(z),$$ -->
