@@ -22,19 +22,16 @@ Automatic Differentiation is more efficient than two of other methods mentioned 
 
    * Product Rule
 
-     Product rule is a formula used to find the derivatives of products of two or more functions. The product rule can be expressed as
+     Product rule is a formula used to find the derivatives of products of two or more functions. The product rule can be expressed as:
 
-     <!-- <img src="ProductRule.png" alt="Image of Product Rule" width="250"/> -->
      $$\frac{\partial}{\partial x} (uv) = u \frac{\partial v}{\partial x} + v \frac{\partial u}{\partial x}.$$
 
    * Chain Rule
 
      Chain rule is a formula to compute the derivative of a composite function. 
-     The chain rule can be expressed as
+     The chain rule can be expressed as:
 
-	<!-- <img src="ChainRule.png" alt="Image of Chain Rule" width="250"/> -->
-	  
-	  $$\frac{\partial y}{\partial x} = \frac{\partial y}{\partial u} \frac{\partial u}{\partial x}$$
+	  $$\frac{\partial y}{\partial x} = \frac{\partial y}{\partial u} \frac{\partial u}{\partial x}.$$
 
 **2. Automatic Differentiation**
 
@@ -54,7 +51,7 @@ Automatic Differentiation is more efficient than two of other methods mentioned 
 
    * Forward automatic differentiation computes a tangent trace of their directional derivatives $D_p v_j$ at the same time as it performs a forward evaluation trace of the elementary pieces of a complicated $f(x)$ from the inside out. 
 
-In the most general case, a function can have more than one coordinate. To evaluate this function, we would take the sum of the partial derivatives with respect to each said coordinate. To illustrate, consider function $f(u(t), v(t))$; we first apply the chain rule to for each piece, we get:
+In the most general case, a function can have more than one coordinate. To evaluate this function, we would take the sum of the partial derivatives with respect to each said coordinate. To illustrate, consider a function $f(u(t), v(t))$; we first apply the chain rule to for each piece, we get:
 $$\frac{\partial f}{\partial t} = \frac{\partial f}{\partial u} \frac{\partial u}{\partial t} + \frac{\partial f}{\partial v} \frac{\partial v}{\partial t}$$
 
 At a lower level, the implementation of AD requires breaking down the original function into smaller pieces known as elementary functions. For instance, consider function
@@ -65,17 +62,13 @@ $$
 \begin{align}
 	g_1(z) &= 3z, \\
 	g_2(z) &= 4z, \\
-	g(z) &= \sin(z), \\
-	g(z) &= \cos(z), \\
-	g(z) &= \exp(z). \\
+	g_3(z) &= \sin(z), \\
+	g_4(z) &= \cos(z), \\
+	g_5(z) &= \exp(z). \\
 \end{align}
 $$
 
-<!-- $$g(z) = 3z,$$ -->
-<!-- $$g(z) = 4z,$$ -->
-<!-- $$g(z) = sin(z),$$ -->
-<!-- $$g(z) = cos(z),$$ -->
-<!-- $$g(z) = exp(z),$$ -->
+
 Furthermore, the order of evaluating these elementary functions can be organized into a computational graph:
 
 ![Example Computational Graph](./computational_graph.png)
@@ -85,57 +78,81 @@ we will not describe it here.
 
 
 
-## How to use TEAM20AD
+## How to use team20ad
 
 This package is distributed through the Python Package Index (PyPI), and hence
 the user can install it with:
 
-`python -m pip install TEAM20AD`
+`python -m pip install team20ad`
 
 In addition, they need to install and import
 all the dependable packages including `numpy`, `scipy`, `pandas`, and `matplotlib`.
 
-To use the `TEAM20AD` package, one can import the module by:
+To use the `team20ad` package, one can import the module by:
 
-`from TEAM20AD import ad`
+```python
+from team20ad.forward_ad import ad
+```
 
 The user will be able to instantiate an AD object as follows:
 
 ```python
 f = some_function_to_be_differentiated
 x = some_value_to_evaluate
-Ad = ad()
-res = ad.forward(f, x)
+ad_obj = ad() # instantiate an automatic differentiation object
+res = ad_obj.forward(f, x)
 ```
 
 ## Software Organization
 
-For now at this phase of the project, our directory structure will be as follows (tentative):
+For now at this phase of the project, our software directory is tentatively structured as follows:
 
 ```
 team20/
-docs
-milestone1
-	(other milestones)
-LICENSE
-README.md
-untitled.yml
-ad
-	test
-		test.py
-	src
-		__init__.py
-		__main__.py
-		adfun.py
-		api.py
-		utils.py
+|-- docs/
+|	 |-- milestone1.md
+|	 \-- milestone1.pdf
+|-- LICENSE
+|-- README.md
+|-- pyproject.toml
+|-- .github/workflows/
+|	 |-- coverage.yml
+|	 |-- test.yml
+|-- tests/
+|	 |-- check_coverage.sh
+|	 |-- run_tests.sh
+|	 |-- forward_ad/
+|	 |	  \-- test_forward.py
+|	 \-- overloads/
+|		  \-- test_overloads.py
+\-- src/
+	 \-- team20ad/
+	 	  |-- __init__.py
+	 	  |--	__main__.py
+	 	  |--	example.py
+	 	  |--	forward_ad/
+	 	  |	|-- __init__.py
+	 	  |	\-- forward.py
+	 	  \--	overloads/
+	 	  		|-- __init__.py
+	 	  		\-- function_overloads.py
 ```
 
-As our team continues with the development, we expect the directory structure to change accordingly.
+Currently, we plan to have two modules: one for implementing the forward mode of automatic
+differentiation and the other for defining function overloads. 
+As such,
+we will have correponding tests `test_forward.py` and `test_overloads.py`,
+which are located under the `tests/forward_ad` and `tests/overloads`
+directories, respectively, and which will be configured to 
+run automatically using GitHub workflows
+after each push to the `main` branch of development. 
 
-Considering that the whole scheme of auto differentiating will rely heavily on mathematical computations, we will use numpy, scipy, pandas, and math for calculations, along with matplotlib for graphics.
+As our team continues with the development, we expect the directory structure 
+to change and the documentation to update accordingly.
 
-We plan on keeping track of the test suites by having all the tests in the ./test directory.
+Considering that the whole scheme of auto-differentiating will rely heavily on mathematical computations, we will use `numpy`, `scipy`, `pandas`, and `math` modules 
+for implementations and calculations, along with `matplotlib` for graphical
+representations.
 
 As of now, we plan to distribute the package using PyPI following PEP517/PEP518.
 
