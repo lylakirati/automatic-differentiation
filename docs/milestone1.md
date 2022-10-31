@@ -212,15 +212,15 @@ They would need to import all the dependable packages, namely numpy, scipy, pand
 
 When it’s time to use the package, they will import by:
 
-`import TEAM20AD as tad`
+`from TEAM20AD import ad`
 
 User will be able to instantiate the AD objects as follows:
 
 ```python
 f = some_function
 x = some_value
-Ad = tad()
-res = tad.forward(f, x)
+Ad = ad()
+res = ad.forward(f, x)
 ```
 
 
@@ -230,6 +230,27 @@ res = tad.forward(f, x)
 - Also, use the tree to have a better visual for the directory structure.
 - you should talk about the package distribution, the tests and where they will be located.
 - You should mention the modules and what their functionality will be.
+
+
+```
+team20/
+├──docs/
+|  ├──milestone1
+|  └──(other milestones)
+├──LICENSE
+├──README.md
+├──untitled.yml
+└──ad/
+|  ├──test/
+|  |	└──test.py
+|  ├──src/
+|  |	├──__init__.py
+|  |	├──__main__.py
+|  |	├──adfun.py
+|  |	├──api.py
+|  |	└──utils.py
+...
+```
 
 ##### Package Installation
 
@@ -316,7 +337,7 @@ We take the Taylor expansion of a function about $a + \epsilon$, we then get
 
 $$f(a + \epsilon) = f(a) + \epsilon f'(a)$$
 
-Essentially, this mean if we evaluate a function at a dual number, we get the function output as well as its derivative simultaneously. We will use this concept in the evaluation of gradients in forward and reverse modes.
+Essentially, this mean if we evaluate a function at a dual number, we get the function output as well as its derivative simultaneously. We will use this concept i n the evaluation of gradients in forward and reverse modes.
 
 
 #### License(0/2):
