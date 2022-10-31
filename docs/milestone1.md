@@ -45,7 +45,12 @@ Automatic Differentiation is more efficient than two of other methods mentioned 
 
    * Automatic Differentiation refers to a general way of taking a program which computes a value, and automatically constructing a procedure for computing derivatives of that value. The derivatives sought may be first order (the gradient of a target function, or the Jacobian of a set of constraints), higher order (Hessian times direction vector or a truncated Taylor series), or nested. There are two modes in Automatic Differentiation: the forward mode and the reverse mode.
 
+
+   * Evaluation Trace of a Function: All numeric evaluations are sequences of elementary operations. The evaluation of f at some point x = (x1, ..., xn) can be described by a so-called evaluation trace $v_{k-m}=x_k$, for $k=1,2,...,m$, where each intermediate results v_j are functions that depend on the independent variables x. 
+   * 
+
    * *Elementary functions*: The set of elementary functions has to be given and can, in principle, consist of arbitrary functions as long as these are sufficiently often differentiable. All elementary functions will be implemented in the system together with their gradients.
+
 
    * *Evaluating (forward) trace of a function*: All numeric evaluations are sequences of elementary operations. The evaluation of a function $f$ at a given point $x = (x_1, \dots, x_n)$
    can be described by a so-called evaluation trace 
@@ -269,12 +274,16 @@ Automatic Differentiation is more efficient than two of other methods mentioned 
 
    * *Elementary functions*: The set of elementary functions has to be given and can, in principle, consist of arbitrary functions as long as these are sufficiently often differentiable. All elementary functions will be implemented in the system together with their gradients.
 
+
+   * Evaluation Trace of a Function: All numeric evaluations are sequences of elementary operations. The evaluation of f at some point x = (x1, ..., xn) can be described by a so-called evaluation trace $v_{k-m}=x_k$, for $k=1,2,...,m$, where each intermediate results v_j are functions that depend on the independent variables x. 
+
    * *Evaluating (forward) trace of a function*: All numeric evaluations are sequences of elementary operations. The evaluation of a function $f$ at a given point $x = (x_1, \dots, x_n)$
    can be described by a so-called evaluation trace 
    $v_0 = v_0 (x), \dots, v_{m} = v_{m} (x)$, 
    where each intermediate result $v_j$ is the result of an elementary operation
    and a function that 
    depends on the independent variables $x$. 
+
 
 **4. Forward Mode of Automatic Differentiation**
 
