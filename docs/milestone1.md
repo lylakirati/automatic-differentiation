@@ -38,7 +38,7 @@ Automatic Differentiation is more efficient than two of other methods mentioned 
 
    * Elementary functions: The set of elementary functions has to be given and can, in principle, consist of arbitrary functions as long as these are sufficiently often differentiable. All elementary functions will be implemented in the system together with their gradients.
 
-   * Evaluation Trace of a Function: All numeric evaluations are sequences of elementary operations. The evaluation of f at some point x = (x1, ..., xn) can be described by a so-called evaluation trace v[0] = v[0](x), ..., v[μ] = v[μ](x), where each intermediate results v_j are functions that depend on the independent variables x. 
+   * Evaluation Trace of a Function: All numeric evaluations are sequences of elementary operations. The evaluation of f at some point x = (x1, ..., xn) can be described by a so-called evaluation trace $v_{k-m}=x_k$, for $k=1,2,...,m$, where each intermediate results v_j are functions that depend on the independent variables x. 
 
 3. Forward Mode
 
@@ -192,7 +192,7 @@ Automatic Differentiation is more efficient than two of other methods mentioned 
 
    * Elementary functions: The set of elementary functions has to be given and can, in principle, consist of arbitrary functions as long as these are sufficiently often differentiable. All elementary functions will be implemented in the system together with their gradients.
 
-   * Evaluation Trace of a Function: All numeric evaluations are sequences of elementary operations. The evaluation of f at some point x = (x1, ..., xn) can be described by a so-called evaluation trace v[0] = v[0](x), ..., v[μ] = v[μ](x), where each intermediate results v_j are functions that depend on the independent variables x. 
+   * Evaluation Trace of a Function: All numeric evaluations are sequences of elementary operations. The evaluation of f at some point x = (x1, ..., xn) can be described by a so-called evaluation trace $v_{k-m}=x_k$, for $k=1,2,...,m$, where each intermediate results v_j are functions that depend on the independent variables x. 
 
 3. Forward Mode
 
