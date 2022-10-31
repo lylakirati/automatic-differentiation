@@ -4,7 +4,47 @@
 
 Automatic Differentiation (AD) is to solve for the derivative of a function at a given point of estimate. It utilizes the concept of dual number to achieve an accuracy better than numeric differentiation. It is also more efficient than symbolic differentiation.
 
+Differentiation, the process of finding a derivative, is one of the most fundamental operations in mathematics. It measures the rate of change of a function with respect to a variable. Computational techniques of calculating differentiations have broad applications in many fileds including science and engineering which used in finding a numerical solution of ordinary differential equations, optimization and solution of linear systems. Besides, they also have many real-life applications, like edge detection in image processing and safety tests of cars.
+
+There are three popular ways to calculate the derivative:
+	1. Numerical Differentiation: Finite Difference
+	2. Symbolic Differentiation
+	3. Automatic Differentiation
+
+Symbolic Differentiation and Finite Difference are two ways to numerically compute derivatives. Symbolic Differentiation is precise, but it can lead to inefficient code and can be costly to evaluate. Finite Difference is quick and easy to implement, but it can create round-off error, the loss of precision due to computer rounding of decimal quantities, and truncation error, the difference between the exact solution of the original differential equation.
+
+Automatic Differentiation is more efficient than two of other methods mentioned prior. While it utilizes the concept of dual number, it achieves machine precision without costly evaluation, and therefore is widely used.
+
 ## Background
+
+
+1. Basic Calculus
+
+   * Product Rule
+
+     Product rule is a formula used to find the derivatives of products of two or more functions. The product rule can be expressed as
+
+     <img src="ProductRule.png" alt="Image of Product Rule" width="250"/>
+
+   * Chain Rule
+
+     Chain rule is a formula to compute the derivative of a composite function. The chain rule can be expressed as
+
+	<img src="ChainRule.png" alt="Image of Chain Rule" width="250"/>
+
+2. Automatic Differentiation
+
+   * Automatic Differentiation refers to a general way of taking a program which computes a value, and automatically constructing a procedure for computing derivatives of that value. The derivatives sought may be first order (the gradient of a target function, or the Jacobian of a set of constraints), higher order (Hessian times direction vector or a truncated Taylor series), or nested. There are two modes in Automatic Differentiation: the forward mode and reverse mode.
+
+   * Elementary functions: The set of elementary functions has to be given and can, in principle, consist of arbitrary functions as long as these are sufficiently often differentiable. All elementary functions will be implemented in the system together with their gradients.
+
+   * Evaluation Trace of a Function: All numeric evaluations are sequences of elementary operations. The evaluation of f at some point x = (x1, ..., xn) can be described by a so-called evaluation trace v[0] = v[0](x), ..., v[μ] = v[μ](x), where each intermediate results v_j are functions that depend on the independent variables x. 
+
+3. Forward Mode
+
+   * Forward automatic differentiation divides the expression into a sequence of differentiable elementary operations. The chain rule and well-known differentiation rules are then applied to each elementary operation.
+
+   * Forward automatic differentiation computes a tangent trace of their directional derivatives D_pv_j at the same time as it performs a forward evaluation trace of the elementary pieces of a complicated f(x) from the inside out. 
 
 In the most general case, a function can have more than one coordinate. To evaluate this function, we would take the sum of the partial derivatives with respect to each said coordinate. To illustrate, consider function $f(u(t), v(t))$; we first apply the chain rule to for each piece, we get:
 $$\frac{df}{dt} = \frac{\partial f}{\partial u} \frac{du}{dt} + \frac{\partial f}{\partial v} \frac{dv}{dt}$$
@@ -22,6 +62,8 @@ Furthermore, the order of evaluating these elementary functions can be organized
 ![Example Computational Graph](./computational_graph.png)
 
 Note the subsequent nodes named $v_i$; these store the intermediate results of evaluating each elementary function. After evaluating each $v_i$, we get a sequence from $v_1$ to $v_8$; this is called the primal trace. Similarly, following the computational graph, if we instead evaluate the derivative at each step, the resulting sequence would be called the dual trace. Such is essentially the procedure of automatic differentiation, specifically the forward mode, which we plan to implement. Note that there exists a counterpart named reverse mode; we will not describe it here.
+
+
 
 ## How to use TEAM20AD
 
@@ -160,7 +202,7 @@ Automatic Differentiation is more efficient than two of other methods mentioned 
 
 
 #### How to use(3/3):
-Please do not submit versions that are not proofread. Pay attention to typos. Is not acceptable to have typos on the "import statement". Would be great to explain more about how the user can import the dependent packages.
+- Please do not submit versions that are not proofread. Pay attention to typos. Is not acceptable to have typos on the "import statement". Would be great to explain more about how the user can import the dependent packages.
 
 Given that this package will be distributed  with pyPI, the user will first need to install the package.
 
@@ -185,9 +227,9 @@ res = tad.forward(f, x)
 
 
 #### Software Organization(2/2):
-    - Also, use the tree to have a better visual for the directory structure.
-    - you should talk about the package distribution, the tests and where they will be located.
-    - You should mention the modules and what their functionality will be.
+- Also, use the tree to have a better visual for the directory structure.
+- you should talk about the package distribution, the tests and where they will be located.
+- You should mention the modules and what their functionality will be.
 
 ##### Package Installation
 
@@ -222,12 +264,18 @@ This is the module with the main functionalities. Several classes are defined he
 
 
 #### Implementation(3/4):
-You need to elaborate more on the core data structure, the methods, and how you will overload the elementary operations. You should also mention what each class will do in more detail and possibly give an example. Elementary functions are another big topic you can write more about. You should talk more about the dual numbers and the reverse functions (e.g. radd). You should explain what each class will be doing and how. Big emphasis on how exactly you will implement it.
+- You need to elaborate more on the core data structure, the methods, and how you will overload the elementary operations. 
+- You should also mention what each class will do in more detail and possibly give an example. 
+- Elementary functions are another big topic you can write more about. 
+- You should talk more about the dual numbers and the reverse functions (e.g. radd). 
+You should explain what each class will be doing and how. 
+- Big emphasis on how exactly you will implement it.
+
 
 
 
 #### License(0/2):
-Please add the license and the reason for using those.
+- Please add the license and the reason for using those.
 
 
 We will be using the `MIT` license for open source software development. This way, others can use the Software and also contribute. 
