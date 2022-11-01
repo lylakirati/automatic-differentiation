@@ -123,7 +123,7 @@ For now at this phase of the project, our software directory is tentatively stru
 team20/
 |-- docs/
 |  |-- milestone1.md
-|	\-- milestone1.pdf
+|  \-- milestone1.pdf
 |-- LICENSE
 |-- README.md
 |-- pyproject.toml
@@ -303,7 +303,7 @@ res = ad_obj.forward(f, x) # compute derivative of f evaluated at x using forwar
 team20/
 |-- docs/
 |  |-- milestone1.md
-|	\-- milestone1.pdf
+|  \-- milestone1.pdf
 |-- LICENSE
 |-- README.md
 |-- pyproject.toml
