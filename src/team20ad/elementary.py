@@ -1,5 +1,7 @@
 import numpy as np
 
+from dualNumber import DualNumber
+
 _supported_scalars = (int, float)
 
 def sqrt(val):
