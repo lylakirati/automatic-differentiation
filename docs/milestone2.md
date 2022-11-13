@@ -122,7 +122,9 @@ For now at this phase of the project, our software directory is tentatively stru
 team20/
 |-- docs/
 |  |-- milestone1.md
-|  \-- milestone1.pdf
+|  |-- milestone1.pdf
+|  |-- milestone2.md
+|  \-- milestone2_progress.md
 |-- LICENSE
 |-- README.md
 |-- pyproject.toml
