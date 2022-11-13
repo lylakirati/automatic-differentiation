@@ -1,4 +1,4 @@
-# Doc
+# Documentation
 
 ## Introduction
 
@@ -132,29 +132,24 @@ team20/
 |-- tests/
 |	|-- check_coverage.sh
 |	|-- run_tests.sh
-|	|-- forward_ad/
-|	|  |-- test_forward.py
-|	|  \-- test_dual.py
-|	\-- overloads/
-|	   \-- test_overloads.py
+|	|-- test_codes/
+|	|  |-- test_forwardAD.py
+|	|  |-- test_dualNumber.py
+|	|  \-- test_elementary.py
 \-- src/
 	\-- team20ad/
 	  |--   __init__.py
  	  |--	__main__.py
  	  |--	example.py
- 	  |--	forward_ad/
- 	  |    |-- __init__.py
- 	  |    |-- forward.py
- 	  |    \-- dualNumber.py
- 	  \--	overloads/
- 	  	   |-- __init__.py
- 	  	   \-- function_overloads.py
+ 	  |-- forwardAD.py
+ 	  |--	dualNumber.py
+ 	  \--	elementary.py
 ```
 
-Currently, we plan to have two modules: one for implementing the forward mode of automatic differentiation and the other for defining function overloads (more on this under the Implementation section). The `forward_ad` module will include an implementation of `DualNumber` class, which is necessarily for the forward mode computation.
-Note that an implementation of computational graph is optional for forward AD.
+Currently, we plan to have three modules: one for implementing the forward mode of automatic differentiation and the other two for implementing DualNumber class and their elementary function overloads (more on this under the Implementation section).
+Note that an implementation of computational graph is optional for forward mode AD.
 
-As such, we will have correponding tests `test_forward.py` and `test_overloads.py`, which are located under the `tests/forward_ad` and `tests/overloads` directories, respectively, and which will be configured to run automatically using GitHub workflows after each push to the `main` branch of development. 
+As such, we will have correponding tests `test_forwardAD.py`, `test_dualNumber.py`, and `test_elementary.py`, which are located under the `tests/test_codes` directory and which will be configured to run automatically using GitHub workflows after each push to the `main` branch of development. 
 
 As the development progresses, we expect the directory structure to change and the documentation to update accordingly.
 
@@ -165,20 +160,20 @@ As of now, we plan to distribute the package using PyPI following PEP517/PEP518.
 
 ## Implementation
 
-The first class we need and that will implement first - at least at the naive conceptual level - is the `DualNumber` class which will serve as the lower level structure of the forward AD class implementation. This class will implement basic function verloaders such as `__add__()` and their reverse counterparts such as `__radd__()`.
-Along with the `DualNumber` class, we will implement the `ForwardAD` class which will serve as a function decoration for computing the derivatives.
-We will then implement the function overloading module that will handle elementary functions such as $\sin$, $\cos$, $\log{}$, and $\exp{}$. 
+The first class we need is the `DualNumber` class which will serve as the lower level structure of the forward AD class implementation. This class implements basic function overloaders such as `__add__()` and their reverse counterparts such as `__radd__()`.
+Along with the `DualNumber` class, we implement additional elementary function overloads in `elementary.py` which consists of exponential and trigonometric functions (please see the full list below). Note that these two modules support only operations on `DualNumber`, `int`, and `float` objects.
+Then, we implement the `ForwardAD` class which will serve as a function decoration for computing the derivatives.
 
-The tentative name attributes and methods for each class are listed below:
+The current name attributes and methods for each module are listed below:
 
 - ForwardAD:
-	- Name attribute: Dpf
+	- Name attribute: `Dpf`
 	- Methods: `__init__()`, `__call__()`
 - DualNumber:
 	- Name attributes: `real`, `dual`, `_supported_scalars`
-	- Methods: `__init__()`, `__repr__()`, `__add__()`, `__mul__()`, `__radd__()`, `__rmul__()` 
+	- Methods: `__init__()`, `__repr__()`, `__str__()`, `__neg__()`, `__add__()`, `__radd__()`, `__sub__()`, `__rsub__()`, `__mul__()`, `__rmul__()`, `__truediv__()`, `__rtruediv__()`, `__pow__()`, `__rpow__()`, `__eq__()`, `__ne__()`    
 - function_overloads:
-   - Methods: `sin()`, `cos()`, `tan()`, `exp()`, `log()`, `pow()`
+   - Methods: `sqrt()`, `exp()`, `log()`, `sin()`, `cos()`, `tan()`, `arcsin()`, `arccos()`, `arctan()`, `sinh()`, `cosh()`, `tanh()`
 
 As for the handling of $f: \mathbb{R}^m -> \mathbb{R}$ and $f: \mathbb{R}^m -> \mathbb{R}^n$, we will have a high-level function object in form of vectors to compute the Jacobian.
 These vectors will be represented by `numpy` arrays.
@@ -190,6 +185,10 @@ We will need to depend on the libraries mentioned above, namely `numpy`, `scipy`
 
 This package will be devloped and released under the `MIT` license which is a copyleft.
 The reasons behind choosing this license are that we want the software to be free and encourage others to contribute to open, public communities; while providing some degree of flexibility to developers like us. 
+
+
+## Future Features
+TODO
 
 
 ## Feedback
