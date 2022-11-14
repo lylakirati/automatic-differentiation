@@ -74,7 +74,7 @@ class ForwardAD:
 
             i += 1
 
-    def __repr__(self):
+    def __call__(self):
         out = "===== Forward AD =====\n"
         out += f"Vars: {self.var_dict}\n"
         out += f"Funcs: {self.func_list}\n"
@@ -82,14 +82,4 @@ class ForwardAD:
         out += f"Func evals: {self.func_evals[:len(self.func_list)]}\n"
         out += f"Gradient:\n"
         out += f"{self.Dpf}"
-        return out
-
-    def __str__(self):
-        out = "===== Forward AD =====\n"
-        out += f"Vars: {self.var_dict}\n"
-        out += f"Funcs: {self.func_list}\n"
-        out += f"-----\n"
-        out += f"Func evals: {self.func_evals[:len(self.func_list)]}\n"
-        out += f"Gradient:\n"
-        out += f"{self.Dpf}"
-        return out
+        print(out)

@@ -8,4 +8,4 @@ if __name__ == '__main__':
     # Analytical solution: J(1, 1) = [[2, 2], [e^2, e^2]]
 
     ad = ForwardAD(v, f)
-    print(ad)
+    ad()
