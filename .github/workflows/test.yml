@@ -7,7 +7,7 @@ on:
 
 jobs:
   Run_test:
-    name: Test elemantary and dualNumber
+    name: Test elemantary dualNumber forwardAD
     runs-on: ubuntu-latest
     steps:
       #checkout the head of branch
@@ -23,3 +23,4 @@ jobs:
       #- name: Run tests
         #run: |
            #cd tests/test_
+           #pytest
