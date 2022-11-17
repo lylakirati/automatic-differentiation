@@ -23,4 +23,6 @@ jobs:
       #- name: Run tests
         #run: |
            #cd tests/test_
-           #pytest
+           #pytest -n auto test_dualNumber.py
+           #pytest -n auto test_elementary.py
+           #pytest -n auto test_forwardAD.py
