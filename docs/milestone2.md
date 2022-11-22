@@ -4,16 +4,16 @@
 
 Automatic differentiation (AD) is a method to evaluate derivatives of functions at a given point of estimate by using the chain rule step by step.
 
-Being one of the most fundamental operations in mathematics, differentiation is the process of finding a derivative by measuring the rate of change of a function with respect to a variable. Computational techniques of calculating differentiations have broad applications in many fileds including science and engineering which used in finding a numerical solution of ordinary differential equations, optimization and solution of linear systems. 
+Being one of the most fundamental operations in mathematics, differentiation is the process of finding a derivative by measuring the rate of change of a function with respect to a variable. Computational techniques of calculating differentiations have broad applications in many fields including science and engineering which are used in finding a numerical solution of ordinary differential equations, optimization, and solution of linear systems. 
 
 There are three popular ways to calculate the derivative:
 	1. Numerical Differentiation: Finite Difference
 	2. Symbolic Differentiation
 	3. Automatic Differentiation
 
-Symbolic differentiation is precise, but it can lead to inefficient code and can be costly to evaluate. Finite difference is quick and easy to implement, but it is prone to round-off error, the loss of precision due to computer rounding of decimal quantities, and truncation error, the difference between the exact solution of the original differential equation. Automatic differentiation is more efficient than two of other methods mentioned prior. While it utilizes the concept of dual number to achieve an accuracy better than numeric differentiation, it is also more computationally efficient than symbolic differentiation, and therefore is widely used. 
+Symbolic differentiation is precise, but it can lead to inefficient code and can be costly to evaluate. The finite difference is quick and easy to implement, but it is prone to round-off error, the loss of precision due to computer rounding of decimal quantities, and truncation error, the difference between the exact solution of the original differential equation. Automatic differentiation is more efficient than two of the other methods mentioned prior. While it utilizes the concept of dual numbers to achieve accuracy better than numeric differentiation, it is also more computationally efficient than symbolic differentiation, and therefore is widely used. 
 
-In this library, the general mathematical background and concepts of differentiation as well as automatic differentiation are introduced in the Background section. Basic demo to use the package, software organization, and implementation of the forward mode of automatic differentiation are introduced below.
+In this library, the general mathematical background and concepts of differentiation as well as automatic differentiation are introduced in the Background section. A basic demo to use the package, software organization, and implementation of the forward mode of automatic differentiation are introduced below.
 
 ## Background
 
@@ -42,10 +42,10 @@ In this library, the general mathematical background and concepts of differentia
 
 **3. Automatic Differentiation**
 
-   * Automatic differentiation refers to a general way of taking a program which computes a value, and automatically constructing a procedure for computing derivatives of that value. The derivatives sought may be first order (the gradient of a target function, or the Jacobian of a set of constraints), higher order (Hessian times direction vector or a truncated Taylor series), or nested. There are two modes in automatic differentiation: forward mode and reverse mode. In the current package, only forward mode is focused and implemented.
+   * Automatic differentiation refers to a general way of taking a program that computes a value and automatically constructing a procedure for computing derivatives of that value. The derivatives sought may be first order (the gradient of a target function, or the Jacobian of a set of constraints), higher order (Hessian times direction vector or a truncated Taylor series), or nested. There are two modes in automatic differentiation: forward mode and reverse mode. In the current package, only the forward mode is focused and implemented.
 
 
-   * *Evaluation Trace of a Function*: All numeric evaluations are sequences of elementary operations. The evaluation of $f$ at a givevn point $x = (x_1, \dots, x_n)$ can be described by a so-called evaluation trace $v_{k-m}=x_k$, for $k = 1,2, \dots, m$, where each intermediate result $v_j$ is a function that depends on the independent variable $x$. 
+   * *Evaluation Trace of a Function*: All numeric evaluations are sequences of elementary operations. The evaluation of $f$ at a given point $x = (x_1, \dots, x_n)$ can be described by a so-called evaluation trace $v_{k-m}=x_k$, for $k = 1,2, \dots, m$, where each intermediate result $v_j$ is a function that depends on the independent variable $x$. 
   
 
    * *Elementary functions*: The set of elementary functions has to be given and can, in principle, consist of arbitrary functions as long as these are sufficiently often differentiable. All elementary functions will be implemented in the system together with their gradients.
@@ -68,7 +68,7 @@ In this library, the general mathematical background and concepts of differentia
 In the most general case, a function can have more than one coordinate. To evaluate this function, we would take the sum of the partial derivatives with respect to each coordinate. For example, consider a function $f(u(t), v(t))$. If we first apply the chain rule to each coordinate, we have:
 $$\frac{\partial f}{\partial t} = \frac{\partial f}{\partial u} \frac{\partial u}{\partial t} + \frac{\partial f}{\partial v} \frac{\partial v}{\partial t}$$
 
-At a lower level, the implementation of AD requires breaking down the original function into smaller pieces known as elementary functions. For instance, consider function
+At a lower level, the implementation of AD requires breaking down the original function into smaller pieces known as elementary functions. For instance, consider the function
 $$f(x, y) = \exp(\sin(3x) + \cos(4y))$$
 Then, $f$ can be broken down into five elementary functions:
 
@@ -100,7 +100,7 @@ To activate the conda environment:
 
 `conda activate ./conda-env`
 
-Upgrade pip before installing package:
+Upgrade pip before installing the package:
 
 `python3 -m pip install --upgrade pip`
 
@@ -120,7 +120,7 @@ With `team20ad` package installed, one can import the module by:
 >>> from team20ad.forwardAD import * #import team20ad
 ```
 
-The user will be able to instantiate an `ad` object and compute the differentation as follows:
+The user will be able to instantiate an `ad` object and compute the differentiation as follows:
 
 Example of finding a derivative of a scalar function of a scalar:
 
@@ -164,7 +164,7 @@ Gradient:
 
 ### Directory structure
 
-For now at this phase of the project, our software directory is tentatively structured as follows:
+For now, at this phase of the project, our software directory is tentatively structured as follows:
 
 ```
 team20/
@@ -199,9 +199,9 @@ team20/
 ### Basic Modules and Functionality
 
 Currently, we have three modules: one for implementing the forward mode of automatic differentiation and the other two for implementing `DualNumber` class and their elementary function overloads (more on this under the Implementation section).
-Note that an implementation of computational graph is optional for forward mode AD.
+Note that an implementation of the computational graph is optional for forward mode AD.
 
-As such, we have correponding tests `test_forwardAD.py`, `test_dualNumber.py`, and `test_elementary.py`, which are located under the `tests/test_codes` directory and which are configured to run automatically using GitHub workflows after each push to the `main` branch of development. 
+As such, we have corresponding tests `test_forwardAD.py`, `test_dualNumber.py`, and `test_elementary.py`, which are located under the `tests/test_codes` directory and which are configured to run automatically using GitHub workflows after each push to the `main` branch of development. 
 
 As the development progresses, we expect the directory structure to change and the documentation to update accordingly.
 
@@ -209,12 +209,12 @@ Considering that the whole scheme of auto-differentiating will rely heavily on m
 
 ### Packaging
 
-Our package is distributed using test PyPI following PEP517/PEP518. Details on how to install the package is written in *How to use team20ad* section above.
+Our package is distributed using test PyPI following PEP517/PEP518. Details on how to install the package are written in *How to use team20ad* section above.
 
 
 ## Implementation
 
-The first class we need is the `DualNumber` class which will serve as the lower level structure of the forward AD class implementation. This class implements basic function overloaders such as `__add__()` and their reverse counterparts such as `__radd__()`. The full list of functions is provided below.
+The first class we need is the `DualNumber` class which will serve as the lower-level structure of the forward AD class implementation. This class implements basic function overloaders such as `__add__()` and their reverse counterparts such as `__radd__()`. The full list of functions is provided below.
 Along with the `DualNumber` class, we implement additional elementary function overloads in `elementary.py` which consists of exponential and trigonometric functions (please see the full list below). Note that these two modules support only operations on `DualNumber`, `int`, and `float` objects.
 Then, we implement the `ForwardAD` class which serves as a function decoration for computing the derivatives.
 
@@ -251,13 +251,13 @@ The current name attributes and methods for each module are listed below:
 		- `__pow__`: Computes the power rule on a DualNumber object.
 		- `__rpow__`: Same method as `__pow__` with reversed operands.
 		- `__eq__`: Operates the equal comparison.
-		- `__ne__` : Operates the not equal comparison.
+		- `__ne__`: Operates the not equal comparison.
 		- `__lt__`: Operates the less than comparison.
 		- `__gt__`: Operates the greater than comparison.
 		- `__le__`: Operates the less than or equal to comparison.
 		- `__ge__`: Operates the greater than or equal to comparison.
 		- `__abs__`: Computes the absolute values on both real and dual parts.
-- elemantary: Methods: 
+- elementary: Methods: 
 		- External dependencies: `numpy`
    	- `sqrt`: Computes the square root of a given value.
    	- `exp`: Computes the exponential of a given value. 
@@ -280,9 +280,9 @@ focus on reverse mode AD, which will require the implementation of a computation
 
 ## Future Features
 
-In addition to the forward mode, our group will implement reverse mode because forward mode can be computationally expensive to calculate the gradient of a large complicated function of many variables. Reverse mode uses an extension of the forward mode computational graph to enable the computation of a gradient by a reverse traversal of the graph. 
+In addition to the forward mode, our group will implement reverse mode because forward mode can be computationally expensive to calculate the gradient of a large complicated function of many variables. The reverse mode uses an extension of the forward mode computational graph to enable the computation of a gradient by a reverse traversal of the graph. 
  
- In the future, the software structure will be adjusted to accomodate changes for reverse AD implementation as follows:
+ In the future, the software structure will be adjusted to accommodate changes for reverse AD implementation as follows:
 
  ```
 team20/
@@ -334,7 +334,7 @@ For reverse mode AD, use:
 >>> from team20ad.reverseAD import * 
 ```
 
-We expect changes to be minimal and stay within what indicated above.
+We expect the changes to be minimal and stay within what is indicated above.
 
 
 
