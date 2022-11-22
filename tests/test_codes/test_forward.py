@@ -26,3 +26,10 @@ class TestForwardAD:
         assert isinstance(z.__str__(), str)
         assert isinstance(z.__repr__(), str)
 
+def test_call(capfd):
+    vars = {'x': 0.5, 'y': 4}
+    fcts = ['cos(x) + y ** 2', '2 * log(y) - sqrt(x)/3', 'sqrt(x)/3', '3 * sinh(x) - 4 * arcsin(x) + 5']
+    z = ForwardAD(vars, fcts)
+    z()  # outputs to std out
+    out, err = capfd.readouterr()
+    assert out is not None
