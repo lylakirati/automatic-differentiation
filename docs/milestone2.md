@@ -134,7 +134,7 @@ The user will be able to instantiate an ad object and compute the differentation
 ```python
 >>> f = ['x**2 + y**2', 'exp(x + y)'] # functions to be differentiated
 >>> x = {'x': 1, 'y': 1} # values to evaluate
->>> ad = ForwardAD(x, y) # compute derivative of f evaluated at x using forward mode AD
+>>> ad = ForwardAD(x, f) # compute derivative of f evaluated at x using forward mode AD
 >>> ad() 
 ===== Forward AD =====
 Vars: {'x': 1, 'y': 1}
