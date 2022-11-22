@@ -304,12 +304,7 @@ TODO # What aspects have you not implemented yet
 TODO # changes to the directory structure, and new modules, classes, data structures, etc
 
 In addition to the forward mode, our group will implement reverse mode because forward mode can be computationally expensive to calculate the gradient of a large complicated function of many variables. Reverse mode uses an extension of the forward mode computational graph to enable the computation of a gradient by a reverse traversal of the graph. 
-
-
-## License
-
-This package will be devloped and released under the `MIT` license.
-The reasons behind choosing this license are that we want the software to be free and encourage others to contribute to open, public communities; while providing some degree of flexibility to developers like us. 
+ 
 
 
 
