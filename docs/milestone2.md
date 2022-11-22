@@ -279,7 +279,6 @@ The implementation of forward mode AD is mostly completed. Going forward, we wil
 focus on reverse mode AD, which will require the implementation of a computational graph.
 
 ## Future Features
-TODO # changes to the directory structure, and new modules, classes, data structures, etc
 
 In addition to the forward mode, our group will implement reverse mode because forward mode can be computationally expensive to calculate the gradient of a large complicated function of many variables. Reverse mode uses an extension of the forward mode computational graph to enable the computation of a gradient by a reverse traversal of the graph. 
  
