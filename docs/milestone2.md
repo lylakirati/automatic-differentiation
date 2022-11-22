@@ -124,11 +124,21 @@ The user will be able to instantiate an ad object and compute the differentation
 
 ```python
 >>> x = DualNumber(4,1) # Derivative computation for a univariate scalar functions
->>> f = 3*x**2 + 4
+>>> f = 3*x**2 + 4 # function to be differentiated
 >>> f.real
 53
 >>> f.dual
 24
+>>> x = {'x': 4}
+>>> ad = ForwardAD(x, f) # compute derivative of f evaluated at x using forward mode AD
+>>> ad()
+===== Forward AD =====
+Vars: {'x': 4}
+Funcs: ['3*x**2 +4']
+-----
+Func evals: [52]
+Gradient:
+[[24.]]
 ```
 
 ```python
