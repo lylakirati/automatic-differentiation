@@ -3,13 +3,6 @@ name: coverage
 on: [push]
 
 jobs:
-    my_fist_ci_job:
-        name: first CI job configuration
-        runs-on: ubuntu-latest
-        steps:
-            - name: Running Bash command to get date and the hostname we are running
-              run: date && hostname
-
     test_coverage:
         name: test coverage
         runs-on: ubuntu-latest
