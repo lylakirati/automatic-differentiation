@@ -275,23 +275,23 @@ The current name attributes and methods for each module are listed below:
 
 `log()` : This method computes the logarithm.
 
-`sin()` : This emthod computes the sine.
+`sin()` : This method computes the sine.
 
-`cos()` : This emthod computes the cosine.
+`cos()` : This method computes the cosine.
  
-`tan()` : This emthod computes the tagent.
+`tan()` : This method computes the tagent.
 
-`arcsin()` : This emthod computes the arcsine.
+`arcsin()` : This method computes the arcsine.
 
-`arccos()` : This emthod computes the arccosine.
+`arccos()` : This method computes the arccosine.
 
-`arctan()` : This emthod computes the arctangent. 
+`arctan()` : This method computes the arctangent. 
 
-`sinh()` : This emthod computes the hyperbolic sine.
+`sinh()` : This method computes the hyperbolic sine.
 
-`cosh()` : This emthod computes the hypyerbolic cosine.
+`cosh()` : This method computes the hypyerbolic cosine.
 
-`tanh()` : This emthod computes the hyperbolic tangent.
+`tanh()` : This method computes the hyperbolic tangent.
 
 As for the handling of $f: \mathbb{R}^m -> \mathbb{R}$ and $f: \mathbb{R}^m -> \mathbb{R}^n$, we will have a high-level function object in form of vectors to compute the Jacobian.
 These vectors will be represented by `numpy` arrays.
