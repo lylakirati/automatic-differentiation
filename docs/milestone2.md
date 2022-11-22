@@ -13,7 +13,7 @@ There are three popular ways to calculate the derivative:
 
 Symbolic differentiation is precise, but it can lead to inefficient code and can be costly to evaluate. Finite difference is quick and easy to implement, but it is prone to round-off error, the loss of precision due to computer rounding of decimal quantities, and truncation error, the difference between the exact solution of the original differential equation. Automatic differentiation is more efficient than two of other methods mentioned prior. While it utilizes the concept of dual number to achieve an accuracy better than numeric differentiation, it is also more computationally efficient than symbolic differentiation, and therefore is widely used. 
 
-In this library, the general mathematical background and concepts for automatic differentiation will be introduced in the Background section. Basic demo to use the package, software organization, and implementation of the forward mode of automatic differentiation will be introduced as well.
+In this library, the general mathematical background and concepts of differentiation as well as automatic differentiation are introduced in the Background section. Basic demo to use the package, software organization, and implementation of the forward mode of automatic differentiation are introduced below.
 
 ## Background
 
@@ -22,14 +22,14 @@ In this library, the general mathematical background and concepts for automatic 
 
    * Product Rule
 
-     Product rule is a formula used to find the derivatives of products of two or more functions. The product rule can be expressed as:
+     Product rule is a formula used to find the derivative of the products of two or more functions. The product rule can be expressed as:
 
      $$\frac{\partial}{\partial x} (uv) = u \frac{\partial v}{\partial x} + v \frac{\partial u}{\partial x}.$$
 
    * Chain Rule
 
      Chain rule is a formula to compute the derivative of a composite function. 
-     The chain rule can be expressed as:
+     Suppose $y$ is a function of $u$. Then, the derivative of $y$ with respect to $x$ can be expressed using the chain rule as:
 
 	  $$\frac{\partial y}{\partial x} = \frac{\partial y}{\partial u} \frac{\partial u}{\partial x}.$$
 
@@ -42,10 +42,10 @@ In this library, the general mathematical background and concepts for automatic 
 
 **3. Automatic Differentiation**
 
-   * Automatic Differentiation refers to a general way of taking a program which computes a value, and automatically constructing a procedure for computing derivatives of that value. The derivatives sought may be first order (the gradient of a target function, or the Jacobian of a set of constraints), higher order (Hessian times direction vector or a truncated Taylor series), or nested. There are two modes in Automatic Differentiation: the forward mode and the reverse mode.
+   * Automatic differentiation refers to a general way of taking a program which computes a value, and automatically constructing a procedure for computing derivatives of that value. The derivatives sought may be first order (the gradient of a target function, or the Jacobian of a set of constraints), higher order (Hessian times direction vector or a truncated Taylor series), or nested. There are two modes in automatic differentiation: forward mode and reverse mode. In this package, only forward mode is focused and implemented.
 
 
-   * *Evaluation Trace of a Function*: All numeric evaluations are sequences of elementary operations. The evaluation of f at some point x = (x1, ..., xn) can be described by a so-called evaluation trace $v_{k-m}=x_k$, for $k=1,2,...,m$, where each intermediate results v_j are functions that depend on the independent variables x. 
+   * *Evaluation Trace of a Function*: All numeric evaluations are sequences of elementary operations. The evaluation of $f$ at a givevn point $x = (x_1, \dots, x_n)$ can be described by a so-called evaluation trace $v_{k-m}=x_k$, for $k = 1,2, \dots, m$, where each intermediate result $v_j$ is a function that depends on the independent variable $x$. 
   
 
    * *Elementary functions*: The set of elementary functions has to be given and can, in principle, consist of arbitrary functions as long as these are sufficiently often differentiable. All elementary functions will be implemented in the system together with their gradients.
@@ -54,9 +54,9 @@ In this library, the general mathematical background and concepts for automatic 
 
 **4. Forward Mode of Automatic Differentiation**
 
-   * Forward mode of automatic differentiation divides the expression into a sequence of differentiable elementary operations. The chain rule and well-known differentiation rules are then applied to each elementary operation.
+   * Forward mode automatic differentiation divides the expression into a sequence of differentiable elementary operations. The chain rule and well-known differentiation rules are then applied to each elementary operation.
 
-   * Forward mode of automatic differentiation computes a tangent trace of the directional derivative $$D_p v_j = (\nabla y_i)^T p = \sum_{j=1}^{m} \frac{\partial y_i}{x_j} p_j$$ 
+   * Forward automatic differentiation computes a tangent trace of the directional derivative $$D_p v_j = (\nabla y_i)^T p = \sum_{j=1}^{m} \frac{\partial y_i}{x_j} p_j$$ 
    for each intermediate variable $v_j$ at the same time as it performs a forward evaluation trace of the elementary pieces of a complicated $f(x)$ from the inside out. 
    Note that the vector $p$ is called the seed vector which gives the direction of the derivative.
 
@@ -65,7 +65,7 @@ In this library, the general mathematical background and concepts for automatic 
    $$z_j = v_j + D_p v_j \epsilon$$
    
 
-In the most general case, a function can have more than one coordinate. To evaluate this function, we would take the sum of the partial derivatives with respect to each said coordinate. To illustrate, consider a function $f(u(t), v(t))$; we first apply the chain rule to for each piece, we get:
+In the most general case, a function can have more than one coordinate. To evaluate this function, we would take the sum of the partial derivatives with respect to each coordinate. For example, consider a function $f(u(t), v(t))$. If we first apply the chain rule to each coordinate, we have:
 $$\frac{\partial f}{\partial t} = \frac{\partial f}{\partial u} \frac{\partial u}{\partial t} + \frac{\partial f}{\partial v} \frac{\partial v}{\partial t}$$
 
 At a lower level, the implementation of AD requires breaking down the original function into smaller pieces known as elementary functions. For instance, consider function
@@ -87,7 +87,7 @@ Furthermore, the order of evaluating these elementary functions can be organized
 
 ![Example Computational Graph](./computational_graph.png)
 
-Note that the subsequent node $v_i$ stores the intermediate result of evaluating each elementary function. After evaluating each $v_i$, we get a sequence from $v_1$ to $v_8$; this is called the primal trace. Similarly, following the computational graph, if we instead evaluate the derivative at each step, the resulting sequence would be called the dual trace. Such is essentially the procedure of automatic differentiation, specifically the forward mode, which we plan to implement. Note that there exists a counterpart named reverse mode which we will not describe it here.
+Note that the subsequent node $v_i$ stores the intermediate result of evaluating each elementary function. After evaluating each $v_i$, we have a sequence of intermediate results $v_1$ to $v_8$; this is called the primal trace. Similarly, following the computational graph, if we instead evaluate the derivative at each step, the resulting sequence would be called the dual trace. Such is essentially the procedure of forward mode automatic differentiation. 
 
 
 ## How to use team20ad
