@@ -92,25 +92,49 @@ Note that the subsequent node $v_i$ stores the intermediate result of evaluating
 
 ## How to use team20ad
 
-This package is distributed through the Python Package Index (PyPI), and hence the user can install it with:
+Create a conda environment to prevent conflicts with other operating system's packages:
 
-`python -m pip install team20ad`
+`conda create -p ./conda-env python=3.9`
 
-In addition, they need to install and import all the dependable packages including `numpy`, `scipy`, `pandas`, and `matplotlib`.
+To activate the conda environment:
 
-To use the `team20ad` package, one can import the module by:
+`conda activate ./conda-env`
+
+Upgrade pip before installing package:
+
+`python3 -m pip install --upgrade pip`
+
+the package is distributed through the test Python Package Index (PyPI), and hence the user can install it with:
+
+`python3 -m pip install --index-url https://test.pypi.org/simple/ --no-deps team20-ad`
+
+In addition, they need to install and import all the dependable packages including `numpy`, `scipy`, `pandas`, and `matplotlib`, but we will only import `numpy` for now:
+
+`python3 -m pip install numpy`
+
+### Using the Package
+
+With `team20ad` package installed, one can import the module by:
 
 ```python
-from team20ad.forwardAD import ad
+>>> from team20ad.forwardAD import * #import team20ad
 ```
 
-The user will be able to instantiate an AD object and compute the differentation as follows:
+The user will be able to instantiate an ad object and compute the differentation as follows:
 
 ```python
-f = some_function_to_be_differentiated
-x = some_value_to_evaluate
-ad_obj = ad() # instantiate an automatic differentiation object
-res = ad_obj.forward(f, x) # compute derivative of f evaluated at x using forward mode AD
+>>> f = ['x**2 + y**2', 'exp(x + y)'] # functions to be differentiated
+>>> x = {'x': 1, 'y': 1} # values to evaluate
+>>> ad = ForwardAD(x, y) # compute derivative of f evaluated at x using forward mode AD
+>>> ad() 
+===== Forward AD =====
+Vars: {'x': 1, 'y': 1}
+Funcs: ['x**2 + y**2', 'exp(x + y)']
+-----
+Func evals: [2, 7.38905609893065]
+Gradient:
+[[2.		2.		]
+ [7.3890561	7.3890561]]
 ```
 
 ## Software Organization
