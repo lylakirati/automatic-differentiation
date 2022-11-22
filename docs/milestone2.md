@@ -223,7 +223,7 @@ The current name attributes and methods for each module are listed below:
 - ForwardAD:
 	- External dependencies: `numpy`
 	- Name attribute: 
-		- `Dpf`: tangent trace
+		- `Dpf`: the directional derivative of the function(s) to be evaluated
 		- `var_dict`: a dictionary of variables and their corresponding values
 		- `func_list`: a list of functions encoded as strings
 	- Methods: 
