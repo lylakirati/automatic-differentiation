@@ -120,7 +120,7 @@ With `team20ad` package installed, one can import the module by:
 >>> from team20ad.forwardAD import * #import team20ad
 ```
 
-The user will be able to instantiate an ad object and compute the differentation as follows:
+The user will be able to instantiate an `ad` object and compute the differentation as follows:
 
 ```python
 >>> x = DualNumber(4,1) # Derivative computation for a univariate scalar functions
@@ -179,119 +179,92 @@ team20/
 |-- tests/
 |	|-- check_coverage.sh
 |	|-- test_codes/
-|	|  |--	__init__.py
-|	|  |--	test_forwardAD.py
-|	|  |--	test_dualNumber.py
-|	|  \--	test_elementary.py
+|	|  |--  __init__.py
+|	|  |--  test_forwardAD.py
+|	|  |--  test_dualNumber.py
+|	|  \--  test_elementary.py
 \-- src/
 	\-- team20ad/
 	  |--	__init__.py
  	  |--	__main__.py
  	  |--	example.py
- 	  |--   forwardAD.py
+ 	  |-- forwardAD.py
  	  |--	dualNumber.py
  	  \--	elementary.py
 ```
 ### Basic Modules and Functionality
 
-Currently, we plan to have three modules: one for implementing the forward mode of automatic differentiation and the other two for implementing DualNumber class and their elementary function overloads (more on this under the Implementation section).
+Currently, we have three modules: one for implementing the forward mode of automatic differentiation and the other two for implementing `DualNumber` class and their elementary function overloads (more on this under the Implementation section).
 Note that an implementation of computational graph is optional for forward mode AD.
 
-As such, we have correponding tests `test_forwardAD.py`, `test_dualNumber.py`, and `test_elementary.py`, which are located under the `tests/test_codes` directory and which will be configured to run automatically using GitHub workflows after each push to the `main` branch of development. 
+As such, we have correponding tests `test_forwardAD.py`, `test_dualNumber.py`, and `test_elementary.py`, which are located under the `tests/test_codes` directory and which are configured to run automatically using GitHub workflows after each push to the `main` branch of development. 
 
 As the development progresses, we expect the directory structure to change and the documentation to update accordingly.
 
 Considering that the whole scheme of auto-differentiating will rely heavily on mathematical computations, we will use `numpy`, `scipy`, `pandas`, and `math` modules for implementations and calculations, along with (possibly) `matplotlib` for graphical representations.
 
-### Packaging 
+### Packaging
 
-Our package is distributed using test PyPI following PEP517/PEP518. Details on how to install the package is written in How to use team20ad section.
+Our package is distributed using test PyPI following PEP517/PEP518. Details on how to install the package is written in *How to use team20ad* section above.
 
 
 ## Implementation
 
 The first class we need is the `DualNumber` class which will serve as the lower level structure of the forward AD class implementation. This class implements basic function overloaders such as `__add__()` and their reverse counterparts such as `__radd__()`. The full list of functions is provided below.
 Along with the `DualNumber` class, we implement additional elementary function overloads in `elementary.py` which consists of exponential and trigonometric functions (please see the full list below). Note that these two modules support only operations on `DualNumber`, `int`, and `float` objects.
-Then, we implement the `ForwardAD` class which will serve as a function decoration for computing the derivatives.
+Then, we implement the `ForwardAD` class which serves as a function decoration for computing the derivatives.
 
 The current name attributes and methods for each module are listed below:
 
 - ForwardAD:
-	- Name attribute: `Dpf`
-	- Methods: `__init__()`, `__call__()`
+	- Name attribute: 
+		- `Dpf`: tangent trace
+		- `var_dict`: a dictionary of variables and their corresponding values
+		- `func_list`: a list of functions encoded as strings
+	- Methods: 
+		- `__init__`: Constructor for ForwardAD objects 
+		- `__call__`: Caller method for ForwardAD objects
 - DualNumber:
-	- Name attributes: `real`, `dual`, `_supported_scalars`
-	- Methods: `__init__()`, `__repr__()`, `__str__()`, `__neg__()`, `__add__()`, `__radd__()`, `__sub__()`, `__rsub__()`, `__mul__()`, `__rmul__()`, `__truediv__()`, `__rtruediv__()`, `__pow__()`, `__rpow__()`, `__eq__()`, `__ne__()` , `__lt__()`, `__gt__()`, `__le__()`, `__ge__()`, `__abs__()`   
+	- Name attributes: 
+		- `real`: real part of a dual number
+		- `dual`: dual part of a dual number
+		- `_supported_scalars`: a list of supported scalar types
+	- Methods: 
+		- `__init__`: Constructor for DualNumber objects
+		- `__repr__`: Returns a string representation for a DualNumber object
+		- `__str__`: Returns a formatted string representation for a DualNumber object
+		- `__neg__`: Operates the negation operation.
+		- `__add__`: Computes the summation operation between DualNumber and supported scalar objects.
+		- `__radd__`: Same method as `__add__` with reversed operands.
+		- `__sub__`: Computes the subtraction operation between DualNumber and supported scalar objects.
+		- `__rsub__`: Same method as `__sub__` with reversed operands.
+		- `__mul__`: Computes the multiplication operation between DualNumber and supported scalar objects.
+		- `__rmul__`: Same method as `__mul__` with reversed operands.
+		- `__truediv__`: Computes the true division operation between DualNumber and supported scalar objects.
+		- `__rtruediv__`: Same method as `__truediv__` with reversed operands.
+		- `__pow__`: Computes the power rule on a DualNumber object.
+		- `__rpow__`: Same method as `__pow__` with reversed operands.
+		- `__eq__`: Operates the equal comparison.
+		- `__ne__` : Operates the not equal comparison.
+		- `__lt__`: Operates the less than comparison.
+		- `__gt__`: Operates the greater than comparison.
+		- `__le__`: Operates the less than or equal to comparison.
+		- `__ge__`: Operates the greater than or equal to comparison.
+		- `__abs__`: Computes the absolute values on both real and dual parts.
 - elemantary:
-   - Methods: `sqrt()`, `exp()`, `log()`, `sin()`, `cos()`, `tan()`, `arcsin()`, `arccos()`, `arctan()`, `sinh()`, `cosh()`, `tanh()`
-
-### Class Methods
-
-`__init__` : 
-
-`__repr__` : Operating overloading for DualNumber object representation
-
-`__str__`  :
-
-`__neg__`  : This method operates the negation operation.
-
-`__add__`  : This method computes the summation operation on real and dual.
-
-`__radd__` : Same method as `__add__` with reversed operands.
-
-`__sub__`  : This method computes the subtraction operation on real and dual.
-
-`__rsub__` : Same method as `__sub__` with reversed operands.
-
-`__mul__`  : This method computes the multiplication operation on real and dual.
-
-`__rmul__` : Same method as `__mul__` with reversed operands.
-
-`__truediv__()`  : This method computes the true division operation on real and dual.
-
-`__rtruediv__()` : Same method as `__truediv__` with reversed operands.
-
-`__pow__()`  : This method computes the power rule.
-
-`__rpow__()` : This method computes by raising a number to the power of a variable/function.
-
-`__eq__()` :  This method operates the equal comparison.
-
-`__ne__()` : This method operates the not equal comparison.
-
-`__lt__()` : This method operates the less than comparison.
-
-`__gt__()` : This method operates the greater than comparison.
-
-`__le__()` : This method operates the less than or equal to comparison.
-
-`__ge__()` : This method operates the greater than or equal to comparison.
-
-`__abs__()`: This method computes the absolute.
-
-`sqrt()`: This method computes the square root.
-
-`exp()` : This method computes the exponential. 
-
-`log()` : This method computes the logarithm.
-
-`sin()` : This method computes the sine.
-
-`cos()` : This method computes the cosine.
- 
-`tan()` : This method computes the tagent.
-
-`arcsin()` : This method computes the arcsine.
-
-`arccos()` : This method computes the arccosine.
-
-`arctan()` : This method computes the arctangent. 
-
-`sinh()` : This method computes the hyperbolic sine.
-
-`cosh()` : This method computes the hypyerbolic cosine.
-
-`tanh()` : This method computes the hyperbolic tangent.
+   - Methods: 
+   	- `sqrt`: Computes the square root of a given value.
+   	- `exp`: Computes the exponential of a given value. 
+   	- `log`: Computes the logarithm of a given value.
+   	- `sin`: Computes the sine of a given value.
+   	- `cos`: Computes the cosine of a given value.
+   	- `tan`: Computes the tangent of a given value.
+   	- `arcsin`: Computes the arcsine (inverse sine) of a given value.
+   	- `arccos`: Computes the arccosine (inverse cosine) of a given value.
+   	- `arctan`: Computes the arctangent (inverse tangent) of a given value.
+   	- `sinh`: Computes the hyperbolic sine of a given value.
+   	- `cosh`: Computes the hyperbolic cosine of a given value.
+   	- `tanh`: Computes the hyperbolic tangent of a given value.
 
 As for the handling of $f: \mathbb{R}^m -> \mathbb{R}$ and $f: \mathbb{R}^m -> \mathbb{R}^n$, we will have a high-level function object in form of vectors to compute the Jacobian.
 These vectors will be represented by `numpy` arrays.
