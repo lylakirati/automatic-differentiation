@@ -167,7 +167,7 @@ We plan to distribute the package using PyPI following PEP517/PEP518.
 
 ## Implementation
 
-The first class we need is the `DualNumber` class which will serve as the lower level structure of the forward AD class implementation. This class implements basic function overloaders such as `__add__()` and their reverse counterparts such as `__radd__()`.
+The first class we need is the `DualNumber` class which will serve as the lower level structure of the forward AD class implementation. This class implements basic function overloaders such as `__add__()` and their reverse counterparts such as `__radd__()`. The full list of functions is provided below.
 Along with the `DualNumber` class, we implement additional elementary function overloads in `elementary.py` which consists of exponential and trigonometric functions (please see the full list below). Note that these two modules support only operations on `DualNumber`, `int`, and `float` objects.
 Then, we implement the `ForwardAD` class which will serve as a function decoration for computing the derivatives.
 
@@ -179,14 +179,13 @@ The current name attributes and methods for each module are listed below:
 - DualNumber:
 	- Name attributes: `real`, `dual`, `_supported_scalars`
 	- Methods: `__init__()`, `__repr__()`, `__str__()`, `__neg__()`, `__add__()`, `__radd__()`, `__sub__()`, `__rsub__()`, `__mul__()`, `__rmul__()`, `__truediv__()`, `__rtruediv__()`, `__pow__()`, `__rpow__()`, `__eq__()`, `__ne__()` , `__lt__()`, `__gt__()`, `__le__()`, `__ge__()`, `__abs__()`   
-- function_overloads:
+- elemantary:
    - Methods: `sqrt()`, `exp()`, `log()`, `sin()`, `cos()`, `tan()`, `arcsin()`, `arccos()`, `arctan()`, `sinh()`, `cosh()`, `tanh()`
 
 As for the handling of $f: \mathbb{R}^m -> \mathbb{R}$ and $f: \mathbb{R}^m -> \mathbb{R}^n$, we will have a high-level function object in form of vectors to compute the Jacobian.
 These vectors will be represented by `numpy` arrays.
 
 We will need to depend on the libraries mentioned above, namely `numpy`, `scipy`, and `matplotlib`.
-
 
 TODO # What aspects have you not implemented yet
 
