@@ -205,7 +205,7 @@ Considering that the whole scheme of auto-differentiating will rely heavily on m
 
 ### Packaging 
 
-We plan to distribute the package using PyPI following PEP517/PEP518. 
+Our package is distributed using test PyPI following PEP517/PEP518. Details on how to install the package is written in How to use team20ad section.
 
 
 ## Implementation
