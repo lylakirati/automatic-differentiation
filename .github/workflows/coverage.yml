@@ -10,23 +10,18 @@ jobs:
             - name: Running Bash command to get date and the hostname we are running
               run: date && hostname
 
-    test_coverage: # test coverage job
+    test_coverage:
         name: test coverage
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checout@v3
+            #checkout the head of branch
+            - uses: actions/checkout@v3
             - uses: actions/setup-python@v3
               with:
                   python-version: "3.9"
-            - name: Install dependencies
-              run: python -m pip install build pytest pytest-cov
-            - name: Build and install the team20AD in the container (using PEP517/518)
-              run: (python -m build --wheel && python -m pip install dist/*)
-            - name: Run tests and generate coverage html
-              run: (cd tests && ./run_tests.sh CI --cov=team20ad --cov-report=html:htmlcov)
-            - name: Clean .gitignore in coverage output
-              run: rm -f tests/thmlcov/.gitignore
-            - name: Deploy test coverage to Github page (gh-pages branch)
-              uses: JamesIves/github-pages-deploy-action@v4
-              with:
-                  folder: tests/htmlcov
+            - name: Install Python dependencies
+              run: |
+                  python -m pip install --upgrade pip
+                  pip install coverage
+            - name: Generate coverage report
+              run: coverage report -m # display report in std out
