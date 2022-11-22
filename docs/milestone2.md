@@ -243,7 +243,7 @@ The current name attributes and methods for each module are listed below:
 
 `__rsub__` : Same method as `__sub__` with reversed operands.
 
-`__mul__`  : This emthod computes the multiplication operation on real and dual.
+`__mul__`  : This method computes the multiplication operation on real and dual.
 
 `__rmul__` : Same method as `__mul__` with reversed operands.
 
@@ -257,17 +257,17 @@ The current name attributes and methods for each module are listed below:
 
 `__eq__()` :  This method operates the equal comparison.
 
-`__ne__()` : This emthod operates the not equal comparison.
+`__ne__()` : This method operates the not equal comparison.
 
-`__lt__()` : This emthod operates the less than comparison.
+`__lt__()` : This method operates the less than comparison.
 
-`__gt__()` : This emthod operates the greater than comparison.
+`__gt__()` : This method operates the greater than comparison.
 
-`__le__()` : This emthod operates the less than or equal to comparison.
+`__le__()` : This method operates the less than or equal to comparison.
 
-`__ge__()` : This emthod operates the greater than or equal to comparison.
+`__ge__()` : This method operates the greater than or equal to comparison.
 
-`__abs__()`: This emthod computes the absolute.
+`__abs__()`: This method computes the absolute.
 
 `sqrt()`: This method computes the square root.
 
