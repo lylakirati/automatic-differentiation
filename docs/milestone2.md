@@ -225,6 +225,74 @@ The current name attributes and methods for each module are listed below:
 - elemantary:
    - Methods: `sqrt()`, `exp()`, `log()`, `sin()`, `cos()`, `tan()`, `arcsin()`, `arccos()`, `arctan()`, `sinh()`, `cosh()`, `tanh()`
 
+### Class Methods
+
+`__init__` : 
+
+`__repr__` : Operating overloading for DualNumber object representation
+
+`__str__`  :
+
+`__neg__`  : This method operates the negation operation.
+
+`__add__`  : This method computes the summation operation on real and dual.
+
+`__radd__` : Same method as `__add__` with reversed operands.
+
+`__sub__`  : This method computes the subtraction operation on real and dual.
+
+`__rsub__` : Same method as `__sub__` with reversed operands.
+
+`__mul__`  : This emthod computes the multiplication operation on real and dual.
+
+`__rmul__` : Same method as `__mul__` with reversed operands.
+
+`__truediv__()`  : This method computes the true division operation on real and dual.
+
+`__rtruediv__()` : Same method as `__truediv__` with reversed operands.
+
+`__pow__()`  : This method computes the power rule.
+
+`__rpow__()` : This method computes by raising a number to the power of a variable/function.
+
+`__eq__()` :  This method operates the equal comparison.
+
+`__ne__()` : This emthod operates the not equal comparison.
+
+`__lt__()` : This emthod operates the less than comparison.
+
+`__gt__()` : This emthod operates the greater than comparison.
+
+`__le__()` : This emthod operates the less than or equal to comparison.
+
+`__ge__()` : This emthod operates the greater than or equal to comparison.
+
+`__abs__()`: This emthod computes the absolute.
+
+`sqrt()`: This method computes the square root.
+
+`exp()` : This method computes the exponential. 
+
+`log()` : This method computes the logarithm.
+
+`sin()` : This emthod computes the sine.
+
+`cos()` : This emthod computes the cosine.
+ 
+`tan()` : This emthod computes the tagent.
+
+`arcsin()` : This emthod computes the arcsine.
+
+`arccos()` : This emthod computes the arccosine.
+
+`arctan()` : This emthod computes the arctangent. 
+
+`sinh()` : This emthod computes the hyperbolic sine.
+
+`cosh()` : This emthod computes the hypyerbolic cosine.
+
+`tanh()` : This emthod computes the hyperbolic tangent.
+
 As for the handling of $f: \mathbb{R}^m -> \mathbb{R}$ and $f: \mathbb{R}^m -> \mathbb{R}^n$, we will have a high-level function object in form of vectors to compute the Jacobian.
 These vectors will be represented by `numpy` arrays.
 
