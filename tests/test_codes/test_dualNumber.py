@@ -162,6 +162,7 @@ class TestDualNumber:
 
         flag = (DualNumber(3, 1) < 3)
         assert flag == False
+        assert X < 10
         
         
     def test_le(self):
@@ -172,6 +173,7 @@ class TestDualNumber:
 
         flag = (DualNumber(3, 1) < 3)
         assert flag == False
+        assert X < 10
 
     def test_gt(self):
         X = DualNumber(3, 1)
@@ -181,6 +183,7 @@ class TestDualNumber:
 
         flag = (DualNumber(3, 1) > 3)
         assert flag == False
+        assert X > 1
 
     def test_ge(self):
         X = DualNumber(3, 1)
@@ -190,6 +193,7 @@ class TestDualNumber:
 
         flag = (DualNumber(3, 1) >= 3)
         assert flag == True
+        assert X > 1
 
     def test_abs(self):
         y = abs(DualNumber(-3, -1))
