@@ -2,19 +2,18 @@
 
 ## Introduction
 
-Automatic Differentiation (AD) is to solve for the derivative of a function at a given point of estimate by evaluating the chain rule step by step.
-It utilizes the concept of dual number to achieve an accuracy better than numeric differentiation. It is also more efficient than symbolic differentiation.
+Automatic differentiation (AD) is a method to evaluate derivatives of functions at a given point of estimate by using the chain rule step by step.
 
-Differentiation, the process of finding a derivative, is one of the most fundamental operations in mathematics. It measures the rate of change of a function with respect to a variable. Computational techniques of calculating differentiations have broad applications in many fileds including science and engineering which used in finding a numerical solution of ordinary differential equations, optimization and solution of linear systems. Besides, they also have many real-life applications, like edge detection in image processing and safety tests of cars.
+Being one of the most fundamental operations in mathematics, differentiation is the process of finding a derivative by measuring the rate of change of a function with respect to a variable. Computational techniques of calculating differentiations have broad applications in many fileds including science and engineering which used in finding a numerical solution of ordinary differential equations, optimization and solution of linear systems. 
 
 There are three popular ways to calculate the derivative:
 	1. Numerical Differentiation: Finite Difference
 	2. Symbolic Differentiation
 	3. Automatic Differentiation
 
-Symbolic Differentiation and Finite Difference are two ways to numerically compute derivatives. Symbolic Differentiation is precise, but it can lead to inefficient code and can be costly to evaluate. Finite Difference is quick and easy to implement, but it can create round-off error, the loss of precision due to computer rounding of decimal quantities, and truncation error, the difference between the exact solution of the original differential equation.
+Symbolic differentiation is precise, but it can lead to inefficient code and can be costly to evaluate. Finite difference is quick and easy to implement, but it is prone to round-off error, the loss of precision due to computer rounding of decimal quantities, and truncation error, the difference between the exact solution of the original differential equation. Automatic differentiation is more efficient than two of other methods mentioned prior. While it utilizes the concept of dual number to achieve an accuracy better than numeric differentiation, it is also more computationally efficient than symbolic differentiation, and therefore is widely used. 
 
-Automatic Differentiation is more efficient than two of other methods mentioned prior. While it utilizes the concept of dual number, it achieves machine precision without costly evaluation, and therefore is widely used.
+In this library, the general mathematical background and concepts for automatic differentiation will be introduced in the Background section. Basic demo to use the package, software organization, and implementation of the forward mode of automatic differentiation will be introduced as well.
 
 ## Background
 
@@ -55,9 +54,9 @@ Automatic Differentiation is more efficient than two of other methods mentioned 
 
 **4. Forward Mode of Automatic Differentiation**
 
-   * Forward automatic differentiation divides the expression into a sequence of differentiable elementary operations. The chain rule and well-known differentiation rules are then applied to each elementary operation.
+   * Forward mode of automatic differentiation divides the expression into a sequence of differentiable elementary operations. The chain rule and well-known differentiation rules are then applied to each elementary operation.
 
-   * Forward automatic differentiation computes a tangent trace of the directional derivative $$D_p v_j = (\nabla y_i)^T p = \sum_{j=1}^{m} \frac{\partial y_i}{x_j} p_j$$ 
+   * Forward mode of automatic differentiation computes a tangent trace of the directional derivative $$D_p v_j = (\nabla y_i)^T p = \sum_{j=1}^{m} \frac{\partial y_i}{x_j} p_j$$ 
    for each intermediate variable $v_j$ at the same time as it performs a forward evaluation trace of the elementary pieces of a complicated $f(x)$ from the inside out. 
    Note that the vector $p$ is called the seed vector which gives the direction of the derivative.
 
@@ -102,7 +101,7 @@ In addition, they need to install and import all the dependable packages includi
 To use the `team20ad` package, one can import the module by:
 
 ```python
-from team20ad.forward_ad import ad
+from team20ad.forwardAD import ad
 ```
 
 The user will be able to instantiate an AD object and compute the differentation as follows:
@@ -116,6 +115,8 @@ res = ad_obj.forward(f, x) # compute derivative of f evaluated at x using forwar
 
 ## Software Organization
 
+### Directory structure
+
 For now at this phase of the project, our software directory is tentatively structured as follows:
 
 ```
@@ -128,36 +129,40 @@ team20/
 |-- LICENSE
 |-- README.md
 |-- pyproject.toml
+|-- install_package.sh
 |-- .github/workflows/
 |	|-- coverage.yml
 |	\-- test.yml
 |-- tests/
 |	|-- check_coverage.sh
-|	|-- run_tests.sh
 |	|-- test_codes/
-|	|  |-- test_forwardAD.py
-|	|  |-- test_dualNumber.py
-|	|  \-- test_elementary.py
+|	|  |--	__init__.py
+|	|  |--	test_forwardAD.py
+|	|  |--	test_dualNumber.py
+|	|  \--	test_elementary.py
 \-- src/
 	\-- team20ad/
-	  |--   __init__.py
+	  |--	__init__.py
  	  |--	__main__.py
  	  |--	example.py
- 	  |-- forwardAD.py
+ 	  |--   forwardAD.py
  	  |--	dualNumber.py
  	  \--	elementary.py
 ```
+### Basic Modules and Functionality
 
 Currently, we plan to have three modules: one for implementing the forward mode of automatic differentiation and the other two for implementing DualNumber class and their elementary function overloads (more on this under the Implementation section).
 Note that an implementation of computational graph is optional for forward mode AD.
 
-As such, we will have correponding tests `test_forwardAD.py`, `test_dualNumber.py`, and `test_elementary.py`, which are located under the `tests/test_codes` directory and which will be configured to run automatically using GitHub workflows after each push to the `main` branch of development. 
+As such, we have correponding tests `test_forwardAD.py`, `test_dualNumber.py`, and `test_elementary.py`, which are located under the `tests/test_codes` directory and which will be configured to run automatically using GitHub workflows after each push to the `main` branch of development. 
 
 As the development progresses, we expect the directory structure to change and the documentation to update accordingly.
 
 Considering that the whole scheme of auto-differentiating will rely heavily on mathematical computations, we will use `numpy`, `scipy`, `pandas`, and `math` modules for implementations and calculations, along with (possibly) `matplotlib` for graphical representations.
 
-As of now, we plan to distribute the package using PyPI following PEP517/PEP518.
+### Packaging 
+
+We plan to distribute the package using PyPI following PEP517/PEP518. 
 
 
 ## Implementation
@@ -173,7 +178,7 @@ The current name attributes and methods for each module are listed below:
 	- Methods: `__init__()`, `__call__()`
 - DualNumber:
 	- Name attributes: `real`, `dual`, `_supported_scalars`
-	- Methods: `__init__()`, `__repr__()`, `__str__()`, `__neg__()`, `__add__()`, `__radd__()`, `__sub__()`, `__rsub__()`, `__mul__()`, `__rmul__()`, `__truediv__()`, `__rtruediv__()`, `__pow__()`, `__rpow__()`, `__eq__()`, `__ne__()`    
+	- Methods: `__init__()`, `__repr__()`, `__str__()`, `__neg__()`, `__add__()`, `__radd__()`, `__sub__()`, `__rsub__()`, `__mul__()`, `__rmul__()`, `__truediv__()`, `__rtruediv__()`, `__pow__()`, `__rpow__()`, `__eq__()`, `__ne__()` , `__lt__()`, `__gt__()`, `__le__()`, `__ge__()`, `__abs__()`   
 - function_overloads:
    - Methods: `sqrt()`, `exp()`, `log()`, `sin()`, `cos()`, `tan()`, `arcsin()`, `arccos()`, `arctan()`, `sinh()`, `cosh()`, `tanh()`
 
@@ -183,13 +188,19 @@ These vectors will be represented by `numpy` arrays.
 We will need to depend on the libraries mentioned above, namely `numpy`, `scipy`, and `matplotlib`.
 
 
+TODO # What aspects have you not implemented yet
+
+## Future Features
+TODO # changes to the directory structure, and new modules, classes, data structures, etc
+
+In addition to the forward mode, our group will implement reverse mode because forward mode can be computationally expensive to calculate the gradient of a large complicated function of many variables. Reverse mode uses an extension of the forward mode computational graph to enable the computation of a gradient by a reverse traversal of the graph. 
+
+
 ## License
 
-This package will be devloped and released under the `MIT` license which is a copyleft.
+This package will be devloped and released under the `MIT` license.
 The reasons behind choosing this license are that we want the software to be free and encourage others to contribute to open, public communities; while providing some degree of flexibility to developers like us. 
 
 
-## Future Features
-TODO
 
 
