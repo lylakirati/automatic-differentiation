@@ -108,7 +108,7 @@ the package is distributed through the test Python Package Index (PyPI), and hen
 
 `python3 -m pip install --index-url https://test.pypi.org/simple/ --no-deps team20-ad`
 
-In addition, they need to install and import all the dependable packages including `numpy`, `scipy`, `pandas`, and `matplotlib`, but we will only import `numpy` for now:
+In addition, they need to install and import the dependable package `numpy`.
 
 `python3 -m pip install numpy`
 
