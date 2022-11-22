@@ -123,6 +123,15 @@ With `team20ad` package installed, one can import the module by:
 The user will be able to instantiate an ad object and compute the differentation as follows:
 
 ```python
+>>> x = DualNumber(4,1) # Derivative computation for a univariate scalar functions
+>>> f = 3*x**2 + 4
+>>> f.real
+53
+>>> f.dual
+24
+```
+
+```python
 >>> f = ['x**2 + y**2', 'exp(x + y)'] # functions to be differentiated
 >>> x = {'x': 1, 'y': 1} # values to evaluate
 >>> ad = ForwardAD(x, y) # compute derivative of f evaluated at x using forward mode AD
