@@ -1,6 +1,6 @@
 import numpy as np
 
-from dualNumber import DualNumber
+from .dualNumber import DualNumber
 
 
 _supported_scalars = (int, float)
@@ -8,8 +8,14 @@ _supported_scalars = (int, float)
 
 def sqrt(val):
     if isinstance(val, DualNumber):
+        if val <= 0:
+            raise ValueError(f"Should not be negative.")
+
         return DualNumber(np.sqrt(val.real), 1 / 2 / np.sqrt(val.real) * val.dual)
     elif isinstance(val, _supported_scalars):
+        if val <= 0:
+            raise ValueError(f"Should not be negative.")
+
         return np.sqrt(val)
     else:
         raise TypeError(f"Unsupported type '{type(val)}'")
@@ -26,8 +32,14 @@ def exp(val):
 
 def log(val):
     if isinstance(val, DualNumber):
+        if val <= 0:
+            raise ValueError(f"Should not be negative.")
+
         return DualNumber(np.log(val.real), 1 / val.real * val.dual)
     elif isinstance(val, _supported_scalars):
+        if val <= 0:
+            raise ValueError(f"Should not be negative.")
+
         return np.log(val)
     else:
         raise TypeError(f"Unsupported type '{type(val)}'")
@@ -53,8 +65,16 @@ def cos(val):
 
 def tan(val):
     if isinstance(val, DualNumber):
+        x = val.real % np.pi == (np.pi / 2)
+        if x:
+            raise ValueError('Tan is undefined in this domain')
+
         return DualNumber(np.tan(val.real), 1 / (np.cos(val.real) ** 2) * val.dual)
     elif isinstance(val, _supported_scalars):
+        x = val.real % np.pi == (np.pi / 2)
+        if x:
+            raise ValueError('Tan is undefined in this domain')
+
         return np.tan(val)
     else:
         raise TypeError(f"Unsupported type '{type(val)}'")
