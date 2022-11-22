@@ -275,14 +275,69 @@ The current name attributes and methods for each module are listed below:
 As for the handling of $f: \mathbb{R}^m -> \mathbb{R}$ and $f: \mathbb{R}^m -> \mathbb{R}^n$, we will have a high-level function object in form of vectors to compute the Jacobian.
 These vectors will be represented by `numpy` arrays.
 
-
-TODO # What aspects have you not implemented yet
+The implementation of forward mode AD is mostly completed. Going forward, we will
+focus on reverse mode AD, which will require the implementation of a computational graph.
 
 ## Future Features
 TODO # changes to the directory structure, and new modules, classes, data structures, etc
 
 In addition to the forward mode, our group will implement reverse mode because forward mode can be computationally expensive to calculate the gradient of a large complicated function of many variables. Reverse mode uses an extension of the forward mode computational graph to enable the computation of a gradient by a reverse traversal of the graph. 
  
+ In the future, the software structure will be adjusted to accomodate changes for reverse AD implementation as follows:
+
+ ```
+team20/
+|-- docs/
+|  |-- milestone1.md
+|  |-- milestone1.pdf
+|  |-- milestone2.md
+|  |-- milestone2_progress.md
+|  \-- final.md
+|-- LICENSE
+|-- README.md
+|-- pyproject.toml
+|-- install_package.sh
+|-- .github/workflows/
+|	|-- coverage.yml
+|	\-- test.yml
+|-- tests/
+|	|-- check_coverage.sh
+|	|-- test_codes/
+|	|  |--  __init__.py
+|	|  |--  test_forwardAD.py
+|	|  |--  test_reverseAD.py
+|	|  |--  test_graph.py
+|	|  |--  test_dualNumber.py
+|	|  \--  test_elementary.py
+\-- src/
+	\-- team20ad/
+	  |--	__init__.py
+ 	  |--	__main__.py
+ 	  |--	example.py
+ 	  |-- forwardAD.py
+ 	  |-- reverseAD.py
+ 	  |-- graph.py
+ 	  |--	dualNumber.py
+ 	  \--	elementary.py
+```
+
+We will have two additional modules: one for computing the derivatives through reverse mode AD and the other for `ComputationalGraph` class. In addition, we will have the associated test modules for these two: `test_reverseAD.py` and `test_graph.py`. Thus, the user must decide which mode of AD to be used for computation at the time of module import.
+
+For forward mode AD, use:
+
+```python
+>>> from team20ad.forwardAD import * 
+```
+
+For reverse mode AD, use:
+
+```python
+>>> from team20ad.reverseAD import * 
+```
+
+We expect changes to be minimal and stay within what indicated above.
+
+
 
 
 
