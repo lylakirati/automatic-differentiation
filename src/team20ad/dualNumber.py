@@ -96,6 +96,8 @@ class DualNumber:
         if not isinstance(other, self._supported_scalars):
             raise TypeError(f"Unsupported type '{type(other)}'")
         real_pow = other ** self.real
+        if other < 0:
+            raise ValueError(f"Unsupported value '{type(other)}'")
         dual_pow = np.log(other) * other ** self.real * self.dual
         return DualNumber(real_pow, dual_pow)
 
@@ -110,61 +112,28 @@ class DualNumber:
         return not self.__eq__(other)
 
     def __lt__(self, other):
-        '''
-        dunder method for less than comparator.
-        :param self: Variable object.
-        :param other: Variable object, or int/float, to be compared with.
-        :return: True if self is less than other, otherwise False.
-        '''
         try:
-            return self.real < other.var
+            return self.real < other.real
         except AttributeError:
             return self.real < other
 
-
     def __gt__(self, other):
-        '''
-        dunder method for greater than comparator.
-        :param self: Variable object.
-        :param other: Variable object, or int/float, to be compared with.
-        :return: True if self is greater than other, otherwise False.
-        '''
         try:
-            return self.real > other.var
+            return self.real > other.real
         except AttributeError:
             return self.real > other
 
-
     def __le__(self, other):
-        '''
-        dunder method for less than or equal to comparator.
-        :param self: Variable object.
-        :param other: Variable object, or int/float, to be compared with.
-        :return: True if self is less than or equal to other, otherwise False.
-        '''
         try:
-            return self.real <= other.var
+            return self.real <= other.real
         except AttributeError:
             return self.real <= other
 
-
     def __ge__(self, other):
-        '''
-        dunder method for greater than or equal to comparator.
-        :param self: Variable object.
-        :param other: Variable object, or int/float, to be compared with.
-        :return: True if self is greater than or equal to other, otherwise False.
-        '''
         try:
-            return self.real >= other.var
+            return self.real >= other.real
         except AttributeError:
             return self.real >= other
 
-
     def __abs__(self):
-        '''
-        dunder method for absolute value.
-        :param self: Variable object.
-        :return: Variable object with value and derivative of the absolute value of self.
-        '''
         return DualNumber(abs(self.real), abs(self.dual))
