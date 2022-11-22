@@ -122,6 +122,8 @@ With `team20ad` package installed, one can import the module by:
 
 The user will be able to instantiate an `ad` object and compute the differentation as follows:
 
+Example of finding a derivative of a scalar function of a scalar:
+
 ```python
 >>> x = DualNumber(4,1) # Derivative computation for a univariate scalar functions
 >>> f = 3*x**2 + 4 # function to be differentiated
@@ -140,6 +142,8 @@ Func evals: [52]
 Gradient:
 [[24.]]
 ```
+
+Example of finding derivatives of a vector function of a vector:
 
 ```python
 >>> f = ['x**2 + y**2', 'exp(x + y)'] # functions to be differentiated
