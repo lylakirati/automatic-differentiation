@@ -1,6 +1,6 @@
 import numpy as np
 
-from elementary import *
+from .elementary import *
 
 
 class ForwardAD:
@@ -74,12 +74,14 @@ class ForwardAD:
 
             i += 1
 
+        self.func_evals = self.func_evals[:len(self.func_list)]
+
     def __call__(self):
         out = "===== Forward AD =====\n"
         out += f"Vars: {self.var_dict}\n"
         out += f"Funcs: {self.func_list}\n"
         out += f"-----\n"
-        out += f"Func evals: {self.func_evals[:len(self.func_list)]}\n"
+        out += f"Func evals: {self.func_evals}\n"
         out += f"Gradient:\n"
         out += f"{self.Dpf}"
         print(out)
