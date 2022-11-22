@@ -201,7 +201,7 @@ As such, we have correponding tests `test_forwardAD.py`, `test_dualNumber.py`, a
 
 As the development progresses, we expect the directory structure to change and the documentation to update accordingly.
 
-Considering that the whole scheme of auto-differentiating will rely heavily on mathematical computations, we will use `numpy`, `scipy`, `pandas`, and `math` modules for implementations and calculations, along with (possibly) `matplotlib` for graphical representations.
+Considering that the whole scheme of auto-differentiating will rely heavily on mathematical computations, the package requires `numpy` modules for implementations and calculations.
 
 ### Packaging
 
@@ -217,6 +217,7 @@ Then, we implement the `ForwardAD` class which serves as a function decoration f
 The current name attributes and methods for each module are listed below:
 
 - ForwardAD:
+	- External dependencies: `numpy`
 	- Name attribute: 
 		- `Dpf`: tangent trace
 		- `var_dict`: a dictionary of variables and their corresponding values
@@ -225,6 +226,7 @@ The current name attributes and methods for each module are listed below:
 		- `__init__`: Constructor for ForwardAD objects 
 		- `__call__`: Caller method for ForwardAD objects
 - DualNumber:
+	- External dependencies: `numpy`
 	- Name attributes: 
 		- `real`: real part of a dual number
 		- `dual`: dual part of a dual number
@@ -251,8 +253,8 @@ The current name attributes and methods for each module are listed below:
 		- `__le__`: Operates the less than or equal to comparison.
 		- `__ge__`: Operates the greater than or equal to comparison.
 		- `__abs__`: Computes the absolute values on both real and dual parts.
-- elemantary:
-   - Methods: 
+- elemantary: Methods: 
+		- External dependencies: `numpy`
    	- `sqrt`: Computes the square root of a given value.
    	- `exp`: Computes the exponential of a given value. 
    	- `log`: Computes the logarithm of a given value.
@@ -269,7 +271,6 @@ The current name attributes and methods for each module are listed below:
 As for the handling of $f: \mathbb{R}^m -> \mathbb{R}$ and $f: \mathbb{R}^m -> \mathbb{R}^n$, we will have a high-level function object in form of vectors to compute the Jacobian.
 These vectors will be represented by `numpy` arrays.
 
-We will need to depend on the libraries mentioned above, namely `numpy`, `scipy`, and `matplotlib`.
 
 TODO # What aspects have you not implemented yet
 
