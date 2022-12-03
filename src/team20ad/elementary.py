@@ -11,7 +11,6 @@ a line by itself, preferably preceded by a blank line.
 """
 
 import numpy as np
-from math import e
 
 from .dualNumber import DualNumber
 
@@ -61,7 +60,7 @@ def exp(val):
         raise TypeError(f"Unsupported type '{type(val)}'")
 
 
-def log(val, base = e):
+def log(val, base = np.exp(1)):
     """Logarithmic function supporting operations for forward mode AD.
 
     Parameter
