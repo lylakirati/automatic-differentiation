@@ -83,7 +83,7 @@ def log(val, base = None):
     elif isinstance(val, _supported_scalars):
         if val <= 0:
             raise ValueError(f"Should not be negative.")
-            
+
         if base is None:
             return np.log(val)
 
@@ -250,5 +250,29 @@ def tanh(val):
         return DualNumber(np.tanh(val.real), (1 - (np.tanh(val.real) ** 2)) * val.dual)
     elif isinstance(val, _supported_scalars):
         return np.tanh(val)
+    else:
+        raise TypeError(f"Unsupported type '{type(val)}'")
+
+
+def logistic(val, L = 1, k = 1, x_0 = 0):
+    """Logistic function supporting operations for forward mode AD.
+
+    Parameter
+    ------
+    val : DualNumber, int or float
+        value to compute the logistic
+    L : int or float, optional (default = 1)
+        the supremum of the values of the function
+    k : int or float, optional (default = 1)
+        the logistic growth rate or steepness of the curve
+    x_0 : int or float, optional (default = 0)
+        the x value of the sigmoid's midpoint
+    """
+    if isinstance(val, DualNumber):
+        real = L / (1 + np.exp(-k * (val.real - x_0) ) )
+        dual = k * real * (1 - real / L) * val.dual
+        return DualNumber(real, dual)
+    elif isinstance(val, _supported_scalars):
+        return L / (1 + np.exp(-k * (val.real - x_0) ) )
     else:
         raise TypeError(f"Unsupported type '{type(val)}'")
