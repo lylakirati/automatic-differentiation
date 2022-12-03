@@ -74,10 +74,16 @@ def test_exp_constant():
     assert y == np.exp(32)
 
 def test_log():
+
+    
     x = DualNumber(14)
     y = log(x)
     assert y.real == np.log(14)
     assert y.dual == 1 / 14
+
+    x = DualNumber(8)
+    y = log(x,2)
+    assert y.real == np.log2(8)
 
 def test_log_constant():
     x = 14
@@ -194,3 +200,14 @@ def test_arccos():
 
     assert arccos(0.5) == np.arccos(0.5)
 
+def test_logistic():
+    x = DualNumber(100)
+    y = logistic(x)
+    assert y == DualNumber(1.0, 0.0)
+
+    x = 100
+    y = logistic(x)
+    assert y == DualNumber(1.0, 0.0)
+    
+    with pytest.raises(TypeError):
+        logistic('test')
