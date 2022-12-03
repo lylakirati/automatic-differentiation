@@ -52,7 +52,7 @@ class DualNumber:
         Returns
         ------
         str
-            a representation of the DualNumber instance
+            a representation of the DualNumber instance.
         """
         return f"DualNumber({self.real}, {self.dual})"
 
@@ -62,7 +62,7 @@ class DualNumber:
         Returns
         ------
         str
-            a string representation of the DualNumber instance
+            a string representation of the DualNumber instance.
         """
         return f"DualNumber: real = {self.real}, dual = {self.dual}"
 
@@ -72,7 +72,7 @@ class DualNumber:
         Returns
         ------
         DualNumber
-            the negation of the DualNumber instance for both real and dual parts
+            the negation of the DualNumber instance for both real and dual parts.
         """
         return DualNumber(-self.real, -self.dual)
 
@@ -82,7 +82,7 @@ class DualNumber:
         Parameter
         ------
         other : DualNumber, int, or float
-            the instance to compute the sum with
+            the instance to compute the sum with.
 
         Returns
         ------
@@ -104,7 +104,7 @@ class DualNumber:
         Parameter
         ------
         other : int, or float
-            a scalar object to compute the sum with
+            a scalar object to compute the sum with.
 
         Returns
         ------
@@ -119,7 +119,7 @@ class DualNumber:
         Parameter
         ------
         other : DualNumber, int, or float
-            the instance to subtract
+            the instance to subtract.
 
         Returns
         ------
@@ -138,7 +138,7 @@ class DualNumber:
         Parameter
         ------
         other : int, or float
-            a scalar object to be subtracted
+            a scalar object to be subtracted.
 
         Returns
         ------
@@ -157,7 +157,7 @@ class DualNumber:
         Parameter
         ------
         other : DualNumber, int, or float
-            the instance to compute the product with
+            the instance to compute the product with.
 
         Returns
         ------
@@ -180,7 +180,7 @@ class DualNumber:
         Parameter
         ------
         other : int, or float
-            a scalar object to compute the product with
+            a scalar object to compute the product with.
 
         Returns
         ------
@@ -195,7 +195,7 @@ class DualNumber:
         Parameter
         ------
         other : DualNumber, int, or float
-            the instance to divide
+            the instance to divide.
 
         Returns
         ------
@@ -219,7 +219,7 @@ class DualNumber:
         Parameter
         ------
         other : DualNumber, int, or float
-            the instance to be divided from 
+            the instance to be divided from.
 
         Returns
         ------
@@ -233,6 +233,18 @@ class DualNumber:
         return DualNumber(other / self.real, (-other / self.real ** 2) * self.dual)
 
     def __pow__(self, other):
+        """Returns the exponential of the DualNumber instance as base and another given instance of supported type as an exponent.
+
+        Parameter
+        ------
+        other : DualNumber, int, or float
+            the exponent part.
+
+        Returns
+        ------
+        DualNumber
+            the result of the exponential operation on the given instances.
+        """
         if not isinstance(other, (*self._supported_scalars, DualNumber)):
             raise TypeError(f"Unsupported type '{type(other)}'")
         if isinstance(other, self._supported_scalars):
@@ -250,6 +262,18 @@ class DualNumber:
         return DualNumber(real_pow, dual_pow)
 
     def __rpow__(self, other):
+        """Returns the exponential of the DualNumber instance as an exponent and another given instance of supported type as base.
+
+        Parameter
+        ------
+        other : DualNumber, int, or float
+            the base of the exponential function.
+
+        Returns
+        ------
+        DualNumber
+            the result of the exponential operation on the given instances.
+        """
         if not isinstance(other, self._supported_scalars):
             raise TypeError(f"Unsupported type '{type(other)}'")
         real_pow = other ** self.real
@@ -259,6 +283,18 @@ class DualNumber:
         return DualNumber(real_pow, dual_pow)
 
     def __eq__(self, other):
+        """Compares two objects if they are equal.
+
+        Parameter
+        ------
+        other : DualNumber, int, or float
+            The object to compare with.
+
+        Returns
+        ------
+        bool
+            True if the two instances are equal; and False, otherwise.
+        """
         if not isinstance(other, (*self._supported_scalars, DualNumber)):
             raise TypeError(f"Unsupported type '{type(other)}'")
         if isinstance(other, self._supported_scalars):
@@ -266,31 +302,101 @@ class DualNumber:
         return (self.real == other.real) and (self.dual == other.dual)
 
     def __ne__(self, other):
+        """Compares two objects if they are not equal.
+
+        This operator is a negation of __eq__(), and hence delegates the task to
+        __eq__().
+
+        Parameter
+        ------
+        other : DualNumber, int, or float
+            The object to compare with.
+
+        Returns
+        ------
+        bool
+            True if the two instances are not equal; and False, otherwise.
+        """
         return not self.__eq__(other)
 
     def __lt__(self, other):
+        """Compares two objects if the instance is less than the other given instance of supported type.
+
+        Parameter
+        ------
+        other : DualNumber, int, or float
+            The object to compare with.
+
+        Returns
+        ------
+        bool
+            True if less than the given object; and False, otherwise.
+        """
         try:
             return self.real < other.real
         except AttributeError:
             return self.real < other
 
     def __gt__(self, other):
+        """Compares two objects if the instance is greater than the other given instance of supported type.
+
+        Parameter
+        ------
+        other : DualNumber, int, or float
+            The object to compare with.
+
+        Returns
+        ------
+        bool
+            True if greater than the given object; and False, otherwise.
+        """
         try:
             return self.real > other.real
         except AttributeError:
             return self.real > other
 
     def __le__(self, other):
+        """Compares two objects if the instance is less than or equal to the other given instance of supported type.
+
+        Parameter
+        ------
+        other : DualNumber, int, or float
+            The object to compare with.
+
+        Returns
+        ------
+        bool
+            True if less than or equal to the given object; and False, otherwise.
+        """
         try:
             return self.real <= other.real
         except AttributeError:
             return self.real <= other
 
     def __ge__(self, other):
+        """Compares two objects if the instance is greater than or equal to the other given instance of supported type.
+
+        Parameter
+        ------
+        other : DualNumber, int, or float
+            The object to compare with.
+
+        Returns
+        ------
+        bool
+            True if greater than or equal to the given object; and False, otherwise.
+        """
         try:
             return self.real >= other.real
         except AttributeError:
             return self.real >= other
 
     def __abs__(self):
+        """Returns the absolute value of the DualNumber instance.
+
+        Returns
+        ------
+        DualNumber
+            the absolute value of the DualNumber instance on both real and dual parts.
+        """
         return DualNumber(abs(self.real), abs(self.dual))
