@@ -11,11 +11,10 @@ class ForwardAD:
 
         Inputs
         ------
-        var_dict: a dictionary of variables and their corresponding values
-        func_list: a list of functions encoded as strings
-
-        Returns
-        -------
+        var_dict: dict
+            a dictionary of variables and their corresponding values
+        func_list: str or list of str
+            (a list of) function(s) encoded as string(s)
 
         Examples
         --------
@@ -40,34 +39,43 @@ class ForwardAD:
         """
         # type checks
         if not isinstance(var_dict, dict):
-            raise TypeError("var_dict should be a dictionary")
-        for f in func_list:
-            if not isinstance(f, str):
-                raise TypeError("func_list should be a list of strings")
+            raise TypeError("var_dict should be a dictionary.")
+
+        if isinstance(func_list, list):
+            for f in func_list:
+                if not isinstance(f, str):
+                    raise TypeError("func_list should be a string or a list of strings.")
+        elif not isinstance(func_list, str):
+            raise TypeError("func_list should be a string or a list of strings.")
 
         # var inits
         elem_funcs = ['sqrt', 'exp', 'log', 'sin', 'cos', 'tan',
                       'arcsin', 'arccos', 'arctan', 'sinh', 'cosh', 'tanh']
         self.var_dict = var_dict
-        self.func_list = func_list
-        vars = list(var_dict.keys())
+
+        if isinstance(func_list, list):
+            self.func_list = func_list
+        else:
+            self.func_list = [func_list]
+
+        vars = list(self.var_dict.keys())
 
         self.func_evals = []
-        self.Dpf = np.zeros((len(func_list), len(var_dict)))
+        self.Dpf = np.zeros((len(self.func_list), len(self.var_dict)))
         i = 0  # a helper counter to determine which partial deriv to take
 
-        for _ in var_dict:
-            for var in var_dict:
+        for _ in self.var_dict:
+            for var in self.var_dict:
                 if var == vars[i]:
                     dual = 1
                 else:
                     dual = 0
-                exec(f"{var} = DualNumber({var_dict[var]}, {dual})")
+                exec(f"{var} = DualNumber({self.var_dict[var]}, {dual})")
 
-            for j in range(0, len(func_list)):
+            for j in range(0, len(self.func_list)):
                 for f in elem_funcs:
-                    func = func_list[j]
-                    if f in func_list[j]:
+                    func = self.func_list[j]
+                    if f in self.func_list[j]:
                         break
                 self.func_evals.append(eval(func).real)  # primal trace
                 self.Dpf[j, i] = eval(func).dual  # tangent trace
