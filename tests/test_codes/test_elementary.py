@@ -15,6 +15,8 @@ def test_pow():
 
     assert y.real == 5 ** 3
     assert y.dual == 3 * (5 ** 2)
+    with pytest.raises(TypeError):
+        x**"2"
 
 def test_pow_var():
     # test DualNumber raise to a DualNumber
@@ -49,6 +51,11 @@ def test_sqrt():
     y = sqrt(x)
     assert y.real == np.sqrt(10.1)
     assert y.dual == 1 / (2 * (np.sqrt(10.1)))
+    with pytest.raises(ValueError):
+        sqrt(-1)
+    with pytest.raises(TypeError):
+        sqrt("-1")
+        
 
 def test_sqrt_constant():
     # test square root of a DualNumber
@@ -73,9 +80,7 @@ def test_exp_constant():
     y = exp(x)
     assert y == np.exp(32)
 
-def test_log():
-
-    
+def test_log(): 
     x = DualNumber(14)
     y = log(x)
     assert y.real == np.log(14)
@@ -84,6 +89,9 @@ def test_log():
     x = DualNumber(8)
     y = log(x,2)
     assert y.real == np.log2(8)
+    with pytest.raises(TypeError):
+        log("2")
+
 
 def test_log_constant():
     x = 14
@@ -93,7 +101,9 @@ def test_log_constant():
 def test_log_non_positive():
     with pytest.raises(ValueError):
         x = DualNumber(-14)
-        y = log(x)
+        log(x)
+    with pytest.raises(ValueError):
+        log(-10)
 
 def test_tangent_function():
     x = DualNumber(np.pi)
@@ -120,6 +130,8 @@ def test_tangent_function():
 
     # checking a constant
     assert tan(3) == np.tan(3)
+    with pytest.raises(TypeError):
+        tan("2")
 
 # can use these function below to run the code manually rather than with pytest
 def test_arctangent_function():
@@ -130,6 +142,8 @@ def test_arctangent_function():
 
     # check a constant
     assert arctan(3) == np.arctan(3)
+    with pytest.raises(TypeError):
+        arctan("2")
 
 def test_sinh_function():
     x = DualNumber(2)
@@ -139,6 +153,8 @@ def test_sinh_function():
 
     # check a constant
     assert sinh(3) == np.sinh(3)
+    with pytest.raises(TypeError):
+        sinh("2")
 
 def test_cosh_function():
     x = DualNumber(4)
@@ -147,6 +163,8 @@ def test_cosh_function():
 
     # check a constant
     assert cosh(3) == np.cosh(3)
+    with pytest.raises(TypeError):
+        cosh("2")
 
 def test_tanh_function():
     x = DualNumber(3)
@@ -155,6 +173,8 @@ def test_tanh_function():
 
     # checking a constant
     assert tanh(3) == np.tanh(3)
+    with pytest.raises(TypeError):
+        tanh("2")
 
 def test_sin():
     x = DualNumber(0)
@@ -165,6 +185,8 @@ def test_sin():
 
     # check constant
     assert sin(2) == np.sin(2)
+    with pytest.raises(TypeError):
+        sin("2")
 
 def test_cos():
     x = DualNumber(0)
@@ -174,6 +196,8 @@ def test_cos():
 
     # check constant
     assert cos(2) == np.cos(2)
+    with pytest.raises(TypeError):
+        cos("2")
 
 def test_arcsin():
     x = DualNumber(0)
@@ -187,6 +211,8 @@ def test_arcsin():
         f = arcsin(x)
 
     assert arcsin(0.5) == np.arcsin(0.5)
+    with pytest.raises(TypeError):
+        arcsin("2")
 
 def test_arccos():
     x = DualNumber(0)
@@ -199,6 +225,8 @@ def test_arccos():
         f = arccos(x)
 
     assert arccos(0.5) == np.arccos(0.5)
+    with pytest.raises(TypeError):
+        arccos("2")
 
 def test_logistic():
     x = DualNumber(100)
