@@ -132,7 +132,7 @@ Example of finding a derivative of a scalar function of a scalar:
 >>> f.dual
 24
 >>> x = {'x': 4}
->>> f = ['f = 3*x**2 + 4']  # input f should be a list of strings
+>>> f = ['3*x**2 + 4']  # input f should be a list of strings
 >>> ad = ForwardAD(x, f) # compute derivative of f evaluated at x using forward mode AD
 >>> ad()
 ===== Forward AD =====
