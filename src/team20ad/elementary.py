@@ -61,7 +61,7 @@ def exp(val):
         raise TypeError(f"Unsupported type '{type(val)}'")
 
 
-def log(var, base = e):
+def log(val, base = e):
     """Logarithmic function supporting operations for forward mode AD.
 
     Parameter
@@ -71,16 +71,16 @@ def log(var, base = e):
     base : int or float
         base value of log function, optional (default = natural e)
     """
-    if isinstance(var, DualNumber):
+    if isinstance(val, DualNumber):
         if val.real <= 0:
             raise ValueError(f"Should not be negative.")
-        real = np.log(var.real) / np.log(base)
-        dual = (1 / var.real / np.log(base)) * var.dual
+        real = np.log(val.real) / np.log(base)
+        dual = (1 / val.real / np.log(base)) * val.dual
         return DualNumber(real, dual)
     elif isinstance(val, _supported_scalars):
         if val <= 0:
             raise ValueError(f"Should not be negative.")
-        return np.log(var) / np.log(base)
+        return np.log(val) / np.log(base)
     else: 
         raise TypeError(f"Unsupported type '{type(val)}'")
 
