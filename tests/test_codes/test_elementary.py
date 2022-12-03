@@ -74,6 +74,9 @@ def test_exp():
     y = exp(x)
     assert y.real == np.exp(32)
     assert y.dual == np.exp(32)
+    with pytest.raises(TypeError):
+        exp("3")
+
 
 def test_exp_constant():
     x = 32
@@ -97,6 +100,9 @@ def test_log_constant():
     x = 14
     y = log(x)
     assert y == np.log(14)
+    x = 8
+    y = log(x,2)
+    assert y == np.log2(8)
 
 def test_log_non_positive():
     with pytest.raises(ValueError):
