@@ -1,4 +1,17 @@
+"""Docstring for the example.py module.
+
+Modules names should have short, all-lowercase names.  The module name may
+have underscores if this improves readability.
+
+Every module should have a docstring at the very top of the file.  The
+module's docstring may extend over multiple lines.  If your docstring does
+extend over multiple lines, the closing three quotation marks must be on
+a line by itself, preferably preceded by a blank line.
+
+"""
+
 import numpy as np
+from math import e
 
 from .dualNumber import DualNumber
 
@@ -7,6 +20,13 @@ _supported_scalars = (int, float)
 
 
 def sqrt(val):
+    """square root function supporting operations for forward mode AD.
+    
+    Parameter
+    ------
+    val : DualNumber, int or float
+        value to compute square root
+    """
     if isinstance(val, DualNumber):
         if val <= 0:
             raise ValueError(f"Should not be negative.")
@@ -22,6 +42,17 @@ def sqrt(val):
 
 
 def exp(val):
+    """exponential function (base natural) supporting operations for forward mode AD.
+    
+    Parameter
+    ------
+    val : DualNumber, int or float
+        value to compute
+
+    Notes
+    ------
+    exponential functions for other bases are handled by __pow__ in the DualNumber class.
+    """
     if isinstance(val, DualNumber):
         return DualNumber(np.exp(val.real), np.exp(val.real) * val.dual)
     elif isinstance(val, _supported_scalars):
@@ -30,22 +61,38 @@ def exp(val):
         raise TypeError(f"Unsupported type '{type(val)}'")
 
 
-def log(val):
-    if isinstance(val, DualNumber):
-        if val <= 0:
-            raise ValueError(f"Should not be negative.")
+def log(var, base = e):
+    """Logarithmic function supporting operations for forward mode AD.
 
-        return DualNumber(np.log(val.real), 1 / val.real * val.dual)
+    Parameter
+    ------
+    val : DualNumber, int or float
+        value to compute the log
+    base : int or float
+        base value of log function, optional (default = natural e)
+    """
+    if isinstance(var, DualNumber):
+        if val.real <= 0:
+            raise ValueError(f"Should not be negative.")
+        real = np.log(var.real) / np.log(base)
+        dual = (1 / var.real / np.log(base)) * var.dual
+        return DualNumber(real, dual)
     elif isinstance(val, _supported_scalars):
         if val <= 0:
             raise ValueError(f"Should not be negative.")
-
-        return np.log(val)
-    else:
+        return np.log(var) / np.log(base)
+    else: 
         raise TypeError(f"Unsupported type '{type(val)}'")
 
 
 def sin(val):
+    """Sine function supporting operations for forward mode AD.
+
+    Parameter
+    ------
+    val : DualNumber, int or float
+        value to compute sine
+    """
     if isinstance(val, DualNumber):
         return DualNumber(np.sin(val.real), np.cos(val.real) * val.dual)
     elif isinstance(val, _supported_scalars):
@@ -55,6 +102,13 @@ def sin(val):
 
 
 def cos(val):
+    """Cosine function supporting operations for forward mode AD.
+
+    Parameter
+    ------
+    val : DualNumber, int or float
+        value to compute cosine
+    """
     if isinstance(val, DualNumber):
         return DualNumber(np.cos(val.real), -np.sin(val.real) * val.dual)
     elif isinstance(val, _supported_scalars):
@@ -64,16 +118,23 @@ def cos(val):
 
 
 def tan(val):
+    """Tangent function supporting operations for forward mode AD.
+
+    Parameter
+    ------
+    val : DualNumber, int or float
+        value to compute tangent
+    """
     if isinstance(val, DualNumber):
         x = val.real % np.pi == (np.pi / 2)
         if x:
-            raise ValueError('Tan is undefined in this domain')
+            raise ValueError('Tan is undefined in the given domain')
 
         return DualNumber(np.tan(val.real), 1 / (np.cos(val.real) ** 2) * val.dual)
     elif isinstance(val, _supported_scalars):
         x = val.real % np.pi == (np.pi / 2)
         if x:
-            raise ValueError('Tan is undefined in this domain')
+            raise ValueError('Tan is undefined in the given domain')
 
         return np.tan(val)
     else:
@@ -81,6 +142,13 @@ def tan(val):
 
 
 def arcsin(val):
+    """Inverse sine function supporting operations for forward mode AD.
+
+    Parameter
+    ------
+    val : DualNumber, int or float
+        value to compute inverse sine
+    """
     if isinstance(val, DualNumber):
         if abs(val.real) >= 1:
             raise ValueError(
@@ -95,6 +163,13 @@ def arcsin(val):
 
 
 def arccos(val):
+    """Inverse cosine function supporting operations for forward mode AD.
+
+    Parameter
+    ------
+    val : DualNumber, int or float
+        value to compute inverse cosine
+    """
     if isinstance(val, DualNumber):
         if abs(val.real) >= 1:
             raise ValueError(
@@ -109,6 +184,13 @@ def arccos(val):
 
 
 def arctan(val):
+    """Inverse tangent function supporting operations for forward mode AD.
+
+    Parameter
+    ------
+    val : DualNumber, int or float
+        value to compute inverse tangent
+    """
     if isinstance(val, DualNumber):
         return DualNumber(np.arctan(val.real), 1 / (1 + val.real ** 2) * val.dual)
     elif isinstance(val, _supported_scalars):
@@ -118,6 +200,13 @@ def arctan(val):
 
 
 def sinh(val):
+    """Hyperbolic sine function supporting operations for forward mode AD.
+
+    Parameter
+    ------
+    val : DualNumber, int or float
+        value to compute hyerbolic sine
+    """
     if isinstance(val, DualNumber):
         return DualNumber(np.sinh(val.real), np.cosh(val.real) * val.dual)
     elif isinstance(val, _supported_scalars):
@@ -127,6 +216,13 @@ def sinh(val):
 
 
 def cosh(val):
+    """Hyperbolic cosine function supporting operations for forward mode AD.
+
+    Parameter
+    ------
+    val : DualNumber, int or float
+        value to compute hyerbolic cosine
+    """
     if isinstance(val, DualNumber):
         return DualNumber(np.cosh(val.real), np.sinh(val.real) * val.dual)
     elif isinstance(val, _supported_scalars):
@@ -136,6 +232,13 @@ def cosh(val):
 
 
 def tanh(val):
+    """Hyperbolic tangent function supporting operations for forward mode AD.
+
+    Parameter
+    ------
+    val : DualNumber, int or float
+        value to compute hyerbolic tangent
+    """
     if isinstance(val, DualNumber):
         return DualNumber(np.tanh(val.real), (1 - (np.tanh(val.real) ** 2)) * val.dual)
     elif isinstance(val, _supported_scalars):
