@@ -190,6 +190,18 @@ class DualNumber:
         return self.__mul__(other)
 
     def __truediv__(self, other):
+        """Returns the division of the DualNumber instance and another given instance of supported type.
+
+        Parameter
+        ------
+        other : DualNumber, int, or float
+            the instance to divide
+
+        Returns
+        ------
+        DualNumber
+            the division of the two instances.
+        """
         if not isinstance(other, (*self._supported_scalars, DualNumber)):
             raise TypeError(f"Unsupported type '{type(other)}'")
         if isinstance(other, self._supported_scalars):
@@ -202,6 +214,18 @@ class DualNumber:
                           (self.dual * other.real - self.real * other.dual) / (other.real ** 2))
 
     def __rtruediv__(self, other):
+        """Returns the division of the DualNumber instance and a scalar object.
+
+        Parameter
+        ------
+        other : DualNumber, int, or float
+            the instance to be divided from 
+
+        Returns
+        ------
+        DualNumber
+            the division of the two instances.
+        """
         if not isinstance(other, self._supported_scalars):
             raise TypeError(f"Unsupported type '{type(other)}'")
         if other == 0:
