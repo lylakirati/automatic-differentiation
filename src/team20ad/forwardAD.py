@@ -1,6 +1,7 @@
 import numpy as np
 
-from .elementary import *
+from team20ad.elementary import *
+
 
 
 class ForwardAD:
