@@ -12,7 +12,8 @@ a line by itself, preferably preceded by a blank line.
 
 import numpy as np
 
-from .dualNumber import DualNumber
+from team20ad.dualNumber import DualNumber
+
 
 
 _supported_scalars = (int, float)
