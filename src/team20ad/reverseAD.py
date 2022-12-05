@@ -33,9 +33,7 @@ class ReverseAD:
         Gradient:
 
         [[2.        2.       ]
-        [7.3890561 7.3890561]]
-    
-        
+        [7.3890561 7.3890561]]        
         """
         # type checks
         if not isinstance(var_dict, dict):
@@ -52,16 +50,15 @@ class ReverseAD:
             self.func_list = func_list
         else:
             self.func_list = [func_list]
-
-        self.var = []
-        self.der = []
-        self.func_list = func_list
+ 
+        self.func_evals = []
+        self.Dpf = []
         self.var_dict = var_dict
 
         elem_funcs = ['sqrt', 'exp', 'log', 'sin', 'cos', 'tan',
                       'arcsin', 'arccos', 'arctan', 'sinh', 'cosh', 'tanh']
 
-        for func in func_list:
+        for func in self.func_list:
             for i in elem_funcs:
                 if i in func:
                     func = re.sub(i + r'\(', 'Node.' + i + '(', func)
@@ -69,33 +66,31 @@ class ReverseAD:
 
             for var_name, var_value in var_dict.items():
                 exec(f'{var_name} = Node(float(var_value))')
-            print(func)
-            func_evals = eval(func)
+            vals = eval(func)
 
             value_keys = str(list(var_dict.keys())).replace('\'','')
-            val_1, der_1 = eval(f'func_evals.g_derivatives({value_keys})')
+            v, d = eval(f'vals.g_derivatives({value_keys})')
 
-            self.var.append(val_1)
-            self.der.append(der_1)
+            self.func_evals.append(v)
+            self.Dpf.append(d)
+        self.Dpf = np.array(self.Dpf)
 
     def __call__(self):
         out = "===== Forward AD =====\n"
         out += f"Vars: {self.var_dict}\n"
         out += f"Funcs: {self.func_list}\n"
         out += f"-----\n"
-        out += f"Func evals: {self.var}\n"
-
+        out += f"Func evals: {self.func_evals}\n"
+        out += f"Derivatives:\n{self.Dpf}\n"
         print(out)
 
 
 class Node():
     def __init__(self, var):
         """
-        Initialize a Node object with follow attributes:
-        child: a list that holds tuples of all depending Nodes and derivatives
-        derivative: attribute representing evaluated derivative/gradient. Derivative is 1 by default.
-        
-        :param var: attribute representing evaluated value.
+        Node object with follow attributes:
+        child: a list of all depending Nodes and derivatives
+        derivative: Representing evaluated derivatives
         """
         if isinstance(var, int) or isinstance(var, float):
             self.var = var
@@ -107,28 +102,26 @@ class Node():
 
     def g_derivatives(self, inputs):
         """
-        Method to get derivatives for each variable used in the function.
-        var_val: a variable which stored the function values
-        der_list: a list of derivatives with respect to each variable
-        :param inputs: the list of input functions.
+        Get derivatives for each variable in the function
+        var_val: a variable which stores the function values
+        der_list: a list of derivatives for each variable
+
         """
         # self.der = 1
         var_val = self.var
-        der_list = np.array([var_i.partials() for var_i in inputs])
+        der_list = np.array([var_i.partial() for var_i in inputs])
         return var_val, der_list
             
-    def partials(self):
+    def partial(self):
         """
-        Method to compute derivative for variables.
-        Uses self.derivative to determine whether to use list comprehension.
-        For finding partial derivatives with respect to each function.
+        Computes derivative for a variable used in the function
         """
         if len(self.child) == 0:
             return 1
         if self.derivative is not None:
             return self.derivative
         else:
-            self.derivative = sum([child.partials() * partial for child, partial in self.child])
+            self.derivative = sum([child.partial() * partial for child, partial in self.child])
             return self.derivative
 
 
@@ -450,8 +443,8 @@ class Node():
             
 
     def __str__(self):
-        return f"value = {self.var}\n derivative = {self.partials()}"
+        return f"value = {self.var}\n derivative = {self.partial()}"
 
 
     def __repr__(self):
-        return f"value = {self.var}\n derivative = {self.partials()}"
+        return f"value = {self.var}\n derivative = {self.partial()}"
