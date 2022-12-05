@@ -122,22 +122,6 @@ With `team20ad` package installed, one can import the module by:
 
 The user will be able to instantiate an `ad` object and compute the differentiation as follows:
 
-Example of finding a derivative of a scalar function of a scalar:
-
-```python
->>> x = {'x': 4} # value to be evaluate at
->>> f = '3*x**2 + 4'  # input f should be a list of strings
->>> ad = ForwardAD(x, f) # compute derivative of f evaluated at x using forward mode AD
->>> ad()
-===== Forward AD =====
-Vars: {'x': 4}
-Funcs: ['3*x**2 + 4']
------
-Func evals: [52]
-Gradient:
-[[24.]]
-```
-
 Example of finding derivatives of a vector function of a vector:
 
 ```python
