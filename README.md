@@ -14,6 +14,8 @@
 
 For documentation and how-to-use, please reiew our [documentation notebook](https://code.harvard.edu/CS107/team20/blob/main/docs/documentation.md).
 
+For final presentation slides, please follow this [link](https://docs.google.com/presentation/d/1QTp1TgBgD-8IoDuCckQiYSAcb674EGMxv8NQPq3YPPE/edit?usp=sharing)
+
 ### Modules
 ---
 We have three modules in our package `forwardFD`.
