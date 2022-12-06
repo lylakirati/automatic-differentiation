@@ -3,7 +3,6 @@ import re
 
 from .elementary import *
 
-
 class ReverseAD:
     def __init__(self, var_dict, func_list):
         """
@@ -43,17 +42,15 @@ class ReverseAD:
         if isinstance(func_list, list):
             for f in func_list:
                 if not isinstance(f, str):
-                    raise TypeError(
-                        "func_list should be a string or a list of strings.")
+                    raise TypeError("func_list should be a string or a list of strings.")
         elif not isinstance(func_list, str):
-            raise TypeError(
-                "func_list should be a string or a list of strings.")
+            raise TypeError("func_list should be a string or a list of strings.")
 
         if isinstance(func_list, list):
             self.func_list = func_list
         else:
             self.func_list = [func_list]
-
+ 
         self.func_evals = []
         self.Dpf = []
         self.var_dict = var_dict
@@ -71,7 +68,7 @@ class ReverseAD:
                 exec(f'{var_name} = Node(float(var_value))')
             vals = eval(func)
 
-            value_keys = str(list(var_dict.keys())).replace('\'', '')
+            value_keys = str(list(var_dict.keys())).replace('\'','')
             v, d = eval(f'vals.g_derivatives({value_keys})')
 
             self.func_evals.append(v)
@@ -101,6 +98,7 @@ class Node():
             self.derivative = None
         else:
             raise TypeError("Input is not a real number.")
+        
 
     def g_derivatives(self, inputs):
         """
@@ -113,7 +111,7 @@ class Node():
         var_val = self.var
         der_list = np.array([var_i.partial() for var_i in inputs])
         return var_val, der_list
-
+            
     def partial(self):
         """
         Computes derivative for a variable used in the function
@@ -123,25 +121,26 @@ class Node():
         if self.derivative is not None:
             return self.derivative
         else:
-            self.derivative = sum(
-                [child.partial() * partial for child, partial in self.child])
+            self.derivative = sum([child.partial() * partial for child, partial in self.child])
             return self.derivative
 
-    def __add__(self, other):
 
+    def __add__(self, other):
+ 
         try:
             new_add = Node(self.var + other.var)
             self.child.append((new_add, 1))
             other.child.append((new_add, 1))
-
+           
             return new_add
-        except:
+        except: 
             if isinstance(other, int) or isinstance(other, float):
                 new_add = Node(self.var + other)
                 self.child.append((new_add, 1))
                 return new_add
             else:
                 raise TypeError("Not real number")
+
 
     def __mul__(self, other):
         try:
@@ -157,55 +156,59 @@ class Node():
                 return new_mul
             else:
                 raise TypeError("Input is not a real number.")
+        
 
     def __radd__(self, other):
         return self.__add__(other)
 
+
     def __rmul__(self, other):
         return self.__mul__(other)
+
 
     def __sub__(self, other):
         return self.__add__(-other)
 
+
     def __rsub__(self, other):
         return (-self).__add__(other)
+
 
     def __truediv__(self, other):
         try:
             new_div = Node(self.var / other.var)
-            self.child.append(
-                (new_div, ((1 * other.var - 0 * self.var) / other.var**2)))
+            self.child.append((new_div,((1 * other.var - 0 * self.var) / other.var**2)))
             other.child.append((new_div, (-self.var/(other.var**2))))
             return new_div
         except AttributeError:
             if isinstance(other, int) or isinstance(other, float):
                 new_div = Node(self.var / other)
-                self.child.append(
-                    (new_div, ((1 * other - 0 * self.var) / other**2)))
+                self.child.append((new_div,((1 * other - 0 * self.var) / other**2)))
                 return new_div
             else:
                 raise TypeError(f"{other} is invalid.")
+
 
     def __neg__(self):
         new_neg = Node(-self.var)
         self.child.append((new_neg, -1))
         return new_neg
 
+
     def __rtruediv__(self, other):
         try:
             new_div = Node(other.var / self.var)
-            self.child.append(
-                (new_div, ((0 * self.var - other.var * 1) / self.var**2)))
+            self.child.append((new_div, ((0 * self.var - other.var * 1) / self.var**2)))
             other.child.append((new_div, 1/self.var))
             return new_div
         except:
             if isinstance(other, int) or isinstance(other, float):
                 new_div = Node(other / self.var)
-                self.child.append(
-                    (new_div, ((0 * self.var - other * 1) / self.var**2)))
+                self.child.append((new_div, ((0 * self.var - other * 1) / self.var**2)))
                 return new_div
             else:
                 raise TypeError(f"Input {other} is not valid.")
+
 
     def __lt__(self, other):
         try:
@@ -213,11 +216,13 @@ class Node():
         except AttributeError:
             return self.var < other
 
+
     def __gt__(self, other):
         try:
             return self.var > other.var
         except AttributeError:
             return self.var > other
+
 
     def __le__(self, other):
         try:
@@ -225,11 +230,13 @@ class Node():
         except AttributeError:
             return self.var <= other
 
+
     def __ge__(self, other):
         try:
             return self.var >= other.var
         except AttributeError:
             return self.var >= other
+
 
     def __eq__(self, other):
         try:
@@ -237,21 +244,22 @@ class Node():
         except:
             raise TypeError('Input incomparable')
 
+
     def __ne__(self, other):
         return not self.__eq__(other)
+
 
     def __abs__(self):
         new_abs = Node(abs(self.var))
         self.child.append((1, new_abs))
         return new_abs
 
+
     def __pow__(self, other):
         try:
             new_val = Node(self.var ** other.var)
-            self.child.append(
-                (new_val, (other.var) * self.var ** (other.var-1)))
-            other.child.append(
-                (new_val, self.var ** other.var * (np.log(self.var))))
+            self.child.append((new_val, (other.var) * self.var ** (other.var-1)))
+            other.child.append((new_val, self.var ** other.var * (np.log(self.var))))
             return new_val
         except:
             if isinstance(other, int):
@@ -261,6 +269,7 @@ class Node():
             else:
                 raise TypeError(f"Exponent is invalid.")
 
+
     def __rpow__(self, other):
         try:
             new_val = Node(other ** self.var)
@@ -269,6 +278,7 @@ class Node():
         self.child.append((new_val, other**self.var * np.log(other)))
         return new_val
 
+        
     @staticmethod
     def log(var):
         try:
@@ -279,6 +289,7 @@ class Node():
         log_var = Node(np.log(var.var))
         var.child.append((log_var, (1. / var.var) * 1))
         return log_var
+
 
     @staticmethod
     def sqrt(var):
@@ -292,6 +303,7 @@ class Node():
                 raise TypeError(f"Invalid input")
         return sqrt_var
 
+
     @staticmethod
     def exp(var):
         try:
@@ -301,8 +313,9 @@ class Node():
         except:
             if not isinstance(var, int) and not isinstance(var, float):
                 raise TypeError(f"Invalid input")
-
+        
             return np.exp(var)
+
 
     @staticmethod
     def sin(var):
@@ -313,8 +326,9 @@ class Node():
         except:
             if not isinstance(var, int) and not isinstance(var, float):
                 raise TypeError(f"Invalid input")
-
+        
             return np.sin(var)
+
 
     @staticmethod
     def cos(var):
@@ -326,9 +340,10 @@ class Node():
         except:
             if not isinstance(var, int) and not isinstance(var, float):
                 raise TypeError(f"Invalid input")
-
+        
             return np.cos(var)
-
+    
+    
     @staticmethod
     def tan(var):
         try:
@@ -338,8 +353,9 @@ class Node():
         except:
             if not isinstance(var, int) and not isinstance(var, float):
                 raise TypeError(f"Input {var} is not valid.")
-
+        
             return np.tan(var)
+
 
     @staticmethod
     def arcsin(var):
@@ -355,6 +371,7 @@ class Node():
                 raise TypeError(f"Input {var} is not valid.")
             return np.arcsin(var)
 
+
     @staticmethod
     def arccos(var):
         try:
@@ -368,7 +385,8 @@ class Node():
                 var.child.append((new_val, -1 / np.sqrt(1 - (var.var ** 2))))
             return new_val
         except:
-            raise TypeError(f"Input {var} is not valid.")
+                raise TypeError(f"Input {var} is not valid.")
+
 
     @staticmethod
     def arctan(var):
@@ -381,6 +399,7 @@ class Node():
         except AttributeError:
             return np.arctan(var)
 
+
     @staticmethod
     def sinh(var):
         try:
@@ -390,6 +409,7 @@ class Node():
 
         except AttributeError:
             return np.sinh(var)
+
 
     @staticmethod
     def cosh(var):
@@ -402,6 +422,7 @@ class Node():
         except AttributeError:
             return np.cosh(var)
 
+
     @staticmethod
     def tanh(var):
         try:
@@ -411,17 +432,19 @@ class Node():
         except AttributeError:
             return np.tanh(var)
 
+
     def sigmoid(var):
         try:
             logistic_var = Node(1 / (1 + np.exp(-var.var)))
-            var.child.append((logistic_var, 1 / (1 + np.exp(-var.var))
-                             * (1-(1 / (1 + np.exp(-var.var)) * 1))))
+            var.child.append((logistic_var, 1 / (1 + np.exp(-var.var)) * (1-(1 / (1 + np.exp(-var.var)) * 1))))
             return logistic_var
         except:
-            raise TypeError(f"Invalid input")
+            raise TypeError(f"Invalid input")   
+            
 
     def __str__(self):
         return f"value = {self.var}\n derivative = {self.partial()}"
+
 
     def __repr__(self):
         return f"value = {self.var}\n derivative = {self.partial()}"
