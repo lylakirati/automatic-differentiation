@@ -42,10 +42,10 @@ In this library, the general mathematical background and concepts of differentia
 
 **3. Automatic Differentiation**
 
-   * Automatic differentiation refers to a general way of taking a program that computes a value and automatically constructing a procedure for computing derivatives of that value. The derivatives sought may be first order (the gradient of a target function, or the Jacobian of a set of constraints), higher order (Hessian times direction vector or a truncated Taylor series), or nested. There are two modes in automatic differentiation: forward mode and reverse mode. In the current package, only the forward mode is focused and implemented.
+   * Automatic differentiation refers to a general way of taking a program that computes a value and automatically constructing a procedure for computing derivatives of that value. The derivatives sought may be first order (the gradient of a target function, or the Jacobian of a set of constraints), higher order (Hessian times direction vector or a truncated Taylor series), or nested. There are two modes in automatic differentiation: forward mode and reverse mode, both of which are supported in this package.
 
 
-   * *Evaluation Trace of a Function*: All numeric evaluations are sequences of elementary operations. The evaluation of $f$ at a given point $x = (x_1, \dots, x_n)$ can be described by a so-called evaluation trace $v_{k-m}=x_k$, for $k = 1,2, \dots, m$, where each intermediate result $v_j$ is a function that depends on the independent variable $x$. 
+   * *Evaluation Trace of a Function*: All numeric evaluations are sequences of elementary operations. The evaluation of $f$ at a given point $x = (x_1, \dots, x_m)$ can be described by a so-called evaluation trace $v_{k-m}=x_k$, for $k = 1,2, \dots, m$, where each intermediate result $v_j$ is a function that depends on the independent variable $x$. 
   
 
    * *Elementary functions*: The set of elementary functions has to be given and can, in principle, consist of arbitrary functions as long as these are sufficiently often differentiable. All elementary functions will be implemented in the system together with their gradients.
@@ -63,7 +63,18 @@ In this library, the general mathematical background and concepts of differentia
    * Implementation with dual numbers: by its properties, a dual number can encode the primal trace and the tangent trace in the real and dual parts, respectively.
   
    $$z_j = v_j + D_p v_j \epsilon$$
+
+**5. Reverse Mode of Automatic Differentiation**
+
+   * Reverse mode automatic differentiation 
+   * TODO: description of reverse mode
    
+**6. Differences Between Forward and Reverse Modes
+   * Forward mode of automatic differentiation computes the gradient with respect to the independent variables $\nabla_x f$ whereas reverse mode computes the gradient with respect to the coordinates $v$, $\nabla_v f$. Thus, the gradient $\nabla_x f$ is a subset of $\nabla_v f$.
+   * Forward mode doesn't require a computational graph to be stored but its computational cost is dependent on the number of independent variables.
+   * The computational cost of reverse mode is entirely independent of the number of independent variables but does require to store a computational graph.
+   * Therefore, it is recommended to use forward mode AD when the number of outputs greatly exceeds the number of independent variables; and use reverse mode AD, otherwise.
+
 
 In the most general case, a function can have more than one coordinate. To evaluate this function, we would take the sum of the partial derivatives with respect to each coordinate. For example, consider a function $f(u(t), v(t))$. If we first apply the chain rule to each coordinate, we have:
 $$\frac{\partial f}{\partial t} = \frac{\partial f}{\partial u} \frac{\partial u}{\partial t} + \frac{\partial f}{\partial v} \frac{\partial v}{\partial t}$$
@@ -114,11 +125,13 @@ In addition, they need to install and import the dependable package `numpy`.
 
 ### Using the Package
 
-With `team20ad` package installed, one can import the module by:
+Two modes of automatic differentiation are supported in this package: forward and
+reverse modes. With `team20ad` package installed, one can import the module of choice by:
 
 ```python
 >>> from team20ad.forwardAD import * #import team20ad
 ```
+for forward mode automatic differentiation and 
 
 The user will be able to instantiate an `ad` object and compute the differentiation as follows:
 
@@ -180,7 +193,8 @@ team20/
 |	|-- check_coverage.sh
 |	|-- test_codes/
 |	|  |--  __init__.py
-|	|  |--  test_forwardAD.py
+|	|  |--  test_forward.py
+|	|  |--  test_reverse.py
 |	|  |--  test_dualNumber.py
 |	|  \--  test_elementary.py
 \-- src/
@@ -189,6 +203,7 @@ team20/
  	  |--	__main__.py
  	  |--	example.py
  	  |-- forwardAD.py
+ 	  |-- reverseAD.py
  	  |--	dualNumber.py
  	  \--	elementary.py
 ```
