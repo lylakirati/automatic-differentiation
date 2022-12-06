@@ -5,8 +5,8 @@ from .elementary import *
 
 class ReverseAD:
     def __init__(self, var_dict, func_list):
-        """
-        Reverse Mode Automatic Differentiation.
+        """Reverse Mode Automatic Differentiation.
+
         Inputs
         ------
         var_dict: dict
@@ -16,24 +16,17 @@ class ReverseAD:
 
         Examples
         --------
-        >>> var_dict = {'x': 1, 'y': 1}
+        >>> var_dict = {'x': 1, 'y': 2}
         >>> func_list = ['x**2 + y**2', 'exp(x + y)']
-        >>> ad = ReverseAD(var_dict, func_list)
-
-        ===== Reverse AD =====
-
-        Vars: {'x': 1, 'y': 1}
-
+        >>> ad()
+        ===== Forward AD =====
+        Vars: {'x': 1, 'y': 2}
         Funcs: ['x**2 + y**2', 'exp(x + y)']
-
         -----
-
-        Func evals: [2, 7.38905609893065]
-
-        Gradient:
-
-        [[2.        2.       ]
-        [7.3890561 7.3890561]]        
+        Func evals: [5.0, 20.085536923187668]
+        Derivatives:
+        [[ 2.          4.        ]
+         [20.08553692 20.08553692]]      
         """
         # type checks
         if not isinstance(var_dict, dict):
@@ -86,36 +79,84 @@ class ReverseAD:
 
 
 class Node():
+    """Node object for supporting operations of reverse mode AD
+
+    Attributes
+    ------
+    var : int or float
+        a primal trace value to be stored at each node.
+    child : list
+        a list of all depending Nodes and their associated derivatives
+    derivative : float 
+        Representing the current evaluated derivative
+    """
     def __init__(self, var):
-        """
-        Node object with follow attributes:
-        child: a list of all depending Nodes and derivatives
-        derivative: Representing evaluated derivatives
+        """ Node constructor.
+
+        Parameter
+        ------
+        var : int or float
+            a primal trace value to be stored at each node.
+
+        Raises
+        ------
+        TypeError
+            if an argument value is of unsupported type. 
         """
         if isinstance(var, int) or isinstance(var, float):
             self.var = var
             self.child = []
             self.derivative = None
         else:
-            raise TypeError("Input is not a real number.")
+            raise TypeError("Input must be int or float.")
+
+
+    def __str__(self):
+        """Returns a string representation of the Node instance.
+
+        Returns
+        ------
+        str
+            a string representation of the Node instance.
+        """
+        return f"value = {self.var}\nderivative = {self.partial()}"
+
+
+    def __repr__(self):
+        """Returns a representation of the Node instance.
+
+        Returns
+        ------
+        str
+            a representation of the Node instance.
+        """
+        return f"Node({self.var})"
         
 
     def g_derivatives(self, inputs):
         """
-        Get derivatives for each variable in the function
-        var_val: a variable which stores the function values
-        der_list: a list of derivatives for each variable
+        Get derivatives for each variable in the function.
 
+        Parameter
+        ------
+        inputs : list
+            ???
+
+        Returns
+        ------
+        var_val : int or float
+            a variable which stores the function values.
+        der_list : list
+            a list of derivatives for each variable.
         """
         # self.der = 1
         var_val = self.var
         der_list = np.array([var_i.partial() for var_i in inputs])
         return var_val, der_list
             
+
     def partial(self):
-        """
-        Computes derivative for a variable used in the function
-        """
+        """Computes derivative for a variable used in the function."""
         if len(self.child) == 0:
             return 1
         if self.derivative is not None:
@@ -126,7 +167,18 @@ class Node():
 
 
     def __add__(self, other):
- 
+        """Returns a new Node instance as a result of the addition.
+
+        Parameter
+        ------
+        other : Node, int, or float
+            the instance to compute the sum with.
+
+        Returns
+        ------
+        Node
+            a new Node instance as a sum of the two instances.
+        """
         try:
             new_add = Node(self.var + other.var)
             self.child.append((new_add, 1))
@@ -143,6 +195,18 @@ class Node():
 
 
     def __mul__(self, other):
+        """Returns a new Node instance as a result of the multiplication.
+
+        Parameter
+        ------
+        other : Node, int, or float
+            the instance to compute the product with.
+
+        Returns
+        ------
+        Node
+            a new Node instance as a product of the two instances.
+        """
         try:
             new_mul = Node(other.var * self.var)
             self.child.append((new_mul, other.var))
@@ -150,7 +214,8 @@ class Node():
             return new_mul
         except:
             if isinstance(other, int) or isinstance(other, float):
-                # other is not a Node and the multiplication could complete if it is a real number
+                # other is not a Node and the multiplication could 
+                # be completed if it is a real number
                 new_mul = Node(other * self.var)
                 self.child.append((new_mul, other))
                 return new_mul
@@ -159,22 +224,88 @@ class Node():
         
 
     def __radd__(self, other):
+        """Returns a new Node instance as a result of the addition.
+
+        As the add operation is commutative, this method delegates the operation
+        to __add__().
+
+        Parameter
+        ------
+        other : int, or float
+            a scalar object to compute the sum with.
+
+        Returns
+        ------
+        Node
+            the sum of the two instances.
+        """
         return self.__add__(other)
 
 
     def __rmul__(self, other):
+        """Returns a new Node instance as a result of the multiplication.
+
+        As the multiplication operation is commutative, this method delegates the operation
+        to __mul__().
+
+        Parameter
+        ------
+        other : int, or float
+            a scalar object to compute the product with.
+
+        Returns
+        ------
+        Node
+            the product of the two instances.
+        """
         return self.__mul__(other)
 
 
     def __sub__(self, other):
+        """Returns a new Node instance as a result of the subtraction.
+
+        Parameter
+        ------
+        other : Node, int, or float
+            the instance to compute the difference with.
+
+        Returns
+        ------
+        Node
+            a new Node instance as a difference between the two instances.
+        """
         return self.__add__(-other)
 
 
     def __rsub__(self, other):
+        """Returns a new Node instance as a result of the (reverse) subtraction.
+
+        Parameter
+        ------
+        other : int, or float
+            the instance to compute the difference with.
+
+        Returns
+        ------
+        Node
+            a new Node instance as a difference between the two instances.
+        """
         return (-self).__add__(other)
 
 
     def __truediv__(self, other):
+        """Returns a new Node instance as a result of the division.
+
+        Parameter
+        ------
+        other : Node, int, or float
+            the instance to compute the division with.
+
+        Returns
+        ------
+        Node
+            a new Node instance as a division of the two instances.
+        """
         try:
             new_div = Node(self.var / other.var)
             self.child.append((new_div,((1 * other.var - 0 * self.var) / other.var**2)))
@@ -189,13 +320,19 @@ class Node():
                 raise TypeError(f"{other} is invalid.")
 
 
-    def __neg__(self):
-        new_neg = Node(-self.var)
-        self.child.append((new_neg, -1))
-        return new_neg
-
-
     def __rtruediv__(self, other):
+        """Returns a new Node instance as a result of the (reverse) division.
+
+        Parameter
+        ------
+        other : int, or float
+            the instance to compute the division with.
+
+        Returns
+        ------
+        Node
+            a new Node instance as a (reverse) division of the two instances.
+        """
         try:
             new_div = Node(other.var / self.var)
             self.child.append((new_div, ((0 * self.var - other.var * 1) / self.var**2)))
@@ -210,7 +347,32 @@ class Node():
                 raise TypeError(f"Input {other} is not valid.")
 
 
+    def __neg__(self):
+        """Returns a new node instance as the negation of the Node instance.
+
+        Returns
+        ------
+        Node
+            a Node instance that has a negated value
+        """
+        new_neg = Node(-self.var)
+        self.child.append((new_neg, -1))
+        return new_neg
+
+    
     def __lt__(self, other):
+        """Compares two objects if the instance has value less than the other given instance of supported type.
+
+        Parameter
+        ------
+        other : Node, int, or float
+            The object to compare with.
+
+        Returns
+        ------
+        bool
+            True if less than the given object; and False, otherwise.
+        """
         try:
             return self.var < other.var
         except AttributeError:
@@ -218,6 +380,18 @@ class Node():
 
 
     def __gt__(self, other):
+        """Compares two objects if the instance has value greater than the other given instance of supported type.
+
+        Parameter
+        ------
+        other : Node, int, or float
+            The object to compare with.
+
+        Returns
+        ------
+        bool
+            True if greater than the given object; and False, otherwise.
+        """
         try:
             return self.var > other.var
         except AttributeError:
@@ -225,6 +399,18 @@ class Node():
 
 
     def __le__(self, other):
+        """Compares two objects if the instance has value less than or equal to the other given instance of supported type.
+
+        Parameter
+        ------
+        other : Node, int, or float
+            The object to compare with.
+
+        Returns
+        ------
+        bool
+            True if less than or equal to the given object; and False, otherwise.
+        """
         try:
             return self.var <= other.var
         except AttributeError:
@@ -232,6 +418,18 @@ class Node():
 
 
     def __ge__(self, other):
+        """Compares two objects if the instance has value greater than or equal to the other given instance of supported type.
+
+        Parameter
+        ------
+        other : Node, int, or float
+            The object to compare with.
+
+        Returns
+        ------
+        bool
+            True if grater than or equal to the given object; and False, otherwise.
+        """
         try:
             return self.var >= other.var
         except AttributeError:
@@ -239,23 +437,66 @@ class Node():
 
 
     def __eq__(self, other):
+        """Compares two objects if the instance has value equal to the other given Node object.
+
+        Parameter
+        ------
+        other : Node
+            The object to compare with.
+
+        Returns
+        ------
+        bool
+            True if equal to the given object; and False, otherwise.
+        """
         try:
             return self.var == other.var
         except:
-            raise TypeError('Input incomparable')
+            raise TypeError('Input has incomparable type.')
 
 
     def __ne__(self, other):
+        """Compares two objects if the instance has value unequal to the other given object.
+
+        Parameter
+        ------
+        other : Node, int, float, or any type
+            The object to compare with.
+
+        Returns
+        ------
+        bool
+            True if not equal to the given object; and False, otherwise.
+        """
         return not self.__eq__(other)
 
 
     def __abs__(self):
+        """Returns a new Node instance that has the absolute value.
+
+        Returns
+        ------
+        Node
+            a new Node instance that has the absolute value
+        """
         new_abs = Node(abs(self.var))
         self.child.append((1, new_abs))
         return new_abs
 
 
     def __pow__(self, other):
+        """Returns the exponential of the Node instance as base and another given instance of supported type as an exponent.
+
+        Parameter
+        ------
+        other : Node, int, or float
+            the exponent part.
+
+        Returns
+        ------
+        Node
+            the result of the exponential operation as a new Node instance.
+        """
         try:
             new_val = Node(self.var ** other.var)
             self.child.append((new_val, (other.var) * self.var ** (other.var-1)))
@@ -271,6 +512,18 @@ class Node():
 
 
     def __rpow__(self, other):
+        """Returns the reversed exponential of the Node instance as base and another given instance of supported type as an exponent.
+
+        Parameter
+        ------
+        other : int, or float
+            the base of the exponential function.
+
+        Returns
+        ------
+        Node
+            the result of the exponential operation as a new Node instance.
+        """
         try:
             new_val = Node(other ** self.var)
         except:
@@ -280,45 +533,85 @@ class Node():
 
         
     @staticmethod
-    def log(var):
+    def log(var, base = None):
+        """Logarithmic function supporting operations for reverse mode AD.
+
+        Parameter
+        ------
+        var : Node, int or float
+            value to compute the log
+        base : Node, int or float
+            base value of log function, optional (default = None assumed natural e)
+        """
         try:
             if var.var <= 0:
                 raise ValueError('Input must to be greater than 0.')
         except:
-            raise TypeError(f"Invalid input")
-        log_var = Node(np.log(var.var))
-        var.child.append((log_var, (1. / var.var) * 1))
-        return log_var
+            raise TypeError(f"Invalid input type.")
 
+        if base is None:
+            log_var = Node(np.log(var.var))
+            var.child.append((log_var, (1. / var.var) * 1))
+            return log_var
+
+        log_var = Node(np.log(var.var) / np.log(base.var))
+        var.child.append((log_var, (1 / var.var / np.log(base.var)) * 1))
+        return log_var
+        
 
     @staticmethod
     def sqrt(var):
+        """square root function supporting operations for reverse mode AD.
+    
+        Parameter
+        ------
+        var : Node, int or float
+            value to compute square root
+        """
         if var < 0:
-            raise ValueError("Invalid input")
+            raise ValueError("Invalid input: value must be greater than or equal to zero.")
         else:
             try:
                 sqrt_var = Node(var.var**(1/2))
                 var.child.append((sqrt_var, (1/2)*var.var**(-1/2)))
             except:
-                raise TypeError(f"Invalid input")
+                raise TypeError(f"Invalid input type.")
         return sqrt_var
 
 
     @staticmethod
     def exp(var):
+        """exponential function (base natural) supporting operations for reverse mode AD.
+    
+        Parameter
+        ------
+        var : Node, int or float
+            value to compute
+
+        Notes
+        ------
+        exponential functions for other bases are handled by __pow__ in the Node class.
+        """
         try:
             new_val = Node(np.exp(var.var))
             var.child.append((new_val, np.exp(var.var) * 1))
             return new_val
         except:
             if not isinstance(var, int) and not isinstance(var, float):
-                raise TypeError(f"Invalid input")
+                raise TypeError(f"Invalid input type.")
         
             return np.exp(var)
 
 
     @staticmethod
     def sin(var):
+        """Sine function supporting operations for reverse mode AD.
+
+        Parameter
+        ------
+        var : Node, int or float
+            value to compute sine
+        """
         try:
             new_val = Node(np.sin(var.var))
             var.child.append((new_val, 1 * np.cos(var.var)))
@@ -332,7 +625,13 @@ class Node():
 
     @staticmethod
     def cos(var):
+        """Cosine function supporting operations for reverse mode AD.
 
+        Parameter
+        ------
+        var : Node, int or float
+            value to compute cosine
+        """
         try:
             new_val = Node(np.cos(var.var))
             var.child.append((new_val, 1 * -np.sin(var.var)))
@@ -346,6 +645,13 @@ class Node():
     
     @staticmethod
     def tan(var):
+        """Tangent function supporting operations for reverse mode AD.
+
+        Parameter
+        ------
+        var : Node, int or float
+            value to compute tangent
+        """
         try:
             new_val = Node(np.tan(var.var))
             var.child.append((new_val, 1 * 1 / np.power(np.cos(var.var), 2)))
@@ -359,6 +665,13 @@ class Node():
 
     @staticmethod
     def arcsin(var):
+        """Inverse sine function supporting operations for reverse mode AD.
+
+        Parameter
+        ------
+        var : Node, int or float
+            value to compute inverse sine
+        """
         try:
             if var.var > 1 or var.var < -1:
                 raise ValueError('Please input -1 <= x <=1')
@@ -374,6 +687,13 @@ class Node():
 
     @staticmethod
     def arccos(var):
+        """Inverse cosine function supporting operations for reverse mode AD.
+
+        Parameter
+        ------
+        var : Node, int or float
+            value to compute inverse cosine
+        """
         try:
             if isinstance(var, int) or isinstance(var, float):
                 return np.arccos(var)
@@ -390,6 +710,13 @@ class Node():
 
     @staticmethod
     def arctan(var):
+        """Inverse tangent function supporting operations for reverse mode AD.
+
+        Parameter
+        ------
+        var : Node, int or float
+            value to compute inverse tangent
+        """
         try:
             new_val = Node(np.arctan(var.var))
             var.child.append((new_val, 1 * 1 / (1 + np.power(var.var, 2))))
@@ -402,6 +729,13 @@ class Node():
 
     @staticmethod
     def sinh(var):
+        """Hyperbolic sine function supporting operations for reverse mode AD.
+
+        Parameter
+        ------
+        var : Node, int or float
+            value to compute inverse hyperbolic sine
+        """
         try:
             new_val = Node(np.sinh(var.var))
             var.child.append((new_val, 1 * np.cosh(var.var)))
@@ -413,6 +747,13 @@ class Node():
 
     @staticmethod
     def cosh(var):
+        """Hyperbolic cosine function supporting operations for reverse mode AD.
+
+        Parameter
+        ------
+        var : Node, int or float
+            value to compute inverse hyperbolic cosine
+        """
         try:
             new_val = Node(np.cosh(var.var))
             var.child.append((new_val, 1 * np.sinh(var.var)))
@@ -425,6 +766,13 @@ class Node():
 
     @staticmethod
     def tanh(var):
+        """Hyperbolic tangent function supporting operations for reverse mode AD.
+
+        Parameter
+        ------
+        var : Node, int or float
+            value to compute inverse hyperbolic tangent
+        """
         try:
             new_val = Node(np.tanh(var.var))
             var.child.append((new_val, 1 * 1 / np.power(np.cosh(var.var), 2)))
@@ -432,19 +780,19 @@ class Node():
         except AttributeError:
             return np.tanh(var)
 
+    @staticmethod
+    def logistic(var):
+        """Logistic function supporting operations for reverse mode AD.
 
-    def sigmoid(var):
+        Parameter
+        ------
+        var : Node, int or float
+            value to compute the logistic
+        """
         try:
             logistic_var = Node(1 / (1 + np.exp(-var.var)))
             var.child.append((logistic_var, 1 / (1 + np.exp(-var.var)) * (1-(1 / (1 + np.exp(-var.var)) * 1))))
             return logistic_var
         except:
-            raise TypeError(f"Invalid input")   
-            
-
-    def __str__(self):
-        return f"value = {self.var}\n derivative = {self.partial()}"
-
-
-    def __repr__(self):
-        return f"value = {self.var}\n derivative = {self.partial()}"
+            raise TypeError(f"Invalid input type.")   
+        
