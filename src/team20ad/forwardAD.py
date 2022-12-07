@@ -22,6 +22,7 @@ class ForwardAD:
         >>> var_dict = {'x': 1, 'y': 1}
         >>> func_list = ['x**2 + y**2', 'exp(x + y)']
         >>> ad = ForwardAD(var_dict, func_list)
+        >>> ad()
 
         ===== Forward AD =====
 

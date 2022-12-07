@@ -107,48 +107,49 @@ Note that the subsequent node $v_i$ stores the intermediate result of evaluating
 
 ## How to use team20ad
 
-TODO: Add using venv to create an environment 
+### Installation
 
-Create a conda environment to prevent conflicts with other operating system's packages (If not have Anaconda installed, please follow this [link](https://docs.anaconda.com/anaconda/install/index.html)):
+Make sure Python (>= 3.9) is installed on your computer (https://www.python.org/downloads/).
 
-`conda create -p ./conda-env python=3.9`
+Create a venv environment to prevent conflicts with other operating system's packages:
 
-To activate the conda environment:
+`python3 -m venv ./env`
 
-`conda activate ./conda-env`
+To activate the venv environment:
+
+`source ./env/bin/activate`
 
 Upgrade pip before installing the package:
 
 `python3 -m pip install --upgrade pip`
 
-the package is distributed through the test Python Package Index (PyPI), and hence the user can install it with:
+The package is distributed through the test Python Package Index (PyPI), and hence the user can install it with:
 
-`python3 -m pip install --index-url https://test.pypi.org/simple/ --no-deps team20-ad`
+`python3 -m pip install -i https://test.pypi.org/simple/ team20-ad==0.0.2`
 
-In addition, they need to install and import the dependable package `numpy`.
+In addition, they need to install and import the dependable package `numpy`:
 
 `python3 -m pip install numpy`
+
 
 ### Using the Package
 
 Two modes of automatic differentiation are supported in this package: forward and
 reverse modes. With `team20ad` package installed, one can import the module of choice by:
 
-TODO: check scalar computation
-
 ```python
 >>> from team20ad.forwardAD import * #import team20ad
 ```
 for forward mode automatic differentiation and 
 
-The user will be able to instantiate an `ad` object and compute the differentiation as follows:
+the user will be able to instantiate an `ad` object and compute the differentiation as follows:
 
-An example of finding a derivative of a scalar function of a scalar:
+An example of finding a derivative of a scalar function of a scalar using ***forward*** mode explicitly:
 
 ```python
->>> x = {'x': 4} # value to be evaluate at
->>> f = '3*x**2 + 4'  # input f should be a list of strings
->>> ad = ForwardAD(x, f) # compute derivative of f evaluated at x using forward mode AD
+>>> x = {'x': 4}  # value to be evaluate at
+>>> f = '3*x**2 + 4'  # function to be differentiated
+>>> ad = ForwardAD(x, f)  # compute derivative of f evaluated at x using forward mode AD
 >>> ad()
 ===== Forward AD =====
 Vars: {'x': 4}
@@ -159,13 +160,13 @@ Gradient:
 [[24.]]
 ```
 
-An example of finding derivatives of a vector function of a vector:
+An example of finding derivatives of a vector function of a vector using ***forward*** mode explicitly:
 
 ```python
->>> f = ['x**2 + y**2', 'exp(x + y)'] # functions to be differentiated
->>> x = {'x': 1, 'y': 1} # values to evaluate
->>> ad = ForwardAD(x, f) # compute derivative of f evaluated at x using forward mode AD
->>> ad() 
+>>> f = ['x**2 + y**2', 'exp(x + y)']  # functions to be differentiated
+>>> x = {'x': 1, 'y': 1}  # values to evaluate
+>>> ad = ForwardAD(x, f)  # compute derivative of f evaluated at x using forward mode AD
+>>> ad()
 ===== Forward AD =====
 Vars: {'x': 1, 'y': 1}
 Funcs: ['x**2 + y**2', 'exp(x + y)']
@@ -176,7 +177,92 @@ Gradient:
  [7.3890561	7.3890561]]
 ```
 
-TODO: add examples from reverseAD once Isaac is done with the revision. 
+Similarly, the user can import reverse mode with:
+
+```python
+>>> from team20ad.reverseAD import * #import team20ad
+```
+
+The same example of finding a derivative of a scalar function of a scalar using ***reverse*** mode explicitly:
+
+```python
+>>> x = {'x': 4}  # value to be evaluate at
+>>> f = '3*x**2 + 4'  # function to be differentiated
+>>> ad = ReverseAD(x, f)  # compute derivative of f evaluated at x using reverse mode AD
+>>> ad()
+===== Reverse AD =====
+Vars: {'x': 4}
+Funcs: ['3*x**2 + 4']
+-----
+Func evals: [52.0]
+Derivatives:
+[[24.]]
+```
+
+The same example of finding derivatives of a vector function of a vector using ***reverse*** mode explicitly:
+
+```python
+>>> f = ['x**2 + y**2', 'exp(x + y)']  # functions to be differentiated
+>>> x = {'x': 1, 'y': 1}  # values to evaluate
+>>> ad = ReverseAD(x, f)  # compute derivative of f evaluated at x using forward mode AD
+>>> ad()
+===== Reverse AD =====
+Vars: {'x': 1, 'y': 1}
+Funcs: ['x**2 + y**2', 'exp(x + y)']
+-----
+Func evals: [2.0, 7.38905609893065]
+Derivatives:
+[[2.        2.       ]
+ [7.3890561 7.3890561]]
+```
+
+Furthermore, the user can use a wrapper class that automatically determines which mode to use based on a comparison between the number of variables and functions.
+
+Import the class first:
+
+```python
+>>> from team20ad.wrapperAD import *  # import wrapper class
+```
+
+In this case, forward mode is automatically chosen:
+
+```python
+>>> var_dict = {'x': 1, 'y': 2,}
+>>> func_list = ['x**2 + y**2', 'exp(x + y)', 'tan(x + y) * sqrt(y)']
+>>> ad = AD(var_dict, func_list)
+Number of variables <= number of functions; using forward mode.
+>>> ad()
+===== Forward AD =====
+Vars: {'x': 1, 'y': 2}
+Funcs: ['x**2 + y**2', 'exp(x + y)', 'tan(x + y) * sqrt(y)']
+-----
+Func evals: [5, 20.085536923187668, -0.20159125448504428]
+Gradient:
+[[ 2.          4.        ]
+ [20.08553692 20.08553692]
+ [ 1.4429497   1.39255189]]
+```
+
+In this case, reverse mode is automatically chosen:
+
+```python
+>>> var_dict = {'x': 1, 'y': 2, 'z': 3}
+>>> func_list = ['tan(x) + exp(y) + sqrt(z)']
+>>> ad = AD(var_dict, func_list)
+Number of variables > number of functions; using reverse mode.
+>>> ad()
+===== Reverse AD =====
+Vars: {'x': 1, 'y': 2, 'z': 3}
+Funcs: ['tan(x) + exp(y) + sqrt(z)']
+-----
+Func evals: [10.67851463115443]
+Derivatives:
+[[3.42551882 7.3890561  0.28867513]]
+```
+
+At the end of their workflow, if the user wishes to quit the vertual environment, issue the following command:
+
+`deactivate`
 
 
 ## Software Organization
@@ -324,8 +410,8 @@ The name attributes and methods for each module are listed below:
 		- `__init__`: Constructor for Node objects
 		- `__repr__`: Returns a string representation for a Node object
 		- `__str__`: Returns a formatted string representation for a Node object
-		- `g_derivatives`: TODO???
-		- `partial`: TODO??
+		- `g_derivatives`: Get derivatives for each variable in the function
+		- `partial`: Computes derivative for a variable used in the function
 		- `__neg__`: Returns a new node instance as the negation of the Node instance.
 		- `__add__`: Returns a new Node instance as a result of the addition.
 		- `__radd__`: Same method as `__add__` with reversed operands.

@@ -1,9 +1,7 @@
 import sys
 sys.path.append("./src/")
 
-import pytest
 import numpy as np
-from team20ad.dualNumber import DualNumber
 from team20ad.elementary import *
 from team20ad.reverseAD import *
 
