@@ -35,12 +35,13 @@ def test_node_partial():
 
 def test_node_str():
     x = Node(5)
-    assert str(x) == "value = 5\n derivative = 1"
+    assert str(x) == "value = 5\nderivative = 1"
 
 
 def test_node_repr():
     x = Node(5)
-    assert repr(x) == "value = 5\n derivative = 1"
+    print(repr(x))
+    assert repr(x) == "Node(5)"
 
 
 def test_node_add():
@@ -509,11 +510,11 @@ def test_node_tanh():
     assert Node.tanh(1/2) == np.tanh(1/2)
 
 
-def test_node_sigmoid():
+def test_node_logistic():
     x = Node(3)
-    y = Node.sigmoid(x)
+    y = Node.logistic(x)
     assert y.var == 1 / (1 + np.exp(-3))
     assert x.partial() == 1 / (1 + np.exp(-3)) * (1 - 1 / (1 + np.exp(-3)))
 
     with pytest.raises(TypeError):
-        y = Node.sigmoid("string")
+        y = Node.logistic("string")
