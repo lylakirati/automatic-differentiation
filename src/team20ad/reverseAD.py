@@ -18,7 +18,9 @@ class ReverseAD:
         --------
         >>> var_dict = {'x': 1, 'y': 2}
         >>> func_list = ['x**2 + y**2', 'exp(x + y)']
+        >>> ad = ReverseMode(var_dict, func_list)
         >>> ad()
+
         ===== Reverse AD =====
         Vars: {'x': 1, 'y': 2}
         Funcs: ['x**2 + y**2', 'exp(x + y)']
@@ -69,7 +71,7 @@ class ReverseAD:
         self.Dpf = np.array(self.Dpf)
 
     def __call__(self):
-        out = "===== Forward AD =====\n"
+        out = "===== Reverse AD =====\n"
         out += f"Vars: {self.var_dict}\n"
         out += f"Funcs: {self.func_list}\n"
         out += f"-----\n"

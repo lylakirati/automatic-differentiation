@@ -1,10 +1,9 @@
+import sys
+sys.path.append("./src/")
+
 from team20ad.reverseAD import *
 import numpy as np
 import pytest
-import sys
-
-
-sys.path.append("./src/")
 
 
 def test_node_init():
