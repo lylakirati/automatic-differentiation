@@ -73,7 +73,7 @@ In this library, the general mathematical background and concepts of differentia
    * Finally, the derivatives of $f$ with respect to the independent variable $x$ can be obtained from the first $m$ adjoints.
 
    
-**6. Differences Between Forward and Reverse Modes
+**6. Differences Between Forward and Reverse Modes**
    * Forward mode of automatic differentiation computes the gradient with respect to the independent variables $\nabla_x f$ whereas reverse mode computes the gradient with respect to the coordinates $v$, $\nabla_v f$. Thus, the gradient $\nabla_x f$ is a subset of $\nabla_v f$.
    * Forward mode doesn't require a computational graph to be stored but its computational cost is dependent on the number of independent variables.
    * The computational cost of reverse mode is entirely independent of the number of independent variables but does require to store a computational graph.
@@ -364,4 +364,17 @@ While our tool is user-friendly, it is developed under the assumption that users
 
 ## Future Work
 
-TODO:
+This package has achieved to automatically calculate the derivatives in both forward and reverse mode. However, there are a few aspects that we could extend to make the package usage more useful for broader impacts.
+
+**Second Derivatives**
+Currently, both of our forward mode and reverse mode implementations handle the first derivative of functions. However, in some cases with real world problems, the estimation of second order derivative is also necessary. We may approach the second derivative with the Hessian matirx.
+
+**Interface Usage**
+To provide easier approach to the package to the consumers who have no coding background, we could extend our package with an interface where the consumer can specify the variable values and functions which then would print out the final gradient and function values.
+
+**Visualization**
+In terms of understanding the process, now we can get values and derivatives of functions with autodiff package, but we can not know about the process of calculation. Visualizations of forward and reverse mode can be great help, especially for users who have no knowledge about automatic differentiation. So one possible extension is to visualize calculation process of forward and reverse mode.
+
+**Extend to Other Areas**
+Our package can also extend to other areas like optimization and machine learning. For instance, we can make some optimizers with automatic differentiation and can also implement back-propagation in neural network in our package in the future.
+
