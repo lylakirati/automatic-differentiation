@@ -107,6 +107,8 @@ Note that the subsequent node $v_i$ stores the intermediate result of evaluating
 
 ## How to use team20ad
 
+TODO: Add using venv to create an environment 
+
 Create a conda environment to prevent conflicts with other operating system's packages (If not have Anaconda installed, please follow this [link](https://docs.anaconda.com/anaconda/install/index.html)):
 
 `conda create -p ./conda-env python=3.9`
@@ -131,6 +133,8 @@ In addition, they need to install and import the dependable package `numpy`.
 
 Two modes of automatic differentiation are supported in this package: forward and
 reverse modes. With `team20ad` package installed, one can import the module of choice by:
+
+TODO: check sclar computation
 
 ```python
 >>> from team20ad.forwardAD import * #import team20ad
