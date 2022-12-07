@@ -19,7 +19,7 @@ class ReverseAD:
         >>> var_dict = {'x': 1, 'y': 2}
         >>> func_list = ['x**2 + y**2', 'exp(x + y)']
         >>> ad()
-        ===== Forward AD =====
+        ===== Reverse AD =====
         Vars: {'x': 1, 'y': 2}
         Funcs: ['x**2 + y**2', 'exp(x + y)']
         -----
@@ -194,35 +194,6 @@ class Node():
                 raise TypeError("Not real number")
 
 
-    def __mul__(self, other):
-        """Returns a new Node instance as a result of the multiplication.
-
-        Parameter
-        ------
-        other : Node, int, or float
-            the instance to compute the product with.
-
-        Returns
-        ------
-        Node
-            a new Node instance as a product of the two instances.
-        """
-        try:
-            new_mul = Node(other.var * self.var)
-            self.child.append((new_mul, other.var))
-            other.child.append((new_mul, self.var))
-            return new_mul
-        except:
-            if isinstance(other, int) or isinstance(other, float):
-                # other is not a Node and the multiplication could 
-                # be completed if it is a real number
-                new_mul = Node(other * self.var)
-                self.child.append((new_mul, other))
-                return new_mul
-            else:
-                raise TypeError("Input is not a real number.")
-        
-
     def __radd__(self, other):
         """Returns a new Node instance as a result of the addition.
 
@@ -240,25 +211,6 @@ class Node():
             the sum of the two instances.
         """
         return self.__add__(other)
-
-
-    def __rmul__(self, other):
-        """Returns a new Node instance as a result of the multiplication.
-
-        As the multiplication operation is commutative, this method delegates the operation
-        to __mul__().
-
-        Parameter
-        ------
-        other : int, or float
-            a scalar object to compute the product with.
-
-        Returns
-        ------
-        Node
-            the product of the two instances.
-        """
-        return self.__mul__(other)
 
 
     def __sub__(self, other):
@@ -291,6 +243,53 @@ class Node():
             a new Node instance as a difference between the two instances.
         """
         return (-self).__add__(other)
+
+
+    def __mul__(self, other):
+        """Returns a new Node instance as a result of the multiplication.
+
+        Parameter
+        ------
+        other : Node, int, or float
+            the instance to compute the product with.
+
+        Returns
+        ------
+        Node
+            a new Node instance as a product of the two instances.
+        """
+        try:
+            new_mul = Node(other.var * self.var)
+            self.child.append((new_mul, other.var))
+            other.child.append((new_mul, self.var))
+            return new_mul
+        except:
+            if isinstance(other, int) or isinstance(other, float):
+                # other is not a Node and the multiplication could 
+                # be completed if it is a real number
+                new_mul = Node(other * self.var)
+                self.child.append((new_mul, other))
+                return new_mul
+            else:
+                raise TypeError("Input is not a real number.")
+        
+    def __rmul__(self, other):
+        """Returns a new Node instance as a result of the multiplication.
+
+        As the multiplication operation is commutative, this method delegates the operation
+        to __mul__().
+
+        Parameter
+        ------
+        other : int, or float
+            a scalar object to compute the product with.
+
+        Returns
+        ------
+        Node
+            the product of the two instances.
+        """
+        return self.__mul__(other)
 
 
     def __truediv__(self, other):

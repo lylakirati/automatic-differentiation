@@ -56,7 +56,7 @@ In this library, the general mathematical background and concepts of differentia
 
    * Forward mode automatic differentiation divides the expression into a sequence of differentiable elementary operations. The chain rule and well-known differentiation rules are then applied to each elementary operation.
 
-   * Forward mode automatic differentiation computes a tangent trace of the directional derivative $$D_p v_j = (\nabla y_i)^T p = \sum_{j=1}^{m} \frac{\partial y_i}{x_j} p_j$$ 
+   * Forward mode automatic differentiation computes a tangent trace of the directional derivative $$D_p v_j = (\nabla y_i)^T p = \sum_{j=1}^{m} \frac{\partial y_i}{\partial x_j} p_j$$ 
    for each intermediate variable $v_j$ at the same time as it performs a forward evaluation trace of the elementary pieces of a complicated $f(x)$ from the inside out. 
    Note that the vector $p$ is called the seed vector which gives the direction of the derivative.
 
@@ -66,8 +66,12 @@ In this library, the general mathematical background and concepts of differentia
 
 **5. Reverse Mode of Automatic Differentiation**
 
-   * Reverse mode automatic differentiation 
-   * TODO: description of reverse mode
+   * Reverse mode automatic differentiation is a 2-pass process. The first pass called forward pass traverses the computational graph forward and computes the primal trace $v_j$ and its partial derivative $\frac{\partial v_j}{\partial v_i}$ with respect to its parent node(s) $v_i$. 
+   * The other pass called reverse pass computes for each node an adjoint $v_i$ which is $\bar{v}_i = \frac{\partial f}{\partial v_i} = \sum_{j, \text{ a child of } i} \frac{\partial f}{\partial v_j} \cdot \frac{\partial v_j}{\partial v_i} = \sum_{j, \text{ a child of } i} \bar{v}_j_ \cdot \frac{\partial v_j}{\partial v_i}$. Observe that $\frac{\partial v_j}{\partial v_i}$ is computed during the forward pass.
+   * The reverse pass initializes all adjoints to be zero, except those that have no children which will be assigned a value of $1$. It then accumulates the adjoints with the following update rule as it iterates over all children $j$ of node $i$: $$\bar{v}_i \leftarrow \bar{v}_i + \bar{v}_j_ \cdot \frac{\partial v_j}{\partial v_i}.$$
+   * The reverse pass will proceed to update the parent(s) of node $i$ only if their children's adjoint computation has been completed. Thus, the reverse mode automatic differentiation requires a computational graph to be stored.
+   * Finally, the derivatives of $f$ with respect to the independent variable $x$ can be obtained from the first $m$ adjoints.
+
    
 **6. Differences Between Forward and Reverse Modes
    * Forward mode of automatic differentiation computes the gradient with respect to the independent variables $\nabla_x f$ whereas reverse mode computes the gradient with respect to the coordinates $v$, $\nabla_v f$. Thus, the gradient $\nabla_x f$ is a subset of $\nabla_v f$.
@@ -168,11 +172,14 @@ Gradient:
  [7.3890561	7.3890561]]
 ```
 
+TODO: add examples from reverseAD once Isaac is done with the revision. 
+
+
 ## Software Organization
 
 ### Directory structure
 
-For now, at this phase of the project, our software directory is tentatively structured as follows:
+The software directory is structured as follows:
 
 ```
 team20/
@@ -207,36 +214,47 @@ team20/
  	  |--	dualNumber.py
  	  \--	elementary.py
 ```
+
 ### Basic Modules and Functionality
 
-Currently, we have three modules: one for implementing the forward mode of automatic differentiation and the other two for implementing `DualNumber` class and their elementary function overloads (more on this under the Implementation section).
-Note that an implementation of the computational graph is optional for forward mode AD.
+There are four modules: three for implementing and supporting the forward mode of automatic differentiation and the other one for implementing the reverse mode AD.
+The forward mode implementations contain two supporting modules: `DualNumber` class and 
+operation overloadings defined in `elementary.py` (More details on these two modules can be found under the Implementation section).
 
-As such, we have corresponding tests `test_forwardAD.py`, `test_dualNumber.py`, and `test_elementary.py`, which are located under the `tests/test_codes` directory and which are configured to run automatically using GitHub workflows after each push to the `main` branch of development. 
+As such, we have corresponding tests `test_forward.py`, `test_reverse.py`, `test_dualNumber.py`, and `test_elementary.py`, which are located under the `tests/test_codes` directory and which are configured to run automatically using GitHub workflows after each push to a git branch. 
 
-As the development progresses, we expect the directory structure to change and the documentation to update accordingly.
-
-Considering that the whole scheme of auto-differentiating will rely heavily on mathematical computations, the package requires `numpy` modules for implementations and calculations.
+For the package installation, please refer to the *How to use team20ad* Section. An important note is the package requires `numpy` modules for implementations and calculations as
+they rely heavily on mathematical computations, 
 
 ### Packaging
 
-Our package is distributed using test PyPI following PEP517/PEP518. Details on how to install the package are written in *How to use team20ad* section above.
+Our package is distributed using test PyPI following PEP517/PEP518. Details on how to install the package are written in *How to use team20ad* Section above.
 
 
 ## Implementation
 
-The first class we need is the `DualNumber` class which will serve as the lower-level structure of the forward AD class implementation. This class implements basic function overloaders such as `__add__()` and their reverse counterparts such as `__radd__()`. The full list of functions is provided below.
-Along with the `DualNumber` class, we implement additional elementary function overloads in `elementary.py` which consists of exponential and trigonometric functions (please see the full list below). Note that these two modules support only operations on `DualNumber`, `int`, and `float` objects.
-Then, we implement the `ForwardAD` class which serves as a function decoration for computing the derivatives.
+There are two parts of the implementations based on the mode of the automatic differentiation. First, the forward mode requires the `DualNumber` class, which serves as the ground of function evaluation and derivative computation as described in details in the *Background* Section. This module also implements basic function overloaders such as `__add__()` and their reverse counterparts such as `__radd__()`. The full list of methods is provided below.
+In addition to the `DualNumber` class, the package contains additional elementary function overloads in `elementary.py` such as exponential and trigonometric functions (please see the full list below). Note that these two modules support only operations on `DualNumber`, `int`, and `float` objects.
+At a higher level, the `ForwardAD` class serves as a user-interacting interface or wrapper for computing derivatives of a given function $f$ at a given value $x$.
 
-The current name attributes and methods for each module are listed below:
+### Extension
+
+The second part of the package concerns the implementation of reverse mode
+automatic differentiation as discussed in details under the *Background* Section. 
+The module contains two classes: one wrapper `ReverseAD`
+and the other `Node` for constructing a computational graph. Similar to its counterpart,
+`ReverseAD` takes only two arguments which (a list of) function(s) encoded as string(s) and a dictionary of variable-value pairs to be evaluated at. Both wrappers `ForwardAD` and `ReverseAD` callers will print out the function evaluations and their derivatives in the same format as that of `numpy` arrays.
+
+Note that both modes of automatic differentiation require an external dependency from `numpy`.
+
+The name attributes and methods for each module are listed below:
 
 - ForwardAD:
 	- External dependencies: `numpy`
 	- Name attribute: 
 		- `Dpf`: the directional derivative of the function(s) to be evaluated
 		- `var_dict`: a dictionary of variables and their corresponding values
-		- `func_list`: a list of functions encoded as strings
+		- `func_list`: (a list of) function(s) encoded as string(s)
 	- Methods: 
 		- `__init__`: Constructor for ForwardAD objects 
 		- `__call__`: Caller method for ForwardAD objects
@@ -283,12 +301,59 @@ The current name attributes and methods for each module are listed below:
    	- `cosh`: Computes the hyperbolic cosine of a given value.
    	- `tanh`: Computes the hyperbolic tangent of a given value.
    	- `logistic`: Computes the logistic of the given value and parameters.
+- ReverseAD: (Extension)
+	- External dependencies: `numpy`
+	- Name attribute: 
+		- `Dpf`: the directional derivative of the function(s) to be evaluated
+		- `var_dict`: a dictionary of variables and their corresponding values
+		- `func_list`: (a list of) function(s) encoded as string(s)
+	- Methods: 
+		- `__init__`: Constructor for ForwardAD objects 
+		- `__call__`: Caller method for ForwardAD objects
+- Node: (Extension)
+	- External dependencies: `numpy`
+	- Name attributes: 
+		- `var`: a primal trace value to be stored at each node.
+		- `child`: a list of all depending Nodes and their associated derivatives
+		- `derivative`: the current adjoint
+	- Methods: 
+		- `__init__`: Constructor for Node objects
+		- `__repr__`: Returns a string representation for a Node object
+		- `__str__`: Returns a formatted string representation for a Node object
+		- `g_derivatives`: TODO???
+		- `partial`: TODO??
+		- `__neg__`: Returns a new node instance as the negation of the Node instance.
+		- `__add__`: Returns a new Node instance as a result of the addition.
+		- `__radd__`: Same method as `__add__` with reversed operands.
+		- `__sub__`: Returns a new Node instance as a result of the subtraction.
+		- `__rsub__`: Same method as `__sub__` with reversed operands.
+		- `__mul__`: Returns a new Node instance as a result of the multiplication.
+		- `__rmul__`: Same method as `__mul__` with reversed operands.
+		- `__truediv__`: Returns a new Node instance as a result of the division.
+		- `__rtruediv__`: Same method as `__truediv__` with reversed operands.
+		- `__pow__`: Returns the exponential of the Node instance.
+		- `__rpow__`: Same method as `__pow__` with reversed operands.
+		- `__eq__`: Operates the equal comparison.
+		- `__ne__`: Operates the not equal comparison.
+		- `__lt__`: Operates the less than comparison.
+		- `__gt__`: Operates the greater than comparison.
+		- `__le__`: Operates the less than or equal to comparison.
+		- `__ge__`: Operates the greater than or equal to comparison.
+		- `__abs__`: Returns a new Node instance that has the absolute value.
+		- `sqrt`: (static) Computes the square root of a given value.
+   	- `exp`: (static) Computes the exponential of a given value. 
+   	- `log`: (static) Computes the logarithm of a given value.
+   	- `sin`: (static) Computes the sine of a given value.
+   	- `cos`: (static) Computes the cosine of a given value.
+   	- `tan`: (static) Computes the tangent of a given value.
+   	- `arcsin`: (static) Computes the arcsine (inverse sine) of a given value.
+   	- `arccos`: (static) Computes the arccosine (inverse cosine) of a given value.
+   	- `arctan`: (static) Computes the arctangent (inverse tangent) of a given value.
+   	- `sinh`: (static) Computes the hyperbolic sine of a given value.
+   	- `cosh`: (static) Computes the hyperbolic cosine of a given value.
+   	- `tanh`: (static) Computes the hyperbolic tangent of a given value.
+   	- `logistic`: (static) Computes the logistic of the given value and parameters.
 
-As for the handling of $f: \mathbb{R}^m -> \mathbb{R}$ and $f: \mathbb{R}^m -> \mathbb{R}^n$, we will have a high-level function object in form of vectors to compute the Jacobian.
-These vectors will be represented by `numpy` arrays.
-
-The implementation of forward mode AD is mostly completed. Going forward, we will
-focus on reverse mode AD, which will require the implementation of a computational graph.
 
 ## Broader Impact and Inclusivity Statement
 
@@ -297,66 +362,6 @@ The potential positive impact will be a contribution to energy savings by calcul
 
 While our tool is user-friendly, it is developed under the assumption that users of our package have a basic familiarity with python, calculus, and mathematical terminologies in English. It will exclude a vast portion of our community who do not have these fundamental abilities. To make our package more inclusive, we will launch a web-based extension of our package in which any user can enjoy our tool by simply enter their functions of interest and values. 
 
-## Future Features
+## Future Work
 
-In addition to the forward mode, our group will implement reverse mode because forward mode can be computationally expensive to calculate the gradient of a large complicated function of many variables. The reverse mode uses an extension of the forward mode computational graph to enable the computation of a gradient by a reverse traversal of the graph. 
- 
- In the future, the software structure will be adjusted to accommodate changes for reverse AD implementation as follows:
-
- ```
-team20/
-|-- docs/
-|  |-- milestone1.md
-|  |-- milestone1.pdf
-|  |-- milestone2.md
-|  |-- milestone2_progress.md
-|  \-- final.md
-|-- LICENSE
-|-- README.md
-|-- pyproject.toml
-|-- install_package.sh
-|-- .github/workflows/
-|	|-- coverage.yml
-|	\-- test.yml
-|-- tests/
-|	|-- check_coverage.sh
-|	|-- test_codes/
-|	|  |--  __init__.py
-|	|  |--  test_forwardAD.py
-|	|  |--  test_reverseAD.py
-|	|  |--  test_graph.py
-|	|  |--  test_dualNumber.py
-|	|  \--  test_elementary.py
-\-- src/
-	\-- team20ad/
-	  |--	__init__.py
- 	  |--	__main__.py
- 	  |--	example.py
- 	  |-- forwardAD.py
- 	  |-- reverseAD.py
- 	  |-- graph.py
- 	  |--	dualNumber.py
- 	  \--	elementary.py
-```
-
-We will have two additional modules: one for computing the derivatives through reverse mode AD and the other for `ComputationalGraph` class. In addition, we will have the associated test modules for these two: `test_reverseAD.py` and `test_graph.py`. Thus, the user must decide which mode of AD to be used for computation at the time of module import.
-
-For forward mode AD, use:
-
-```python
->>> from team20ad.forwardAD import * 
-```
-
-For reverse mode AD, use:
-
-```python
->>> from team20ad.reverseAD import * 
-```
-
-We expect the changes to be minimal and stay within what is indicated above.
-
-
-
-
-
-
+TODO:
