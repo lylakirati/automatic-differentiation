@@ -107,7 +107,7 @@ Note that the subsequent node $v_i$ stores the intermediate result of evaluating
 
 ## How to use team20ad
 
-Create a conda environment to prevent conflicts with other operating system's packages:
+Create a conda environment to prevent conflicts with other operating system's packages (If not have Anaconda installed, please follow this [link](https://docs.anaconda.com/anaconda/install/index.html)):
 
 `conda create -p ./conda-env python=3.9`
 
