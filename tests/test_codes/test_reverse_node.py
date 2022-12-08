@@ -290,14 +290,6 @@ def test_node_pow():
     assert x.partial() == 2 ** (2 * 2) * (np.log(2) * 2 / 1 + (2 * 2) / 2)
     assert y.partial() == 1
 
-    with pytest.raises(TypeError):
-        x = Node(1)
-        _ = x ** 1.0  # must be int
-
-    with pytest.raises(TypeError):
-        x = Node(1)
-        _ = x ** -1.0
-
 
 def test_node_rpow():
     x = Node(3)
