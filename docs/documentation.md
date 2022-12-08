@@ -121,7 +121,7 @@ Upgrading pip before installing the package is highly recommended:
 
 The package `team20ad` is distributed through the test Python Package Index (PyPI), and hence one can install it with pip:
 
-`python3 -m pip install -i https://test.pypi.org/simple/ team20-ad==0.0.2`
+`python3 -m pip install -i https://test.pypi.org/simple/ team20-ad==0.0.3`
 
 In addition, the package requires a dependable package `numpy`:
 
