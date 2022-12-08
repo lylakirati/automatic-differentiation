@@ -22,8 +22,6 @@ jobs:
               run: coverage html --include="src*"
             - name: Do not ignore htmlcov/
               run: rm htmlcov/.gitignore
-            - name: test1
-              run: touch htmlcov/index.html
             - name: Deploy 🚀
               uses: JamesIves/github-pages-deploy-action@v4
               with:
