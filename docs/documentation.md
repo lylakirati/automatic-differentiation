@@ -53,14 +53,15 @@ In this library, the general mathematical background and concepts of differentia
 
    * The implementation of AD requires breaking down the original function into elementary functions. For instance, consider the function
    $$f(x, y) = \exp(\sin(3x) + \cos(4y)).$$ The function $f$ can be decomposed into six elementary functions:
+   
 $$
 \begin{align}
-   v_1 &= 3x, \\
-   v_2 &= 4y, \\
-   v_3 &= \sin(v_1), \\
-   v_4 &= \cos(v_2), \\
-   v_5 &= v_3 + v_4, \\
-   v_6 &= \exp(v_5).
+v_1 &= 3x, \\
+v_2 &= 4y, \\
+v_3 &= \sin(v_1), \\
+v_4 &= \cos(v_2), \\
+v_5 &= v_3 + v_4, \\
+v_6 &= \exp(v_5).
 \end{align}
 $$
 
