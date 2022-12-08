@@ -20,7 +20,9 @@ jobs:
               run: tests/check_coverage.sh
             - name: Generate coverage HTML
               run: coverage html --include="src*"
+            - name: Do not ignore htmlcov/
+              run: rm htmlcov/.gitignore
             - name: Deploy 🚀
               uses: JamesIves/github-pages-deploy-action@v4
               with:
-                folder: htmlcov # The folder the action should deploy.        
+                  folder: htmlcov # The folder the action should deploy.
