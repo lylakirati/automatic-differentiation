@@ -137,7 +137,7 @@ reverse modes. With `team20ad` package installed, one can import the module of c
 >>> from team20ad.wrapperAD import *  # import wrapper class
 ```
 
-and instantiate an `ad` object oto compute the differentiation as follows:
+and instantiate an `AD` object to compute the differentiation as follows:
 
 ```python
 >>> var_dict = {'x': 1, 'y': 2}
