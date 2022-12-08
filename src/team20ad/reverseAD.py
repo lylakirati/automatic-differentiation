@@ -504,7 +504,7 @@ class Node():
             other.child.append((new_val, self.var ** other.var * (np.log(self.var))))
             return new_val
         except:
-            if isinstance(other, int):
+            if isinstance(other, int) or isinstance(other, float):
                 new_val = Node(self.var ** other)
                 self.child.append((new_val, (other) * self.var ** (other-1)))
                 return new_val
