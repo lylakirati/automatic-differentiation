@@ -88,8 +88,7 @@ $$
 
    * Reverse mode automatic differentiation is a 2-pass process. The first pass called *forward pass* traverses the computational graph forward and computes the primal trace $v_j$ as well as its partial derivative $\frac{\partial v_j}{\partial v_i}$ with respect to its parent node(s) $v_i$. 
    * The other pass called *reverse pass* computes for each node an adjoint $v_i$ which is 
-$$
-\begin{align}
+$$\begin{align}
 \bar{v}_{i} &= \frac{\partial f}{\partial v_i} \\
 &= \sum_{j} \frac{\partial f}{\partial v_j} \cdot \frac{\partial v_j}{\partial v_i} \\
 &= \sum_{j} \bar{v}_{j} \cdot \frac{\partial v_j}{\partial v_i}.
