@@ -90,7 +90,9 @@ $$
    * The other pass called *reverse pass* computes for each node an adjoint $v_i$ which is given by:
 
 ```math
-\bar{v}_{i} = \frac{\partial f}{\partial v_i} = \sum \frac{\partial f}{\partial v_j} \cdot \frac{\partial v_j}{\partial v_i} = \sum \bar{v}_{j} \cdot \frac{\partial v_j}{\partial v_i}.
+v_{i} = \frac{\partial f}{\partial v_i}
+= \sum_{j} \frac{\partial f}{\partial v_j} \cdot \frac{\partial v_j}{\partial v_i}
+= \sum_{j} v_{j} \cdot \frac{\partial v_j}{\partial v_i}.
 ```
 
    * Observe that $\frac{\partial v_j}{\partial v_i}$ is computed during the forward pass.
