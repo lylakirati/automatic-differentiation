@@ -87,7 +87,7 @@ $$
 **5. Reverse Mode of Automatic Differentiation**
 
    * Reverse mode automatic differentiation is a 2-pass process. The first pass called *forward pass* traverses the computational graph forward and computes the primal trace $v_j$ as well as its partial derivative $\frac{\partial v_j}{\partial v_i}$ with respect to its parent node(s) $v_i$. 
-   * The other pass called *reverse pass* computes for each node an adjoint $v_i$ which is given by: $$\bar{v}_{i} = \sum_{j} \bar{v}_{j} \cdot \frac{\partial v_{j}}{\partial v_{i}}.$$
+   * The other pass called *reverse pass* computes for each node an adjoint $v_i$ which is given by the sum $\bar{v}_j \cdot \frac{\partial v_j}{\partial v_i}$ over all child $j$ of $i$.
    * Observe that $\frac{\partial v_j}{\partial v_i}$ is computed during the forward pass.
    * The reverse pass initializes all adjoints to be zero, except those that have no children which will be assigned a value of $1$. It then accumulates the adjoints with the following update rule as it iterates over all children $j$ of node $i$: $$\bar{v}_i \leftarrow \bar{v}_i + \bar{v}_j \cdot \frac{\partial v_j}{\partial v_i}.$$
    * The reverse pass will proceed to update the parent(s) of node $i$ only if their children's adjoint computation has been completed. Thus, the reverse mode automatic differentiation requires a computational graph to be stored.
