@@ -49,7 +49,26 @@ In this library, the general mathematical background and concepts of differentia
   
 
    * *Elementary functions*: The set of elementary functions has to be given and can, in principle, consist of arbitrary functions as long as these are sufficiently often differentiable. All elementary functions will be implemented in the system together with their gradients.
+   
 
+   * The implementation of AD requires breaking down the original function into elementary functions. For instance, consider the function
+   $$f(x, y) = \exp(\sin(3x) + \cos(4y)).$$ The function $f$ can be decomposed into six elementary functions:
+   $$
+   \begin{align}
+      v_1 &= 3x, \\
+      v_2 &= 4y, \\
+      v_3 &= \sin(v_1), \\
+      v_4 &= \cos(v_2), \\
+      v_5 &= v_3 + v_4, \\
+      v_6 &= \exp(v_5).
+   \end{align}
+   $$
+
+   * Furthermore, the order of evaluating these elementary functions can be illustrated as a computational graph:
+
+   ![Example Computational Graph](./computational_graph.png)
+
+   * Note that the nodes $v_i$ are called intermediate results. After evaluating each $v_i$, we have a sequence of intermediate results $v_{-1}$ to $v_6$; this is called the *primal trace*. Similarly, traversing the computational graph, if we instead evaluate the derivative at each step, the resulting sequence would be called the *dual trace*. Such is essentially the procedure of forward mode automatic differentiation. 
 
 
 **4. Forward Mode of Automatic Differentiation**
@@ -60,15 +79,15 @@ In this library, the general mathematical background and concepts of differentia
    for each intermediate variable $v_j$ at the same time as it performs a forward evaluation trace of the elementary pieces of a complicated $f(x)$ from the inside out. 
    Note that the vector $p$ is called the seed vector which gives the direction of the derivative.
 
-   * Implementation with dual numbers: by its properties, a dual number can encode the primal trace and the tangent trace in the real and dual parts, respectively.
+   * Forward mode automatic differentiation can be implemented using the concept of dual numbers. By its properties, a dual number can encode the primal trace and the tangent trace in the real and dual parts, respectively.
   
    $$z_j = v_j + D_p v_j \epsilon$$
 
 **5. Reverse Mode of Automatic Differentiation**
 
-   * Reverse mode automatic differentiation is a 2-pass process. The first pass called forward pass traverses the computational graph forward and computes the primal trace $v_j$ and its partial derivative $\frac{\partial v_j}{\partial v_i}$ with respect to its parent node(s) $v_i$. 
-   * The other pass called reverse pass computes for each node an adjoint $v_i$ which is $\bar{v}_i = \frac{\partial f}{\partial v_i} = \sum_{j, \text{ a child of } i} \frac{\partial f}{\partial v_j} \cdot \frac{\partial v_j}{\partial v_i} = \sum_{j, \text{ a child of } i} \bar{v}_j_ \cdot \frac{\partial v_j}{\partial v_i}$. Observe that $\frac{\partial v_j}{\partial v_i}$ is computed during the forward pass.
-   * The reverse pass initializes all adjoints to be zero, except those that have no children which will be assigned a value of $1$. It then accumulates the adjoints with the following update rule as it iterates over all children $j$ of node $i$: $$\bar{v}_i \leftarrow \bar{v}_i + \bar{v}_j_ \cdot \frac{\partial v_j}{\partial v_i}.$$
+   * Reverse mode automatic differentiation is a 2-pass process. The first pass called *forward pass* traverses the computational graph forward and computes the primal trace $v_j$ as well as its partial derivative $\frac{\partial v_j}{\partial v_i}$ with respect to its parent node(s) $v_i$. 
+   * The other pass called *reverse pass* computes for each node an adjoint $v_i$ which is $\bar{v}_i = \frac{\partial f}{\partial v_i} = \sum_{j, \text{ a child of } i} \frac{\partial f}{\partial v_j} \cdot \frac{\partial v_j}{\partial v_i} = \sum_{j, \text{ a child of } i} \bar{v}_j \cdot \frac{\partial v_j}{\partial v_i}$. Observe that $\frac{\partial v_j}{\partial v_i}$ is computed during the forward pass.
+   * The reverse pass initializes all adjoints to be zero, except those that have no children which will be assigned a value of $1$. It then accumulates the adjoints with the following update rule as it iterates over all children $j$ of node $i$: $$\bar{v}_i \leftarrow \bar{v}_i + \bar{v}_j \cdot \frac{\partial v_j}{\partial v_i}.$$
    * The reverse pass will proceed to update the parent(s) of node $i$ only if their children's adjoint computation has been completed. Thus, the reverse mode automatic differentiation requires a computational graph to be stored.
    * Finally, the derivatives of $f$ with respect to the independent variable $x$ can be obtained from the first $m$ adjoints.
 
@@ -83,26 +102,6 @@ In this library, the general mathematical background and concepts of differentia
 In the most general case, a function can have more than one coordinate. To evaluate this function, we would take the sum of the partial derivatives with respect to each coordinate. For example, consider a function $f(u(t), v(t))$. If we first apply the chain rule to each coordinate, we have:
 $$\frac{\partial f}{\partial t} = \frac{\partial f}{\partial u} \frac{\partial u}{\partial t} + \frac{\partial f}{\partial v} \frac{\partial v}{\partial t}$$
 
-At a lower level, the implementation of AD requires breaking down the original function into smaller pieces known as elementary functions. For instance, consider the function
-$$f(x, y) = \exp(\sin(3x) + \cos(4y))$$
-Then, $f$ can be broken down into five elementary functions:
-
-$$
-\begin{align}
-	g_1(z) &= 3z, \\
-	g_2(z) &= 4z, \\
-	g_3(z) &= \sin(z), \\
-	g_4(z) &= \cos(z), \\
-	g_5(z) &= \exp(z). \\
-\end{align}
-$$
-
-
-Furthermore, the order of evaluating these elementary functions can be organized into a computational graph:
-
-![Example Computational Graph](./computational_graph.png)
-
-Note that the subsequent node $v_i$ stores the intermediate result of evaluating each elementary function. After evaluating each $v_i$, we have a sequence of intermediate results $v_1$ to $v_8$; this is called the primal trace. Similarly, following the computational graph, if we instead evaluate the derivative at each step, the resulting sequence would be called the dual trace. Such is essentially the procedure of forward mode automatic differentiation. 
 
 
 ## How to use team20ad
