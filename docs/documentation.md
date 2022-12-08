@@ -234,15 +234,16 @@ team20/
  	  |--	example.py
  	  |-- forwardAD.py
  	  |-- reverseAD.py
+     |-- wrapperAD.py
  	  |--	dualNumber.py
  	  \--	elementary.py
 ```
 
 ### Basic Modules and Functionality
 
-There are four modules: three for implementing and supporting the forward mode of automatic differentiation and the other one for implementing the reverse mode AD.
+There are five modules: three for implementing and supporting the forward mode of automatic differentiation, one for implementing the reverse mode AD, and the other for a wrapper of both modes of AD.
 The forward mode implementations contain two supporting modules: `DualNumber` class and 
-operation overloadings defined in `elementary.py` (More details on these two modules can be found under the Implementation section).
+operation overloadings defined in `elementary.py` (More details on these two modules can be found under the Implementation section). The reverse mode and the wrapper implementationss are described under the *Extension* Section below.
 
 As such, we have corresponding tests `test_forward.py`, `test_reverse.py`, `test_dualNumber.py`, and `test_elementary.py`, which are located under the `tests/test_codes` directory and which are configured to run automatically using GitHub workflows after each push to a git branch. 
 
@@ -267,6 +268,8 @@ automatic differentiation as discussed in detail under the *Background* Section.
 The module contains two classes: one wrapper `ReverseAD`
 and the other `Node` for constructing a computational graph. Similar to its counterpart,
 `ReverseAD` takes only two arguments which (a list of) function(s) encoded as string(s) and a dictionary of variable-value pairs to be evaluated at. Both wrappers `ForwardAD` and `ReverseAD` callers will print out the function evaluations and their derivatives in the same format as that of `numpy` arrays.
+
+To enable greater user experience, a class `AD` written in `wrapperAD.py` wraps the implementations of the two modes. There is an option called `mode` in which a user can specify the mode of AD. If `mode` is left unspecified at the time of instance construction, the program will automatically choose a mode based on the number of independent variables and the number of functions to differentiate. If the number of independent variables is greater than the number of functions, reverse mode will be computed by default. Otherwise, the differentiation will be completed under forward mode.
 
 Note that both modes of automatic differentiation require an external dependency from `numpy`.
 
@@ -375,15 +378,24 @@ The name attributes and methods for each module are listed below:
    	- `sinh`: (static) Computes the hyperbolic sine of a given value.
    	- `cosh`: (static) Computes the hyperbolic cosine of a given value.
    	- `tanh`: (static) Computes the hyperbolic tangent of a given value.
-   	- `logistic`: (static) Computes the logistic of the given value and parameters.
+   	- `logistic`: (static) Computes the logistic of the given value and parameters.      
+- AD: (Extension)
+   - Name attribute: 
+      - `var_dict`: a dictionary of variables and their corresponding values
+      - `func_list`: (a list of) function(s) encoded as string(s)
+      - `mode`: string indicating mode of AD
+      - `res`: AD object of a specified mode
+   - Methods: 
+      - `__init__`: Constructor for ForwardAD objects 
+      - `__call__`: Caller method for ForwardAD objects
 
 
 ## Broader Impact and Inclusivity Statement
 
-In a dynamic world, the ability to track change is essential in most academic fields. Our tool, forwardAD, uses automatic differentiation (AD) in forward mode to compute derivatives of functions ranging from simple to complex functions. Unlike conventional methods for evaluating derivatives (e.g., symbolic derivatives, finite differences) that are computationally expensive or lack accuracy/stability, AD enables us to calculate derivatives with machine precision without compromising accuracy and stability. We believe that this tool will be used in a wide range of applications where fast and accurate differential calculations, especially optimization, are required.
-The potential positive impact will be a contribution to energy savings by calculating complex derivatives with less computational energy. While AI and ML research improves human life, training advanced AI or ML models takes time, money, high-quality data, and a huge amount of energy. Our tools, with their ability to compute efficiently with less energy, will contribute to the ongoing energy-wasting problem in computer science research, and ultimately have a positive impact on the climate. The possible negative impact is the misuse of our tool by students who are just starting to learn calculus. Because our tool is user-friendly, it can be a good tool for students who do their homework and don't want to spend time figuring out questions personally. To prevent this potential issue, we will release an educational package of forwardAD with visual explanations of the calculations.
+In a dynamic world, the ability to track change is essential in most academic fields. Our tools enable automatic differentiation (AD) to compute derivatives of functions ranging from simple to complex functions. Unlike conventional methods for evaluating derivatives (e.g., symbolic derivatives, finite differences) that are computationally expensive or lack accuracy/stability, AD enables us to calculate derivatives with machine precision without compromising accuracy and stability. We believe that these tolls will be used in a wide range of applications where fast and accurate differential calculations, especially optimization, are needed.
+The potential positive impact would be a contribution to energy savings by calculating complex derivatives with less computational energy. While AI and ML research improves human life, training complex models can take a substantial amount of temporal, financial, and environmental resources. Our tools, with their advantages of being efficient and environmental friendly, are aimed to tackle environmental and sustainable issues in computer science research, and ultimately create a positive impact on the climate. However, one possible negative impact is the misuse of our tools by students who are just starting to learn calculus. Because our tools are user-friendly, it can be convenient for students who do their homework and do not want to spend time figuring out questions manually. To prevent this potential issue, we will release an educational package with visual explanations of the calculations.
 
-While our tool is user-friendly, it is developed under the assumption that users of our package have a basic familiarity with python, calculus, and mathematical terminologies in English. It will exclude a vast portion of our community who do not have these fundamental abilities. To make our package more inclusive, we plan on launching a web-based extension of our package in which any user can enjoy our tool by simply entering their functions of interest and values. 
+While our tools are user-friendly, it is developed under an assumption that the users have basic familiarity with python, calculus, and mathematical terminologies in English. It can, unfortunately, exclude a vast portion of our community who are not familiar with these concepts on are not fluent in English. To make our package more inclusive, we plan on launching a web-based extension of our package in which any user can enjoy our tool by simply entering their functions of interest and values. In addition, we plan to make this documentation available in other languages as well. 
 
 ## Future Work
 

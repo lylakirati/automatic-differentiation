@@ -5,7 +5,9 @@ from .reverseAD import ReverseAD
 class AD:
     def __init__(self, var_dict, func_list, mode = None):
         """
-        Automatic Differentiation wrapper that automatically determines which mode to use.
+        Automatic Differentiation wrapper that a mode can be specified. 
+        If not, it automatically determines which mode to use based on the 
+        number of independent variables and the number of functions to differentiate.
 
         Inputs
         ------
@@ -13,7 +15,7 @@ class AD:
             a dictionary of variables and their corresponding values
         func_list: str or list of str
             (a list of) function(s) encoded as string(s)
-        mode: str or None
+        mode: str, optional (default = None)
             string indicating mode of AD. Can be either "forward"/"f"/"reverse"/"r"
 
         Examples
@@ -59,13 +61,12 @@ class AD:
                 print('Number of variables > number of functions: reverse mode by default.')
 
         if self.mode in ("forward", "f"):
-            res = ForwardAD(var_dict, func_list)
+            self.res = ForwardAD(var_dict, func_list)
         else:
-            res = ReverseAD(var_dict, func_list)
+            self.res = ReverseAD(var_dict, func_list)
 
-        self.res = res
-        self.func_evals = res.func_evals
-        self.Dpf = res.Dpf
+        self.func_evals = self.res.func_evals
+        self.Dpf = self.res.Dpf
 
     def __call__(self):
         return self.res.__call__()
