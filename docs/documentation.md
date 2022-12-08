@@ -87,7 +87,7 @@ $$
 **5. Reverse Mode of Automatic Differentiation**
 
    * Reverse mode automatic differentiation is a 2-pass process. The first pass called *forward pass* traverses the computational graph forward and computes the primal trace $v_j$ as well as its partial derivative $\frac{\partial v_j}{\partial v_i}$ with respect to its parent node(s) $v_i$. 
-   * The other pass called *reverse pass* computes for each node an adjoint $v_i$ which is given by the sum $\bar{v}_j \cdot \frac{\partial v_j}{\partial v_i}$ over all child $j$ of $i$.
+   * The other pass called *reverse pass* computes for each node $i$ an adjoint $\bar{v}_i$ which is given by the sum $\bar{v}_j \cdot \frac{\partial v_j}{\partial v_i}$ over all child $j$ of $i$.
    * Observe that $\frac{\partial v_j}{\partial v_i}$ is computed during the forward pass.
    * The reverse pass initializes all adjoints to be zero, except those that have no children which will be assigned a value of $1$. It then accumulates the adjoints with the following update rule as it iterates over all children $j$ of node $i$: $$\bar{v}_i \leftarrow \bar{v}_i + \bar{v}_j \cdot \frac{\partial v_j}{\partial v_i}.$$
    * The reverse pass will proceed to update the parent(s) of node $i$ only if their children's adjoint computation has been completed. Thus, the reverse mode automatic differentiation requires a computational graph to be stored.
@@ -101,16 +101,11 @@ $$
    * Therefore, it is recommended to use forward mode AD when the number of outputs greatly exceeds the number of independent variables; and use reverse mode AD, otherwise.
 
 
-In the most general case, a function can have more than one coordinate. To evaluate this function, we would take the sum of the partial derivatives with respect to each coordinate. For example, consider a function $f(u(t), v(t))$. If we first apply the chain rule to each coordinate, we have:
-$$\frac{\partial f}{\partial t} = \frac{\partial f}{\partial u} \frac{\partial u}{\partial t} + \frac{\partial f}{\partial v} \frac{\partial v}{\partial t}$$
-
-
-
 ## How to use team20ad
 
 ### Installation
 
-Make sure Python (>= 3.9) is installed on your computer (https://www.python.org/downloads/).
+An important note is that the package requires Python (>= 3.9) (See https://www.python.org/downloads/ for installation).
 
 Create a venv environment to prevent conflicts with other operating system's packages:
 
@@ -120,15 +115,15 @@ To activate the venv environment:
 
 `source ./env/bin/activate`
 
-Upgrade pip before installing the package:
+Upgrading pip before installing the package is highly recommended:
 
 `python3 -m pip install --upgrade pip`
 
-The package is distributed through the test Python Package Index (PyPI), and hence the user can install it with:
+The package `team20ad` is distributed through the test Python Package Index (PyPI), and hence one can install it with pip:
 
 `python3 -m pip install -i https://test.pypi.org/simple/ team20-ad==0.0.2`
 
-In addition, they need to install and import the dependable package `numpy`:
+In addition, the package requires a dependable package `numpy`:
 
 `python3 -m pip install numpy`
 
@@ -139,99 +134,16 @@ Two modes of automatic differentiation are supported in this package: forward an
 reverse modes. With `team20ad` package installed, one can import the module of choice by:
 
 ```python
->>> from team20ad.forwardAD import * #import team20ad
-```
-for forward mode automatic differentiation and 
-
-the user will be able to instantiate an `ad` object and compute the differentiation as follows:
-
-An example of finding a derivative of a scalar function of a scalar using ***forward*** mode explicitly:
-
-```python
->>> x = {'x': 4}  # value to be evaluate at
->>> f = '3*x**2 + 4'  # function to be differentiated
->>> ad = ForwardAD(x, f)  # compute derivative of f evaluated at x using forward mode AD
->>> ad()
-===== Forward AD =====
-Vars: {'x': 4}
-Funcs: ['3*x**2 + 4']
------
-Func evals: [52]
-Gradient:
-[[24.]]
-```
-
-An example of finding derivatives of a vector function of a vector using ***forward*** mode explicitly:
-
-```python
->>> f = ['x**2 + y**2', 'exp(x + y)']  # functions to be differentiated
->>> x = {'x': 1, 'y': 1}  # values to evaluate
->>> ad = ForwardAD(x, f)  # compute derivative of f evaluated at x using forward mode AD
->>> ad()
-===== Forward AD =====
-Vars: {'x': 1, 'y': 1}
-Funcs: ['x**2 + y**2', 'exp(x + y)']
------
-Func evals: [2, 7.38905609893065]
-Gradient:
-[[2.		2.		]
- [7.3890561	7.3890561]]
-```
-
-Similarly, the user can import reverse mode with:
-
-```python
->>> from team20ad.reverseAD import * #import team20ad
-```
-
-The same example of finding a derivative of a scalar function of a scalar using ***reverse*** mode explicitly:
-
-```python
->>> x = {'x': 4}  # value to be evaluate at
->>> f = '3*x**2 + 4'  # function to be differentiated
->>> ad = ReverseAD(x, f)  # compute derivative of f evaluated at x using reverse mode AD
->>> ad()
-===== Reverse AD =====
-Vars: {'x': 4}
-Funcs: ['3*x**2 + 4']
------
-Func evals: [52.0]
-Derivatives:
-[[24.]]
-```
-
-The same example of finding derivatives of a vector function of a vector using ***reverse*** mode explicitly:
-
-```python
->>> f = ['x**2 + y**2', 'exp(x + y)']  # functions to be differentiated
->>> x = {'x': 1, 'y': 1}  # values to evaluate
->>> ad = ReverseAD(x, f)  # compute derivative of f evaluated at x using forward mode AD
->>> ad()
-===== Reverse AD =====
-Vars: {'x': 1, 'y': 1}
-Funcs: ['x**2 + y**2', 'exp(x + y)']
------
-Func evals: [2.0, 7.38905609893065]
-Derivatives:
-[[2.        2.       ]
- [7.3890561 7.3890561]]
-```
-
-Furthermore, the user can use a wrapper class that automatically determines which mode to use based on a comparison between the number of variables and functions.
-
-Import the class first:
-
-```python
 >>> from team20ad.wrapperAD import *  # import wrapper class
 ```
 
-In this case, forward mode is automatically chosen:
+and instantiate an `ad` object oto compute the differentiation as follows:
 
 ```python
->>> var_dict = {'x': 1, 'y': 2,}
+>>> var_dict = {'x': 1, 'y': 2}
 >>> func_list = ['x**2 + y**2', 'exp(x + y)', 'tan(x + y) * sqrt(y)']
 >>> ad = AD(var_dict, func_list)
-Number of variables <= number of functions; using forward mode.
+Number of variables <= number of functions: forward mode by default.
 >>> ad()
 ===== Forward AD =====
 Vars: {'x': 1, 'y': 2}
@@ -244,13 +156,33 @@ Gradient:
  [ 1.4429497   1.39255189]]
 ```
 
-In this case, reverse mode is automatically chosen:
+In the above example, forward mode is automatically chosen because the
+number of variables is less than or equal to the number of functions to evaluate.
+Otherwise, one can specify the mode of automatic differentiation as follows:
+
+```python
+>>> ad = AD(var_dict, func_list, mode = "reverse") # select reverse mode manually
+>>> ad()
+===== Reverse AD =====
+Vars: {'x': 1, 'y': 2}
+Funcs: ['x**2 + y**2', 'exp(x + y)', 'tan(x + y) * sqrt(y)']
+-----
+Func evals: [5.0, 20.085536923187668, -0.20159125448504428]
+Derivatives:
+[[ 2.          4.        ]
+ [20.08553692 20.08553692]
+ [ 1.4429497   1.39255189]]
+```
+
+Note that options for `mode` include "forward" or "f" for forward mode, and "reverse" or "r" for reverse mode.
+
+If `mode` is not specified by the user and the number of variables is greater than that of functions, then reverse mode is automatically chosen as shown in the following example:
 
 ```python
 >>> var_dict = {'x': 1, 'y': 2, 'z': 3}
 >>> func_list = ['tan(x) + exp(y) + sqrt(z)']
 >>> ad = AD(var_dict, func_list)
-Number of variables > number of functions; using reverse mode.
+Number of variables > number of functions: reverse mode by default.
 >>> ad()
 ===== Reverse AD =====
 Vars: {'x': 1, 'y': 2, 'z': 3}
@@ -261,7 +193,7 @@ Derivatives:
 [[3.42551882 7.3890561  0.28867513]]
 ```
 
-At the end of their workflow, if the user wishes to quit the vertual environment, issue the following command:
+At the end of their workflow, if the user wishes to quit the virtual environment, issue the following command:
 
 `deactivate`
 
