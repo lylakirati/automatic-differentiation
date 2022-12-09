@@ -106,9 +106,10 @@ class Node():
             if an argument value is of unsupported type. 
         """
         if isinstance(var, int) or isinstance(var, float):
+            self.derivative = None
             self.var = var
             self.child = []
-            self.derivative = None
+            
         else:
             raise TypeError("Input must be int or float.")
 
@@ -142,7 +143,7 @@ class Node():
         Parameter
         ------
         inputs : list
-            ???
+            list of functions
 
         Returns
         ------
@@ -152,9 +153,10 @@ class Node():
             a list of derivatives for each variable.
         """
         # self.der = 1
-        var_val = self.var
-        der_list = np.array([var_i.partial() for var_i in inputs])
-        return var_val, der_list
+        v_val = self.var
+        der_list = np.array([v_i.partial() for v_i in inputs])
+        
+        return v_val, der_list
             
 
     def partial(self):
