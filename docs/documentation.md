@@ -232,9 +232,9 @@ team20/
 	  |--	__init__.py
  	  |--	__main__.py
  	  |--	example.py
- 	  |-- forwardAD.py
- 	  |-- reverseAD.py
-     |-- wrapperAD.py
+ 	  |--   forwardAD.py
+ 	  |--   reverseAD.py
+	  |--   wrapperAD.py
  	  |--	dualNumber.py
  	  \--	elementary.py
 ```
