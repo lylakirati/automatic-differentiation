@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "team20_ad"
-version = "0.0.4"
+version = "0.0.5"
 authors = [
   { name="Tom Zhang", email="zhangsiyuan777@gmail.com" },
 ]

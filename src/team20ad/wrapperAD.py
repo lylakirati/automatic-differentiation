@@ -53,7 +53,12 @@ class AD:
         
         self.mode = mode
         if self.mode is None:
-            if len(var_dict) <= len(func_list):
+            num_var = len(var_dict)
+            num_func = 1  # case: func_list is one string
+            if isinstance(func_list, list):
+                num_func = len(func_list)
+
+            if num_var <= num_func:
                 self.mode = "forward"
                 print('Number of variables <= number of functions: forward mode by default.')
             else:
