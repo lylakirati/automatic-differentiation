@@ -5,40 +5,51 @@ from team20ad.elementary import *
 
 
 class ForwardAD:
+    """Forward Mode Automatic Differentiation.
+
+    Parameters
+    ------
+    var_dict: dict
+        a dictionary of variables and their corresponding values
+    func_list: str or list of str
+        (a list of) function(s) encoded as string(s)
+
+    Attributes
+    ------
+    func_evals: numpy.array
+        the evaluation of function(s) at the given point 
+    Dpf: numpy.array
+        derivatives of function(s) evaluated at the given point
+
+    Examples
+    --------
+    >>> v = {'x': 1, 'y': 2, 'z': 3}
+    >>> f = 'tan(x) + exp(y) + sqrt(z)'
+    >>> ad = ForwardAD(v, f)
+    >>> ad()
+    ===== Forward AD =====
+    Vars: {'x': 1, 'y': 2, 'z': 3}
+    Funcs: ['tan(x) + exp(y) + sqrt(z)']
+    -----
+    Func evals: [10.67851463115443]
+    Gradient:
+    [[3.42551882 7.3890561  0.28867513]]
+
+    >>> var_dict = {'x': 1, 'y': 1}
+    >>> func_list = ['x**2 + y**2', 'exp(x + y)']
+    >>> ad = ForwardAD(var_dict, func_list)
+    >>> ad()
+    ===== Forward AD =====
+    Vars: {'x': 1, 'y': 1}
+    Funcs: ['x**2 + y**2', 'exp(x + y)']
+    -----
+    Func evals: [2, 7.38905609893065]
+    Gradient:
+    [[2.        2.       ]
+     [7.3890561 7.3890561]]
+    """
 
     def __init__(self, var_dict, func_list):
-        """
-        Forward Mode Automatic Differentiation.
-
-        Inputs
-        ------
-        var_dict: dict
-            a dictionary of variables and their corresponding values
-        func_list: str or list of str
-            (a list of) function(s) encoded as string(s)
-
-        Examples
-        --------
-        >>> var_dict = {'x': 1, 'y': 1}
-        >>> func_list = ['x**2 + y**2', 'exp(x + y)']
-        >>> ad = ForwardAD(var_dict, func_list)
-        >>> ad()
-
-        ===== Forward AD =====
-
-        Vars: {'x': 1, 'y': 1}
-
-        Funcs: ['x**2 + y**2', 'exp(x + y)']
-
-        -----
-
-        Func evals: [2, 7.38905609893065]
-
-        Gradient:
-
-        [[2.        2.       ]
-        [7.3890561 7.3890561]]
-        """
         # type checks
         if not isinstance(var_dict, dict):
             raise TypeError("var_dict should be a dictionary.")
