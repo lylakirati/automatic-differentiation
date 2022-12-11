@@ -422,7 +422,7 @@ The module contains two classes: one wrapper `ReverseAD`
 and the other `Node` for constructing a computational graph. Similar to its counterpart,
 `ReverseAD` takes only two arguments which are (a list of) function(s) encoded as string(s) and a dictionary of variable-value pairs to be evaluated at. Both wrappers `ForwardAD` and `ReverseAD` callers will print out the function evaluations and their derivatives in the same format as that of `numpy` arrays.
 
-To enable greater user experience, a class `AD` written in `wrapperAD.py` wraps the implementations of the two modes. There is an option called `mode` in which a user can specify the mode of AD. If `mode` is left unspecified at the time of instance construction, the program will automatically choose a mode based on the number of independent variables and the number of functions to differentiate. If the number of independent variables is greater than the number of functions, reverse mode will be computed by default. Otherwise, the differentiation will be completed under forward mode.
+To enable greater user experience, a class `AD` written in `wrapperAD.py` wraps the implementations of the two modes. There is an option called `mode` in which a user can specify the mode of AD. If `mode` is left unspecified at the time of an instance's initialization, the program will automatically choose a mode based on the number of independent variables and the number of functions to differentiate. If the number of independent variables is greater than the number of functions, reverse mode will be computed by default. Otherwise, the differentiation will be completed under forward mode.
 
 Note that both modes of automatic differentiation require an external dependency from `numpy`.
 
@@ -487,8 +487,8 @@ The name attributes and methods for each module are listed below:
 		- `var_dict`: a dictionary of variables and their corresponding values
 		- `func_list`: (a list of) function(s) encoded as string(s)
 	- Methods: 
-		- `__init__`: Constructor for ForwardAD objects 
-		- `__call__`: Caller method for ForwardAD objects
+		- `__init__`: Constructor for ReverseAD objects 
+		- `__call__`: Caller method for ReverseAD objects
 - Node: (Extension)
 	- External dependencies: `numpy`
 	- Name attributes: 
