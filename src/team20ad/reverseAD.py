@@ -4,32 +4,39 @@ import re
 from .elementary import *
 
 class ReverseAD:
+    """Reverse Mode Automatic Differentiation.
+
+    Parameters
+    ------
+    var_dict: dict
+        a dictionary of variables and their corresponding values
+    func_list: str or list of str
+        (a list of) function(s) encoded as string(s)
+
+    Attributes
+    ------
+    func_evals: numpy.array
+        the evaluation of function(s) at the given point 
+    Dpf: numpy.array
+        derivatives of function(s) evaluated at the given point
+
+    Examples
+    --------
+    >>> var_dict = {'x': 1, 'y': 2}
+    >>> func_list = ['x**2 + y**2', 'exp(x + y)']
+    >>> ad = ReverseMode(var_dict, func_list)
+    >>> ad()
+
+    ===== Reverse AD =====
+    Vars: {'x': 1, 'y': 2}
+    Funcs: ['x**2 + y**2', 'exp(x + y)']
+    -----
+    Func evals: [5.0, 20.085536923187668]
+    Derivatives:
+    [[ 2.          4.        ]
+     [20.08553692 20.08553692]]      
+    """
     def __init__(self, var_dict, func_list):
-        """Reverse Mode Automatic Differentiation.
-
-        Inputs
-        ------
-        var_dict: dict
-            a dictionary of variables and their corresponding values
-        func_list: str or list of str
-            (a list of) function(s) encoded as string(s)
-
-        Examples
-        --------
-        >>> var_dict = {'x': 1, 'y': 2}
-        >>> func_list = ['x**2 + y**2', 'exp(x + y)']
-        >>> ad = ReverseMode(var_dict, func_list)
-        >>> ad()
-
-        ===== Reverse AD =====
-        Vars: {'x': 1, 'y': 2}
-        Funcs: ['x**2 + y**2', 'exp(x + y)']
-        -----
-        Func evals: [5.0, 20.085536923187668]
-        Derivatives:
-        [[ 2.          4.        ]
-         [20.08553692 20.08553692]]      
-        """
         # type checks
         if not isinstance(var_dict, dict):
             raise TypeError("var_dict should be a dictionary.")
@@ -43,7 +50,7 @@ class ReverseAD:
 
         if isinstance(func_list, list):
             self.func_list = func_list
-        else:
+        else: # if a single string, convert it to list
             self.func_list = [func_list]
  
         self.func_evals = []

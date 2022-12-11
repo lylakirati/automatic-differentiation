@@ -3,10 +3,11 @@ from .reverseAD import ReverseAD
 
 
 class AD:
-    """
-    Automatic Differentiation wrapper that a mode can be specified. 
-    If not, it automatically determines which mode to use based on the 
-    number of independent variables and the number of functions to differentiate.
+    """Automatic Differentiation wrapper that a mode can be specified. 
+
+    If the mode is left unspecified by the user, it automatically determines 
+    which mode to use based on the number of independent variables 
+    and the number of functions to differentiate.
 
     Parameters
     ------
