@@ -15,6 +15,13 @@ class DualNumber:
     dual : int or float
         The dual part of a dual number, corresponding to the derivative
         of user defined functions(s) 'f' evaluated at point 'x'.
+
+    Examples
+    ------
+    >>> DualNumber(3.0, 4)
+    DualNumber(3.0, 4)
+    >>> DualNumber(3)
+    DualNumber(3, 1.0)
     """
 
     _supported_scalars = (int, float)
@@ -32,13 +39,6 @@ class DualNumber:
         ------
         TypeError
             if an argument value is of unsupported type. 
-
-        Examples
-        ------
-        >>> DualNumber(3.0, 4)
-        DualNumber(3.0, 4)
-        >>> DualNumber(3)
-        DualNumber(3, 1.0)
         """
         if isinstance(real, self._supported_scalars):
             self.real = real
