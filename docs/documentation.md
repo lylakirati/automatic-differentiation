@@ -385,20 +385,20 @@ team20/
 	  |--	__init__.py
  	  |--	__main__.py
  	  |--	example.py
- 	  |--   forwardAD.py
- 	  |--   reverseAD.py
-	  |--   wrapperAD.py
+ 	  |-- forwardAD.py
+ 	  |-- reverseAD.py
+	  |-- wrapperAD.py
  	  |--	dualNumber.py
  	  \--	elementary.py
 ```
 
 ### Basic Modules and Functionality
 
-There are five modules: three for implementing and supporting the forward mode of automatic differentiation, one for implementing the reverse mode AD, and the other for a wrapper of both modes of AD.
+There are five modules: three for implementing and supporting the forward mode of automatic differentiation, one for implementing the reverse mode AD, and the other one for a wrapper of both modes of AD.
 The forward mode implementations contain two supporting modules: `DualNumber` class and 
 operation overloadings defined in `elementary.py` (More details on these two modules can be found under the Implementation section). The reverse mode and the wrapper implementationss are described under the *Extension* Section below.
 
-As such, we have corresponding tests `test_forward.py`, `test_reverse.py`, `test_dualNumber.py`, and `test_elementary.py`, which are located under the `tests/test_codes` directory and which are configured to run automatically using GitHub workflows after each push to a git branch. 
+As such, we have corresponding tests `test_forward.py`, `test_reverse.py`, `test_reverse_node.py`, `test_wrapper.py`, `test_dualNumber.py`, and `test_elementary.py`, which are located under the `tests/test_codes` directory and which are configured to run automatically using GitHub workflows after each push to a git branch. 
 
 For the package installation, please refer to the *How to use team20ad* Section. An important note is that the package requires `numpy` modules for implementations and calculations as
 they rely heavily on mathematical computations, 
