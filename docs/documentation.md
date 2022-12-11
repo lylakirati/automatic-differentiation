@@ -401,7 +401,7 @@ operation overloadings defined in `elementary.py` (More details on these two mod
 As such, we have corresponding tests `test_forward.py`, `test_reverse.py`, `test_reverse_node.py`, `test_wrapper.py`, `test_dualNumber.py`, and `test_elementary.py`, which are located under the `tests/test_codes` directory and which are configured to run automatically using GitHub workflows after each push to a git branch. 
 
 For the package installation, please refer to the *How to use team20ad* Section. An important note is that the package requires `numpy` modules for implementations and calculations as
-they rely heavily on mathematical computations, 
+it relies heavily on fast and accurate mathematical computations.
 
 ### Packaging
 
