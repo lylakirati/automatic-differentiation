@@ -22,11 +22,22 @@ class ReverseAD:
 
     Examples
     --------
+    >>> v = {'x': 1, 'y': 2, 'z': 3}
+    >>> f = 'tan(x) + exp(y) + sqrt(z)'
+    >>> ad = ReverseAD(v, f)
+    >>> ad()
+    ===== Reverse AD =====
+    Vars: {'x': 1, 'y': 2, 'z': 3}
+    Funcs: ['tan(x) + exp(y) + sqrt(z)']
+    -----
+    Func evals: [10.67851463115443]
+    Derivatives:
+    [[3.42551882 7.3890561  0.28867513]]
+
     >>> var_dict = {'x': 1, 'y': 2}
     >>> func_list = ['x**2 + y**2', 'exp(x + y)']
     >>> ad = ReverseMode(var_dict, func_list)
     >>> ad()
-
     ===== Reverse AD =====
     Vars: {'x': 1, 'y': 2}
     Funcs: ['x**2 + y**2', 'exp(x + y)']
