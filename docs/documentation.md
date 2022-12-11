@@ -97,7 +97,7 @@ $$
 **6. Differences Between Forward and Reverse Modes**
    * Forward mode of automatic differentiation computes the gradient with respect to the independent variables $\nabla_x f$ whereas reverse mode computes the gradient with respect to the coordinates $v$, $\nabla_v f$. Thus, the gradient $\nabla_x f$ is a subset of $\nabla_v f$.
    * Forward mode doesn't require a computational graph to be stored but its computational cost is dependent on the number of independent variables.
-   * The computational cost of reverse mode is entirely independent of the number of independent variables but does require to storing a computational graph.
+   * The computational cost of reverse mode is entirely independent of the number of independent variables but it does require to storing a computational graph.
    * Therefore, it is recommended to use forward mode AD when the number of outputs greatly exceeds the number of independent variables; and use reverse mode AD, otherwise.
 
 
@@ -376,6 +376,8 @@ team20/
 |	|  |--  __init__.py
 |	|  |--  test_forward.py
 |	|  |--  test_reverse.py
+|  |  |--  test_reverse_node.py
+|  |  |--  test_wrapper.py
 |	|  |--  test_dualNumber.py
 |	|  \--  test_elementary.py
 \-- src/
