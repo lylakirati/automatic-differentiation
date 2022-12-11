@@ -13,7 +13,7 @@ There are three popular ways to calculate the derivative:
 
 Symbolic differentiation is precise, but it can lead to inefficient code and can be costly to evaluate. The finite difference is quick and easy to implement, but it is prone to round-off error, the loss of precision due to computer rounding of decimal quantities, and truncation error, the difference between the exact solution of the original differential equation. Automatic differentiation is more efficient than two of the other methods mentioned prior. While it utilizes the concept of dual numbers to achieve accuracy better than numeric differentiation, it is also more computationally efficient than symbolic differentiation, and therefore is widely used. 
 
-In this library, the general mathematical background and concepts of differentiation as well as automatic differentiation are introduced in the Background section. A basic demo to use the package, software organization, and implementation of the forward mode of automatic differentiation are introduced below.
+In this library, the general mathematical background and concepts of differentiation as well as automatic differentiation are introduced in the Background section. A basic demo to use the package, software organization, and implementations of forward and reverse mode automatic differentiation are introduced below.
 
 ## Background
 
@@ -97,7 +97,7 @@ $$
 **6. Differences Between Forward and Reverse Modes**
    * Forward mode of automatic differentiation computes the gradient with respect to the independent variables $\nabla_x f$ whereas reverse mode computes the gradient with respect to the coordinates $v$, $\nabla_v f$. Thus, the gradient $\nabla_x f$ is a subset of $\nabla_v f$.
    * Forward mode doesn't require a computational graph to be stored but its computational cost is dependent on the number of independent variables.
-   * The computational cost of reverse mode is entirely independent of the number of independent variables but does require to storing a computational graph.
+   * The computational cost of reverse mode is entirely independent of the number of independent variables but it does require to storing a computational graph.
    * Therefore, it is recommended to use forward mode AD when the number of outputs greatly exceeds the number of independent variables; and use reverse mode AD, otherwise.
 
 
@@ -376,6 +376,8 @@ team20/
 |	|  |--  __init__.py
 |	|  |--  test_forward.py
 |	|  |--  test_reverse.py
+|  |  |--  test_reverse_node.py
+|  |  |--  test_wrapper.py
 |	|  |--  test_dualNumber.py
 |	|  \--  test_elementary.py
 \-- src/
@@ -383,23 +385,23 @@ team20/
 	  |--	__init__.py
  	  |--	__main__.py
  	  |--	example.py
- 	  |--   forwardAD.py
- 	  |--   reverseAD.py
-	  |--   wrapperAD.py
+ 	  |-- forwardAD.py
+ 	  |-- reverseAD.py
+	  |-- wrapperAD.py
  	  |--	dualNumber.py
  	  \--	elementary.py
 ```
 
 ### Basic Modules and Functionality
 
-There are five modules: three for implementing and supporting the forward mode of automatic differentiation, one for implementing the reverse mode AD, and the other for a wrapper of both modes of AD.
+There are five modules: three for implementing and supporting the forward mode of automatic differentiation, one for implementing the reverse mode AD, and the other one for a wrapper of both modes of AD.
 The forward mode implementations contain two supporting modules: `DualNumber` class and 
 operation overloadings defined in `elementary.py` (More details on these two modules can be found under the Implementation section). The reverse mode and the wrapper implementationss are described under the *Extension* Section below.
 
-As such, we have corresponding tests `test_forward.py`, `test_reverse.py`, `test_dualNumber.py`, and `test_elementary.py`, which are located under the `tests/test_codes` directory and which are configured to run automatically using GitHub workflows after each push to a git branch. 
+As such, we have corresponding tests `test_forward.py`, `test_reverse.py`, `test_reverse_node.py`, `test_wrapper.py`, `test_dualNumber.py`, and `test_elementary.py`, which are located under the `tests/test_codes` directory and which are configured to run automatically using GitHub workflows after each push to a git branch. 
 
 For the package installation, please refer to the *How to use team20ad* Section. An important note is that the package requires `numpy` modules for implementations and calculations as
-they rely heavily on mathematical computations, 
+it relies heavily on fast and accurate mathematical computations.
 
 ### Packaging
 
@@ -408,7 +410,7 @@ Our package is distributed using test PyPI following PEP517/PEP518. Details on h
 
 ## Implementation
 
-There are two parts of the implementations based on the mode of automatic differentiation. First, the forward mode requires the `DualNumber` class, which serves as the ground of function evaluation and derivative computation as described in detail in the *Background* Section. This module also implements basic function overloaders such as `__add__()` and their reverse counterparts such as `__radd__()`. The full list of methods is provided below.
+There are two parts of the implementations based on the modes of automatic differentiation. First, the forward mode requires the `DualNumber` class, which serves as the ground of function evaluation and derivative computation as described in detail in the *Background* Section. This module also implements basic function overloaders such as `__add__()` and their reverse counterparts such as `__radd__()`. The full list of methods is provided below.
 In addition to the `DualNumber` class, the package contains additional elementary function overloads in `elementary.py` such as exponential and trigonometric functions (please see the full list below). Note that these two modules support only operations on `DualNumber`, `int`, and `float` objects.
 At a higher level, the `ForwardAD` class serves as a user-interacting interface or wrapper for computing derivatives of a given function $f$ at a given value $x$.
 
@@ -418,17 +420,17 @@ The second part of the package concerns the implementation of reverse mode
 automatic differentiation as discussed in detail under the *Background* Section. 
 The module contains two classes: one wrapper `ReverseAD`
 and the other `Node` for constructing a computational graph. Similar to its counterpart,
-`ReverseAD` takes only two arguments which (a list of) function(s) encoded as string(s) and a dictionary of variable-value pairs to be evaluated at. Both wrappers `ForwardAD` and `ReverseAD` callers will print out the function evaluations and their derivatives in the same format as that of `numpy` arrays.
+`ReverseAD` takes only two arguments which are (a list of) function(s) encoded as string(s) and a dictionary of variable-value pairs to be evaluated at. Both wrappers `ForwardAD` and `ReverseAD` callers will print out the function evaluations and their derivatives in the same format as that of `numpy` arrays.
 
-To enable greater user experience, a class `AD` written in `wrapperAD.py` wraps the implementations of the two modes. There is an option called `mode` in which a user can specify the mode of AD. If `mode` is left unspecified at the time of instance construction, the program will automatically choose a mode based on the number of independent variables and the number of functions to differentiate. If the number of independent variables is greater than the number of functions, reverse mode will be computed by default. Otherwise, the differentiation will be completed under forward mode.
+To enable greater user experience, a class `AD` written in `wrapperAD.py` wraps the implementations of the two modes. There is an option called `mode` in which a user can specify the mode of AD. If `mode` is left unspecified at the time of an instance's initialization, the program will automatically choose a mode based on the number of independent variables and the number of functions to differentiate. If the number of independent variables is greater than the number of functions, reverse mode will be computed by default. Otherwise, the differentiation will be completed under forward mode.
 
 Note that both modes of automatic differentiation require an external dependency from `numpy`.
 
 The name attributes and methods for each module are listed below:
 
 - ForwardAD:
-	- External dependencies: `numpy`
-	- Name attribute: 
+	- External dependency: `numpy`
+	- Name attributes: 
 		- `Dpf`: the directional derivative of the function(s) to be evaluated
 		- `var_dict`: a dictionary of variables and their corresponding values
 		- `func_list`: (a list of) function(s) encoded as string(s)
@@ -436,7 +438,7 @@ The name attributes and methods for each module are listed below:
 		- `__init__`: Constructor for ForwardAD objects 
 		- `__call__`: Caller method for ForwardAD objects
 - DualNumber:
-	- External dependencies: `numpy`
+	- External dependency: `numpy`
 	- Name attributes: 
 		- `real`: real part of a dual number
 		- `dual`: dual part of a dual number
@@ -463,8 +465,9 @@ The name attributes and methods for each module are listed below:
 		- `__le__`: Operates the less than or equal to comparison.
 		- `__ge__`: Operates the greater than or equal to comparison.
 		- `__abs__`: Computes the absolute values on both real and dual parts.
-- elementary: Methods: 
-		- External dependencies: `numpy`
+- elementary:  
+	- External dependency: `numpy`
+   - Methods:
    	- `sqrt`: Computes the square root of a given value.
    	- `exp`: Computes the exponential of a given value. 
    	- `log`: Computes the logarithm of a given value.
@@ -479,16 +482,16 @@ The name attributes and methods for each module are listed below:
    	- `tanh`: Computes the hyperbolic tangent of a given value.
    	- `logistic`: Computes the logistic of the given value and parameters.
 - ReverseAD: (Extension)
-	- External dependencies: `numpy`
-	- Name attribute: 
-		- `Dpf`: the directional derivative of the function(s) to be evaluated
+	- External dependency: `numpy`
+	- Name attributes: 
+		- `Dpf`: the derivative(s) of the function(s) to be evaluated
 		- `var_dict`: a dictionary of variables and their corresponding values
 		- `func_list`: (a list of) function(s) encoded as string(s)
 	- Methods: 
-		- `__init__`: Constructor for ForwardAD objects 
-		- `__call__`: Caller method for ForwardAD objects
+		- `__init__`: Constructor for ReverseAD objects 
+		- `__call__`: Caller method for ReverseAD objects
 - Node: (Extension)
-	- External dependencies: `numpy`
+	- External dependency: `numpy`
 	- Name attributes: 
 		- `var`: a primal trace value to be stored at each node.
 		- `child`: a list of all depending Nodes and their associated derivatives
@@ -498,7 +501,7 @@ The name attributes and methods for each module are listed below:
 		- `__repr__`: Returns a string representation for a Node object
 		- `__str__`: Returns a formatted string representation for a Node object
 		- `g_derivatives`: Get derivatives for each variable in the function
-		- `partial`: Computes derivative for a variable used in the function
+		- `partial`: Computes the adjoint for the variable
 		- `__neg__`: Returns a new node instance as the negation of the Node instance.
 		- `__add__`: Returns a new Node instance as a result of the addition.
 		- `__radd__`: Same method as `__add__` with reversed operands.
@@ -531,38 +534,38 @@ The name attributes and methods for each module are listed below:
    	- `tanh`: (static) Computes the hyperbolic tangent of a given value.
    	- `logistic`: (static) Computes the logistic of the given value and parameters.      
 - AD: (Extension)
-   - Name attribute: 
+   - Name attributes: 
       - `var_dict`: a dictionary of variables and their corresponding values
       - `func_list`: (a list of) function(s) encoded as string(s)
       - `mode`: string indicating mode of AD
       - `res`: AD object of a specified mode
    - Methods: 
-      - `__init__`: Constructor for ForwardAD objects 
-      - `__call__`: Caller method for ForwardAD objects
+      - `__init__`: Constructor for AD objects 
+      - `__call__`: Caller method for AD objects
 
 
 ## Broader Impact and Inclusivity Statement
 
-In a dynamic world, the ability to track change is essential in most academic fields. Our tool, team20ad, uses automatic differentiation (AD) in forward mode to compute derivatives of functions ranging from simple to complex functions. Unlike conventional methods for evaluating derivatives (e.g., symbolic derivatives, finite differences) that are computationally expensive or lack accuracy/stability, AD enables us to calculate derivatives with machine precision without compromising accuracy and stability. We believe that this tool will be used in a wide range of applications where fast and accurate differential calculations, especially optimization, are required.
+In a dynamic world, the ability to track change is essential in most academic fields. Our tool enables automatic differentiation (AD) to compute derivatives of functions ranging from simple to complex functions. Unlike conventional methods for evaluating derivatives (e.g., symbolic derivatives, finite differences) that are computationally expensive or lack accuracy/stability, AD enables us to calculate derivatives with machine precision without compromising accuracy and stability. We believe that this tool will be used in a wide range of applications where fast and accurate differential calculations, especially optimization, are needed.
 
-The potential positive impact will be a contribution to energy savings by calculating complex derivatives with less computational energy. While AI and ML research improves human life, training advanced AI or ML models takes time, money, high-quality data, and a huge amount of energy. Our tools, with their ability to compute efficiently with less energy, will contribute to the ongoing energy-wasting problem in computer science research, and ultimately have a positive impact on the environment. The possible negative impact is the misuse of our tool by students who are just starting to learn calculus. Because our tool is user-friendly, it can be a good tool for students who do their homework and don't want to spend time figuring out questions personally. To prevent this potential issue, we will release an educational package of team20ad with visual explanations of the calculation process.
+The potential positive impact would be a contribution to energy savings by calculating complex derivatives with less computational energy. While AI and ML research improves human life, training complex models can take a substantial amount of temporal, financial, and environmental resources. Our tools, with their advantages of being efficient and environmental friendly, are aimed to tackle environmental and sustainable issues in computer science research, and ultimately create a positive impact on the climate. However, one possible negative impact is the misuse of our tools by students who are just starting to learn calculus. Because our tools are user-friendly, it can be convenient for students who do their homework and do not want to spend time figuring out questions manually. To prevent this potential issue, we will release an educational package with visual explanations of the calculations.
 
-While our tool is user-friendly, it is developed under the assumption that users of our package have a basic familiarity with python, calculus, and mathematical terminologies in English. It will exclude a vast portion of our community who do not have these fundamental abilities. To make our package more inclusive, we plan on launching a web-based extension of our package in which any user can enjoy our tool by simply entering their functions of interest and values. 
+While our tools are user-friendly, it is developed under an assumption that the users have basic familiarity with python, calculus, and mathematical terminologies in English. It can, unfortunately, exclude a vast portion of our community who are not familiar with these concepts on are not fluent in English. To make our package more inclusive, we plan on launching a web-based extension of our package in which any user can enjoy our tool by simply entering their functions of interest and values. In addition, we plan to make this documentation available in other languages as well. 
 
 
 ## Future Work
 
 This package has achieved to automatically calculate the derivatives in both forward and reverse modes. However, there are a few aspects that we could extend to make the package usage more useful for broader impacts.
 
-**Second Derivatives**
-Currently, both of our forward mode and reverse mode implementations handle the first derivative of functions. However, in some cases with real world problems, the estimation of second-order derivative is also necessary. We may approach the second derivative with the Hessian matrix.
+**Second and Higher-Order Derivatives**
+Currently, both of our forward mode and reverse mode implementations handle only the first derivative of functions. However, in some cases with real world problems, the estimation of second-order or higher-order derivatives is also necessary. We may approach the high-order derivatives with the Hessian matrix.
 
 **Interface Usage**
-To provide an easier approach to the package for consumers who have no coding background, we could extend our package with an interface where the consumer can specify the variable values and functions which then would print out the final gradient and function values.
+To provide an easier approach to the package for users who have no coding background, we could extend our package with a more friendly user interface where one can specify variable values and functions which then would print out the final gradient and function values.
 
 **Visualization**
-In terms of understanding the process, now we can get values and derivatives of functions with autodiff package, but we can not know about the process of calculation. Visualizations of forward and reverse modes can be greatly help, especially for users who have no knowledge about automatic differentiation. So one possible extension is to visualize the calculation process of forward and reverse modes.
+In terms of understanding the process, now one can compute function values and derivatives of functions with the current package, but they do not see the calculation process behind. Visualizations of forward and reverse mode computations can be greatly helpful, especially for those who have little background on automatic differentiation. So one possible extension is to create a visualization tool to display the calculation process of forward and reverse modes.
 
-**Extend to Other Areas**
-Our package can also extend to other areas like optimization and machine learning. For instance, we can make some optimizers with automatic differentiation and can also implement back-propagation in neural networks in our package in the future.
+**Direct Extension to Other Applications**
+Our package can also extend to other applications like optimization and machine learning that require to compute gradients. For instance, we can create an optimizer with automatic differentiation and implement back-propagation in neural networks based on our package in the future.
 
